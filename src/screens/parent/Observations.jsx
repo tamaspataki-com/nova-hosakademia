@@ -5,6 +5,25 @@ import { ATYPE, COMPLETION, MODE_SHORT, completed, count, groupByTypeAndMode } f
 
 const NOTE_TAGS = ['Elterelődött a figyelme', 'Fáradt volt', 'Megszakítás történt', 'Jól ment'];
 const yn = (b) => (b ? 'igen' : 'nem');
+const METHOD = {
+  'self-reported': 'A gyerek saját bejelentése szerint elmesélte (a minőséget nem értékeltük)',
+  typed: 'Leírta (ezen az eszközön mentve)',
+  'adult-observed': 'Felnőtt jelölte'
+};
+const LISTEN = {
+  completed: 'Lejátszás befejeződött (az eszköz jelezte)',
+  interrupted: 'Lejátszás megszakadt',
+  unknown: 'A lejátszás végét az eszköz nem jelezte',
+  error: 'Lejátszási hiba',
+  'self-reported': 'A gyerek jelezte, hogy végzett (saját bejelentés)',
+  'not-played': 'Nem játszotta le'
+};
+const OBS_LABEL = {
+  independent: 'Önállóan',
+  supported: 'Segítséggel',
+  notMentioned: 'Most nem említette',
+  notObserved: 'Nem figyeltem meg'
+};
 
 export default function Observations({ adventures }) {
   const { state } = useStore();
@@ -46,6 +65,11 @@ export default function Observations({ adventures }) {
             <h2 className="h3">Feladattípusok és módok szerint</h2>
             <p className="muted">
               A feladattípusok és a módok külön szerepelnek, mert egyetlen szám nem mutatja meg, mi segít és mi nehéz.
+            </p>
+            <p className="muted">
+              Ismételt szövegnél a jobb eredmény a szöveg ismerősségét is jelezheti, ezért nem tekintjük fejlődésnek.
+              Ismeretlen szövegen való összehasonlításhoz új, ellenőrző szövegek kellenek. A „Későbbi felidézés” nem
+              szabványosított memóriateszt.
             </p>
             {groups.length ? (
               <div className="table-wrap">
@@ -110,7 +134,7 @@ export default function Observations({ adventures }) {
                     <div className="muted">
                       {e.atype === 'retell' ? (
                         <>
-                          {rt?.kind === 'spoken' ? 'Elmondta valakinek (felnőtt jelölte)' : 'Leírta'}
+                          {METHOD[e.method] || (rt?.kind === 'spoken' ? METHOD['adult-observed'] : METHOD.typed)}
                           {rt?.text ? <blockquote className="quote">{rt.text}</blockquote> : null}
                           {' · '}
                         </>
@@ -121,6 +145,13 @@ export default function Observations({ adventures }) {
                       )}
                       támpont: {e.hints ?? 0} · újraolvasás: {e.rereads ?? 0} · újrahallgatás: {e.replays ?? 0} · szöveg
                       megnyitva: {yn(e.transcript)}
+                      {e.shorter ? ' · rövidebb rész: igen' : ''}
+                      {e.definitions ? ` · szómagyarázat: ${e.definitions}` : ''}
+                      {e.retellPrompts ? ' · segítő kérdések: igen' : ''}
+                      {e.guidedPlacement ? ' · vezetett elhelyezés: igen' : ''}
+                      {e.intervening
+                        ? ` · közbeeső segítség: újraolvasás ${e.intervening.passage_reread}, újrahallgatás ${e.intervening.audio_replayed}, segítő kérdés ${e.intervening.retell_prompts_opened}, rövidebb rész ${e.intervening.shorter_section_used}`
+                        : ''}
                       {e.length ? ` · szöveghossz: ${e.length} mondat` : ''}
                     </div>
                   </li>
@@ -131,6 +162,7 @@ export default function Observations({ adventures }) {
         </>
       )}
 
+      <Extra adventures={adventures} />
       <Notes />
       <Legacy />
     </div>
@@ -257,5 +289,79 @@ function Legacy() {
         </details>
       ) : null}
     </section>
+  );
+}
+
+// Listening, retelling observations and the child's reflections – all taken from recorded events.
+function Extra({ adventures }) {
+  const { state } = useStore();
+  const ev = state.events;
+  const passages = ev.filter((e) => e.type === 'passage_completed' && e.listen);
+  const obs = ev
+    .filter((e) => e.type === 'retell_observed')
+    .slice(-5)
+    .reverse();
+  const refl = ev
+    .filter((e) => e.type === 'reflection_saved' && e.choices)
+    .slice(-5)
+    .reverse();
+  const counts = passages.reduce((m, e) => ((m[e.listen] = (m[e.listen] || 0) + 1), m), {});
+  const stepOf = (e) => adventures.find((a) => a.id === e.adv)?.steps.find((s) => s.id === e.activity);
+  const REFL = (e) => {
+    const step = stepOf(e);
+    return e.choices.map((id) => step?.options?.find((o) => o.id === id)?.text || id);
+  };
+  return (
+    <>
+      {passages.length ? (
+        <section className="card stack" aria-label="Hallgatás">
+          <h2 className="h3">Hallgatás</h2>
+          <p className="muted">
+            A „befejeződött” csak akkor szerepel, ha az eszköz jelezte a lejátszás végét. Ha nem jelezte, a gyerek saját
+            bejelentése külön szerepel.
+          </p>
+          <ul className="plain-list">
+            {Object.entries(counts).map(([k, n]) => (
+              <li key={k}>
+                {LISTEN[k] || k}: <strong>{n}</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {obs.length ? (
+        <section className="card stack" aria-label="Elmesélés megfigyelése">
+          <h2 className="h3">Elmesélés – felnőtt megfigyelése</h2>
+          <p className="muted">Nem pontszám: az összes elemet a megfigyelő jelölte, a gyerek nem látja.</p>
+          {obs.map((e, i) => (
+            <div key={i} className="obs">
+              <span className="muted">{fmtTime(e.t)}</span>
+              <ul className="plain-list">
+                {Object.entries(e.items).map(([id, val]) => (
+                  <li key={id}>
+                    {stepOf(e)?.adultChecklist?.find((x) => x.id === id)?.text || id}:{' '}
+                    <strong>{OBS_LABEL[val] || val}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      ) : null}
+
+      {refl.length ? (
+        <section className="card stack" aria-label="Visszajelzés">
+          <h2 className="h3">Amit a gyerek segítőnek érzett</h2>
+          <p className="muted">Ez a gyerek saját benyomása, nem annak mérése, hogy melyik módszer valóban segít.</p>
+          {refl.map((e, i) => (
+            <div key={i} className="obs">
+              <span className="muted">{fmtTime(e.t)}</span>
+              <div>{REFL(e).join(' · ')}</div>
+            </div>
+          ))}
+        </section>
+      ) : null}
+    </>
   );
 }

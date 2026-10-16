@@ -31,7 +31,6 @@ export default function Choice({ api, variant = 'choice' }) {
 
   return (
     <div className="stack">
-      {variant === 'delayedRecall' ? <span className="eyebrow">Emlékszel még?</span> : null}
       <h2 className="h2">{step.prompt}</h2>
 
       <div className="stack tight" role="group" aria-label="Válaszlehetőségek">
@@ -59,14 +58,12 @@ export default function Choice({ api, variant = 'choice' }) {
 
       <Hints shown={st.shown} />
       {lastHint ? <Feedback>Nézd meg újra a szöveget, és próbáld újra.</Feedback> : null}
-      {showGuided ? <Guided adv={adv} step={step} /> : null}
+      {showGuided || rules.guided ? <Guided adv={adv} step={step} /> : null}
 
       {done ? (
         <>
           <Feedback ok>
-            {rules.guided
-              ? (step.feedback?.correct ?? 'Ez a helyes válasz.')
-              : (step.feedback?.correct ?? 'Jól válaszoltál.')}
+            {rules.guided ? 'Ez a helyes válasz.' : (step.feedback?.correct ?? 'Jól válaszoltál.')}
           </Feedback>
           {rules.guided ? <ReflectionCard api={api} /> : null}
           <Btn iconAfter="arrow_forward" onClick={next}>

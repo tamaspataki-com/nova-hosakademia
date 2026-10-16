@@ -56,7 +56,12 @@ function convert(actId, a) {
     seriesId: 'practice',
     title: a.title,
     description: `${PATHS[a.path].label} – ${n} mondat`,
-    fiction: true,
+    classification: 'fiction',
+    sources: [],
+    review: {
+      status: 'unreviewed',
+      note: 'Az előző változatból átvett tartalom; felnőtt általi felülvizsgálat nincs rögzítve.'
+    },
     format: a.kind === 'instruction' ? 'instructions' : 'story',
     status: 'available',
     context: 'practice',

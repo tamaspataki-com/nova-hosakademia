@@ -492,25 +492,35 @@ ul.routine {
   color: var(--primary);
 }
 .switch {
-  width: 60px;
-  height: 34px;
+  width: 64px;
+  height: 48px;
   flex: none;
-  border-radius: 999px;
   border: 0;
-  background: #4b6a6a;
+  border-radius: 24px;
+  background: transparent;
   position: relative;
+}
+.switch::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 7px;
+  height: 34px;
+  border-radius: 999px;
+  background: #4b6a6a;
 }
 .switch i {
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 11px;
+  left: 6px;
   width: 26px;
   height: 26px;
   border-radius: 50%;
   background: #fff4df;
   transition: transform 0.15s;
 }
-.switch.on {
+.switch.on::before {
   background: var(--primary);
 }
 .switch.on i {
@@ -596,6 +606,7 @@ ul.routine {
   border-radius: 4px;
 }
 .gloss {
+  position: relative;
   border: 0;
   padding: 0;
   background: none;
@@ -1358,7 +1369,7 @@ ul.routine {
 }
 details summary {
   cursor: pointer;
-  min-height: 44px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   font-weight: 800;
@@ -1386,4 +1397,105 @@ details summary {
   .runner-bar > button:last-child {
     margin-left: auto;
   }
+}
+
+/* ---------- dinosaur reference adventure ---------- */
+.cover-icon {
+  display: grid;
+  place-items: center;
+  min-height: 170px;
+  background: radial-gradient(circle at 50% 40%, #2a6470, #153a43);
+  color: var(--primary);
+  box-shadow: none;
+}
+.adv-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 56px;
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 40%, #2a6470, #153a43);
+  color: var(--primary);
+}
+.strategy-pic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.strategy-pic img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+.seq-icon {
+  color: var(--ink);
+  background: rgba(24, 52, 58, 0.08);
+  border-radius: 14px;
+  width: 52px;
+  height: 52px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+.disclosure {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  font-size: 17px;
+  font-weight: 800;
+  text-align: left;
+}
+.adult-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px dashed rgba(235, 213, 163, 0.4);
+}
+.obs-item {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 0;
+}
+.obs-item legend {
+  padding: 0 6px;
+  font-weight: 800;
+}
+.badge-chip img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Words inside running text keep their line height; their touch area is enlarged invisibly to 48px tall. */
+.gloss::after {
+  content: '';
+  position: absolute;
+  inset: -6px -8px;
+}
+
+.update-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: calc(8px + env(safe-area-inset-top)) 14px 8px;
+  background: #0b2329;
+  border-bottom: 2px solid var(--primary);
+  font-weight: 800;
+}
+.update-bar > span {
+  flex: 1;
+  min-width: 160px;
 }

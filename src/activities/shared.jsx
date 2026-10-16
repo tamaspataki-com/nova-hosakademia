@@ -11,6 +11,20 @@ export function sourceSections(adv, step) {
   return adv.passages[0]?.sections || [];
 }
 
+// The passage step that presents a step's source section (null when the step has no single source).
+export const passageStepFor = (adv, src) =>
+  src
+    ? adv.steps.find((x) => x.type === 'passage' && x.passageId === src.passageId && x.sectionId === src.sectionId)
+    : null;
+
+// Glossary entries whose word occurs in the given sentences (offered as large buttons under the text).
+export function wordsIn(glossary = [], sentences = []) {
+  const words = sentences
+    .flatMap((s) => s.text.split(/\s+/))
+    .map((w) => w.replace(/^[„"(]+|[.,!?…:;"”)]+$/g, '').toLowerCase());
+  return glossary.filter((g) => words.some((w) => w.startsWith(g.key)));
+}
+
 // Passage text with the glossary words tappable (opens the word explanation).
 export function GlossText({ text, glossary = [], onWord }) {
   if (!glossary.length) return text;
@@ -85,13 +99,38 @@ export function Guided({ adv, step }) {
   );
 }
 
-export const supportUsed = (st) =>
-  (st.shown?.length || 0) > 0 || (st.rereads || 0) > 0 || (st.replays || 0) > 0 || !!st.transcript;
-
 export const sentenceCount = (adv, step) => sourceSections(adv, step).reduce((n, s) => n + s.sentences.length, 0);
 
+// Supports that make a completion "supported": hints, rereads, replays, a shown transcript and a shorter section.
+// What the child did while the passage was presented counts too, so help on the passage affects the question after it.
+export function supportOf(adv, run, step, st) {
+  const src = passageStepFor(adv, step.source);
+  const passageSteps = src ? [src] : adv.steps.filter((x) => x.type === 'passage');
+  const ps = passageSteps.map((x) => run.steps[x.id] || {});
+  const sum = (k) => ps.reduce((n, p) => n + (p[k] || 0), 0);
+  const out = {
+    hints: st.shown?.length || 0,
+    rereads: st.rereads || 0,
+    replays: (st.replays || 0) + sum('replays'),
+    transcript: !!(st.transcript || ps.some((p) => p.transcript)),
+    shorter: ps.some((p) => p.chunked),
+    retellPrompts: !!st.promptsOpened
+  };
+  out.used = out.hints > 0 || out.rereads > 0 || out.replays > 0 || out.transcript || out.shorter || out.retellPrompts;
+  return out;
+}
+
+const INTERVENING = [
+  'passage_reread',
+  'audio_replayed',
+  'retell_prompts_opened',
+  'transcript_opened',
+  'shorter_section_used'
+];
+
 // Shared rules for scored activities (choice, evidence, sequence, recall):
-//   · every submission is logged;  · a wrong submission shows its authored hint;
+//   · every submission is logged, and the first answer is recorded before any feedback;
+//   · a wrong submission shows its authored hint;
 //   · from the second miss a guided explanation and an option to see the solution appear;
 //   · completion is recorded once, as independent / supported / guided.
 export function useScored(api) {
@@ -101,25 +140,36 @@ export function useScored(api) {
   const complete = (extra) => {
     if (st.logged) return;
     patch({ logged: true });
-    log('activity_completed', {
+    const sup = supportOf(adv, run, step, st);
+    const evs = api.events || [];
+    const lastDone = [...evs].reverse().find((e) => e.type === 'activity_completed');
+    const since = lastDone ? lastDone.t : run.startedAt;
+    const guided = extra.guided || !!st.guidedPlacement;
+    const detail = {
       activity: step.id,
       atype: step.type,
       objective: step.objective,
       mode: run.mode,
       length: sentenceCount(adv, step),
       repeat: !!run.repeat,
-      hints: extra.shown.length,
-      rereads: st.rereads || 0,
-      replays: st.replays || 0,
-      transcript: !!st.transcript,
+      hints: Math.max(sup.hints, extra.shown.length),
+      rereads: sup.rereads,
+      replays: sup.replays,
+      transcript: sup.transcript,
+      shorter: sup.shorter,
+      definitions: evs.filter((e) => e.type === 'word_opened' && e.t >= since).length,
+      guidedPlacement: !!st.guidedPlacement,
       attempts: extra.attempts,
       firstCorrect: extra.first,
-      completion: extra.guided
-        ? 'guided'
-        : extra.first && !extra.shown.length && !supportUsed(st)
-          ? 'independent'
-          : 'supported'
-    });
+      completion: guided ? 'guided' : extra.first && !sup.used ? 'independent' : 'supported'
+    };
+    if (step.type === 'delayedRecall') {
+      // Supports used since the story was presented, other than on this question itself.
+      detail.intervening = Object.fromEntries(
+        INTERVENING.map((t) => [t, evs.filter((e) => e.type === t && e.activity !== step.id).length])
+      );
+    }
+    log('activity_completed', detail);
   };
 
   // ok: the submission was right. detail: extra fields for the event (choice, order…).

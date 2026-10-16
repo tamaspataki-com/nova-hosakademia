@@ -9,7 +9,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // The new version waits until the child (or parent) taps "Frissítés"; see src/app/update.js.
+      registerType: 'prompt',
+      injectRegister: false,
       includeAssets: ['icons/apple-touch-icon.png', 'icons/favicon.png'],
       manifest: {
         name: 'NOVA Hősakadémia',
@@ -29,6 +31,7 @@ export default defineConfig({
         ]
       },
       workbox: {
+        clientsClaim: true, // a worker that takes over controls open pages at once, so the reload after "Frissítés" always follows
         // App shell, icons and all artwork (public/assets/*.webp, ~2.2 MB) are precached for offline use.
         globPatterns: ['**/*.{js,css,html,svg,ico,woff2}', 'icons/*.png', 'assets/*.webp'],
         // Largest image is ~0.5 MB; leave headroom so a re-export doesn't silently drop out of the precache.

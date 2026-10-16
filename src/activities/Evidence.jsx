@@ -1,6 +1,7 @@
 import { sectionOf } from '../content/index.js';
 import { Btn, Icon } from '../app/ui.jsx';
-import { Feedback, Hints, useScored } from './shared.jsx';
+import { Feedback, Guided, Hints, useScored } from './shared.jsx';
+import { TOOLS } from '../content/index.js';
 import { ReflectionCard } from './Reflection.jsx';
 
 // "Which sentence tells us that…?" – the child selects one sentence of the passage, then submits it.
@@ -11,6 +12,7 @@ export default function Evidence({ api }) {
   const wrongIds = st.wrongIds || [];
   const selected = st.selected;
   const done = rules.solved;
+  const tool = step.illustration ? TOOLS.find((t) => t.id === step.illustration) : null;
 
   const check = () => {
     if (!selected) return;
@@ -22,6 +24,12 @@ export default function Evidence({ api }) {
   return (
     <div className="stack">
       <h2 className="h2">{step.prompt}</h2>
+      {tool ? (
+        <div className="strategy-pic">
+          <img src={tool.src} alt="" />
+          <span className="muted">{tool.name}</span>
+        </div>
+      ) : null}
       {step.instruction ? <p className="lead">{step.instruction}</p> : null}
 
       <div className="stack tight" role="group" aria-label="A szöveg mondatai">
@@ -47,10 +55,13 @@ export default function Evidence({ api }) {
       </div>
 
       <Hints shown={st.shown} />
+      {(!done && rules.misses >= 2) || rules.guided ? <Guided adv={adv} step={step} /> : null}
 
       {done ? (
         <>
-          <Feedback ok>{step.feedback?.correct ?? 'Megtaláltad a mondatot.'}</Feedback>
+          <Feedback ok>
+            {rules.guided ? 'Ez a bizonyító mondat.' : (step.feedback?.correct ?? 'Megtaláltad a mondatot.')}
+          </Feedback>
           {rules.guided ? <ReflectionCard api={api} /> : null}
           <Btn iconAfter="arrow_forward" onClick={next}>
             Tovább

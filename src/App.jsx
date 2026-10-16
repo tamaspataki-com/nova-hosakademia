@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StoreProvider, useStore } from './app/store.jsx';
 import { initAudio } from './app/audio.js';
+import { applyUpdate, useUpdateReady } from './app/update.js';
 import { Icon, Sheet, Btn } from './app/ui.jsx';
 import { allAdventures, customAdventures, findAdventure } from './content/index.js';
 import Welcome from './screens/Welcome.jsx';
@@ -42,6 +43,8 @@ function Shell() {
   const { state } = useStore();
   const [route, setRoute] = useState(() => ({ name: 'welcome' }));
   const [profile, setProfile] = useState(false);
+  const updateReady = useUpdateReady();
+  const [later, setLater] = useState(false);
   const settings = state.settings;
 
   useEffect(() => {
@@ -127,8 +130,24 @@ function Shell() {
   const name = (settings.name || '').trim() || 'Hős';
   const initial = name[0].toUpperCase();
 
+  // The update banner never appears while an adventure is open, so an activity is not interrupted.
+  const showUpdate = updateReady && !later && route.name !== 'adventure';
+
   return (
     <div className={`app ${showNav ? 'has-nav' : ''}`}>
+      {showUpdate ? (
+        <div className="update-bar" role="status">
+          <span>
+            <Icon name="system_update" /> Új verzió érhető el
+          </span>
+          <Btn className="small" onClick={applyUpdate}>
+            Frissítés
+          </Btn>
+          <Btn kind="ghost" className="small" onClick={() => setLater(true)}>
+            Később
+          </Btn>
+        </div>
+      ) : null}
       {showNav ? (
         <nav className="rail" aria-label="Fő navigáció">
           <div className="rail-logo">

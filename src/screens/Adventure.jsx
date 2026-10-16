@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useStore, statusOf } from '../app/store.jsx';
-import { Btn, Icon, Chip, Sheet } from '../app/ui.jsx';
+import { Btn, Icon, Chip, Sheet, Glyph } from '../app/ui.jsx';
 import { tone } from '../app/tone.js';
 import { canPlay, NO_AUDIO_TEXT, useSpeaker, useVoiceReady } from '../app/audio.js';
 import { ACTIVITIES, SCORED } from '../activities/index.jsx';
 import { Reference, sourceSections } from '../activities/shared.jsx';
-import { FORMATS, LEVELS, MODE_NAMES, OBJECTIVE_NAMES, ROUTINE, sectionText } from '../content/index.js';
+import { FORMATS, LEVELS, classLabel, MODE_NAMES, OBJECTIVE_NAMES, ROUTINE, sectionText } from '../content/index.js';
 
 const MODE_INFO = [
   ['read', 'Olvasok', 'menu_book', 'A saját tempómban olvasom a szöveget.'],
@@ -39,9 +39,14 @@ function Intro({ adv, go }) {
         <Icon name="arrow_back" /> Vissza
       </button>
       {adv.coverAsset ? <img className="cover" src={adv.coverAsset} alt={adv.coverAlt || ''} /> : null}
+      {!adv.coverAsset && adv.coverIcon ? (
+        <div className="cover cover-icon" aria-hidden="true">
+          <Glyph name={adv.coverIcon} size={96} />
+        </div>
+      ) : null}
       <div className="chips">
         <Chip>{formatLabel(adv.format)}</Chip>
-        {adv.fiction ? <Chip>Kitalált történet</Chip> : null}
+        {classLabel(adv) ? <Chip>{classLabel(adv)}</Chip> : null}
         {adv.custom ? <Chip tone="gold">Szülő készítette</Chip> : null}
         {level ? <Chip>{level.label}</Chip> : null}
       </div>
@@ -100,7 +105,8 @@ function ModePicker({ adv, run, go }) {
       <button type="button" className="back" onClick={() => go({ name: 'back' })}>
         <Icon name="close" /> Ki
       </button>
-      <h1 className="h1">Hogyan ismerkednél meg a történettel?</h1>
+      <h1 className="h1">{adv.modePrompt?.heading || 'Hogyan ismerkednél meg a történettel?'}</h1>
+      {adv.modePrompt?.text ? <p className="lead">{adv.modePrompt.text}</p> : null}
       <div className="stack tight">
         {MODE_INFO.filter(([id]) => adv.modes.includes(id)).map(([id, label, icon, text]) => {
           const needs = id !== 'read';
@@ -110,7 +116,7 @@ function ModePicker({ adv, run, go }) {
               <Icon name={icon} size={32} />
               <span className="stack tight">
                 <strong>{label}</strong>
-                <span className="muted">{text}</span>
+                {adv.modePrompt ? null : <span className="muted">{text}</span>}
               </span>
             </button>
           );
@@ -165,10 +171,12 @@ function Runner({ adv, run, go }) {
   const setMode = (mode) => act.run(adv.id, { mode });
   const openWord = (g) => {
     setWord(g);
-    log('word_opened', { word: g.key });
+    log('word_opened', { activity: step.id, word: g.key });
   };
+  // This run's events so far (supports and definitions between steps are read from them).
+  const events = state.events.filter((e) => e.adv === adv.id && e.t >= run.startedAt);
 
-  const api = { adv, step, st, run, act, settings, voiceReady, speaker, patch, log, next, setMode, openWord };
+  const api = { adv, step, st, run, act, settings, voiceReady, speaker, patch, log, next, setMode, openWord, events };
 
   // ----- help -----
   const canHelp = scored || step.type === 'retell';
@@ -213,16 +221,19 @@ function Runner({ adv, run, go }) {
         speaker.play(srcClip, srcSecs.map(sectionText).join(' '));
       }
     });
-  if (step.type === 'passage' && !st.chunked && thisSec && thisSec.sentences.length >= 2)
+  if (step.type === 'passage' && !st.chunked && thisSec && thisSec.sentences.length >= 2) {
+    // Sections with authored shorter chunks offer "Rövidebb részt kérek"; others split into single sentences.
+    const authored = !!thisSec.chunks?.length;
     options.push({
       key: 'chunk',
       icon: 'view_agenda',
-      label: 'Kisebb részekben haladok',
+      label: authored ? 'Rövidebb részt kérek' : 'Kisebb részekben haladok',
       run() {
-        patch({ chunked: true, chunk: 0 });
-        log('chunking_on', { activity: step.id });
+        patch({ chunked: true, chunk: 0, listen: undefined, played: false });
+        log('shorter_section_used', { activity: step.id, authored });
       }
     });
+  }
   options.push({
     key: 'break',
     icon: 'self_improvement',

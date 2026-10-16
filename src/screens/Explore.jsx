@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore, statusOf, STATUS_LABEL } from '../app/store.jsx';
-import { Icon, Chip } from '../app/ui.jsx';
+import { Icon, Chip, Glyph } from '../app/ui.jsx';
 import { canPlay, useVoiceReady } from '../app/audio.js';
 import { FORMATS, MODE_NAMES, UPCOMING_TEXT, WORLDS, availableIn, worldById } from '../content/index.js';
 
@@ -14,6 +14,11 @@ export function AdventureCard({ adv, go }) {
   return (
     <article className="card adv-card">
       <button type="button" className="adv-main" onClick={() => go({ name: 'adventure', id: adv.id })}>
+        {adv.coverIcon ? (
+          <span className="adv-icon" aria-hidden="true">
+            <Glyph name={adv.coverIcon} size={48} />
+          </span>
+        ) : null}
         <span className="adv-title">{adv.title}</span>
         <span className="muted">{adv.description}</span>
         <span className="chips">
@@ -58,7 +63,7 @@ export default function Explore({ go, custom }) {
                 <img src={w.art} alt="" />
               ) : (
                 <span className="world-icon">
-                  <Icon name={w.icon} size={44} />
+                  <Glyph name={w.icon} size={w.icon === 'dino' ? 96 : 44} />
                 </span>
               )}
               <span className="stack tight">
@@ -126,6 +131,7 @@ export function WorldView({ id, go }) {
             return (
               <section key={s.id} className="stack">
                 <h2 className="h2">{s.name}</h2>
+                {s.note ? <p className="muted">{s.note}</p> : null}
                 {list.map((a) => (
                   <AdventureCard key={a.id} adv={a} go={go} />
                 ))}

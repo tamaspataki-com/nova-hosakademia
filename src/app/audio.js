@@ -38,6 +38,8 @@ export const canPlay = (voiceReady, clipId) => !!(clipId && Narrator.recorded[cl
 export const NO_AUDIO_TEXT =
   'Ezen az eszközön most nincs elérhető magyar felolvasás. Olvasással folytathatod a kalandot.';
 
+// Playback hook. play(id, text, onDone) – onDone(status) with 'completed' | 'interrupted' | 'error'.
+// Pressing play on the clip that is playing pauses it (which ends it as 'interrupted').
 export function useSpeaker(rate = 1) {
   const [playing, setPlaying] = useState(null);
   useEffect(() => () => Narrator.stop(), []);
@@ -46,15 +48,15 @@ export function useSpeaker(rate = 1) {
     setPlaying(null);
   }, []);
   const play = useCallback(
-    (id, text, onEnd) => {
+    (id, text, onDone) => {
       if (playing === id) {
         stop();
         return;
       }
       setPlaying(id);
-      Narrator.speak(id, text, rate, () => {
+      Narrator.speak(id, text, rate, (status) => {
         setPlaying((p) => (p === id ? null : p));
-        onEnd?.();
+        onDone?.(status);
       });
     },
     [playing, rate, stop]

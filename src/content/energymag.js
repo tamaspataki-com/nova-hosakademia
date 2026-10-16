@@ -23,7 +23,12 @@ export const ENERGYMAG = {
   description: 'Derítsd ki, miért aludtak ki a fényhíd lámpái!',
   intro:
     'A lebegő város két része között kialudtak a fényhíd lámpái. Mira, az akadémia fiatal hőse, elindul kideríteni, mi történt. Segíts neki összegyűjteni és összekapcsolni a nyomokat!',
-  fiction: true,
+  classification: 'fiction',
+  sources: [],
+  review: {
+    status: 'unreviewed',
+    note: 'Az előző változatból átvett tartalom; felnőtt általi felülvizsgálat nincs rögzítve.'
+  },
   format: 'story',
   status: 'available',
   context: 'practice',

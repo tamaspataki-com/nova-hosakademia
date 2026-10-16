@@ -1,9 +1,36 @@
 import { WORLDS } from './worlds.js';
 import { ENERGYMAG } from './energymag.js';
 import { PRACTICE } from './practice.js';
+import { DINO } from './dino.js';
 
 // Built-in adventures, in the order they are suggested. Parent-created adventures are added at runtime.
-export const BUILTIN = [ENERGYMAG, ...PRACTICE];
+const RAW = [ENERGYMAG, DINO, ...PRACTICE];
+
+// Content rules for the model. A factual adventure must carry sources and an adult review before it can be shown;
+// anything that breaks the rules is held back as "upcoming" and reported in the console.
+export function validateAdventure(a) {
+  const problems = [];
+  if (!['fiction', 'factual', 'unspecified'].includes(a.classification)) problems.push('classification missing');
+  if (!Array.isArray(a.sources)) problems.push('sources must be a list');
+  if (!['unreviewed', 'adult-reviewed'].includes(a.review?.status)) problems.push('review status missing');
+  if (a.classification === 'factual') {
+    if (!a.sources?.length) problems.push('factual content needs source references');
+    if (a.review?.status !== 'adult-reviewed') problems.push('factual content needs adult review');
+  }
+  return problems;
+}
+
+export const BUILTIN = RAW.map((a) => {
+  const problems = validateAdventure(a);
+  if (!problems.length) return a;
+  console.error(`[NOVA content] ${a.id} held back: ${problems.join('; ')}`);
+  return { ...a, status: 'upcoming' };
+});
+
+export const classLabel = (a) =>
+  a.classification === 'fiction' ? 'Kitalált kaland' : a.classification === 'factual' ? 'Valós információ' : null;
+export const REVIEW_LABEL = { 'adult-reviewed': 'Felnőtt ellenőrizte', unreviewed: 'Felülvizsgálat nincs rögzítve' };
+export { BADGES } from './badges.js';
 
 export { WORLDS };
 export { TOOLS, ROUTINE } from './tools.js';
@@ -54,7 +81,10 @@ export function customAdventures(saved = []) {
       custom: true,
       title: h.title || 'Saját szöveg',
       description: 'Szülő által készített szöveg',
-      fiction: false,
+      classification: 'unspecified',
+      origin: 'parent',
+      sources: [],
+      review: { status: 'unreviewed', note: 'Szülő készítette.' },
       format: 'story',
       status: 'available',
       context: 'practice',

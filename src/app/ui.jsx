@@ -10,6 +10,30 @@ export const Icon = ({ name, size, fill, className = '' }) => (
   </span>
 );
 
+// A restrained dinosaur silhouette (a long-necked herbivore) used until illustrations are supplied.
+export const DinoIcon = ({ size = 48 }) => (
+  <svg
+    viewBox="0 0 120 80"
+    width={size}
+    height={(size * 80) / 120}
+    aria-hidden="true"
+    fill="currentColor"
+    stroke="currentColor"
+  >
+    <ellipse cx="52" cy="46" rx="27" ry="14" stroke="none" />
+    <path d="M70 40 C 82 38, 87 26, 89 14" fill="none" strokeWidth="9" strokeLinecap="round" />
+    <ellipse cx="94" cy="11" rx="9" ry="5.5" stroke="none" transform="rotate(-12 94 11)" />
+    <path d="M27 44 C 16 46, 9 53, 4 63" fill="none" strokeWidth="8" strokeLinecap="round" />
+    {[34, 46, 60, 72].map((x) => (
+      <rect key={x} x={x} y="52" width="8" height="20" rx="4" stroke="none" />
+    ))}
+  </svg>
+);
+
+// Material icon by name, or the dinosaur silhouette for the name 'dino'.
+export const Glyph = ({ name, size = 24 }) =>
+  name === 'dino' ? <DinoIcon size={size} /> : <Icon name={name} size={size} />;
+
 export function Btn({ kind = 'primary', icon, iconAfter, children, className = '', ...rest }) {
   return (
     <button type="button" className={`btn btn-${kind} ${className}`} {...rest}>

@@ -2,66 +2,143 @@ import { useEffect, useRef } from 'react';
 import { sectionOf, sectionText } from '../content/index.js';
 import { Btn, Icon } from '../app/ui.jsx';
 import { canPlay, NO_AUDIO_TEXT } from '../app/audio.js';
-import { SectionText } from './shared.jsx';
+import { SectionText, wordsIn } from './shared.jsx';
 
 // One section of a passage, presented as the child chose: reading, listening or both.
 //   read     – text at the child's own pace, nothing hides or advances on a timer
 //   listen   – playback controls and a neutral picture; the transcript stays hidden until asked for
 //   combined – text and narration together (no word highlighting: there is no timing data)
+//
+// Listening status is kept honestly. Playback ends as 'completed' (the engine said so), 'interrupted' (paused,
+// replaced or left) or 'error'. When a device reports nothing at all within a generous time the status becomes
+// 'unknown' – never "completed" – and the child can confirm "Befejeztem a hallgatást", which is recorded as
+// self-reported.
 export default function Passage({ api }) {
   const { adv, step, st, patch, log, run, speaker, voiceReady, openWord, next, setMode, settings } = api;
-  const timer = useRef(null);
   const sec = sectionOf(adv, step.passageId, step.sectionId);
   const mode = run.mode;
   const listening = mode === 'listen' || mode === 'combined';
+  const timer = useRef(null);
+
+  // Shorter presentation: authored chunks when the section has them, otherwise one sentence at a time.
   const chunked = !!st.chunked;
-  const idx = st.chunk || 0;
-  const last = idx >= sec.sentences.length - 1;
+  const parts = chunked
+    ? sec.chunks
+      ? sec.chunks.map((ids) => ids.map((id) => sec.sentences.find((s) => s.id === id)))
+      : sec.sentences.map((s) => [s])
+    : [sec.sentences];
+  const idx = Math.min(st.chunk || 0, parts.length - 1);
+  const last = idx >= parts.length - 1;
+  const view = { ...sec, sentences: parts[idx] };
+
   const clipBase = `${adv.id}:${step.passageId}:${step.sectionId}`;
-  const clip = chunked ? `${clipBase}:${idx}` : clipBase;
-  const text = chunked ? sec.sentences[idx].text : (sec.narration ?? sectionText(sec));
+  const clip = chunked ? `${clipBase}:c${idx}` : clipBase;
+  const text = chunked ? parts[idx].map((s) => s.text).join(' ') : (sec.narration ?? sectionText(sec));
   const audioOk = canPlay(voiceReady, clip);
   const playing = speaker.playing === clip;
+  const status = st.listen; // undefined | playing | completed | interrupted | unknown | error
+  const noAudio = listening && !audioOk;
+  const unfinished = ['interrupted', 'unknown', 'error'].includes(status);
 
   useEffect(() => {
-    // Speech does not survive a reload or a break, so a clip that was playing counts as finished.
-    if (st.played && !st.ended) patch({ ended: true });
-    if (st.presented) return;
-    patch({ presented: true });
-    log('passage_presented', { activity: step.id, mode });
+    // Speech does not survive a reload or a break: a clip that was "playing" was interrupted.
+    if (st.listen === 'playing') patch({ listen: 'interrupted' });
+    if (!st.presented) {
+      patch({ presented: true });
+      log('passage_presented', { activity: step.id, mode });
+    }
+    return () => {
+      clearTimeout(timer.current);
+      speaker.stop(); // never carry narration into the next step
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  const setStatus = (s) => {
+    patch({ listen: s });
+    log('audio_status', { activity: step.id, status: s });
+  };
 
   const play = () => {
+    if (playing) {
+      speaker.stop(); // pausing is not a replay; the clip ends as 'interrupted'
+      return;
+    }
     if (st.played) {
       patch((s) => ({ ...s, replays: (s.replays || 0) + 1 }));
       log('audio_replayed', { activity: step.id });
     }
-    patch({ played: true, ended: false, playedClip: clip });
-    // Some phones never report that speech has finished, which would leave "Készen állok" locked.
-    // The timer is a safety net sized to the text; the normal end event clears it.
+    patch({ played: true, listen: 'playing' });
+    // If the device reports neither an end nor an interruption, say "unknown" – do not pretend it finished.
     clearTimeout(timer.current);
     const ms = Math.max(2500, (text.length * 95) / (settings.rate || 1) + 1500);
-    timer.current = setTimeout(() => patch({ ended: true }), ms);
-    speaker.play(clip, text, () => {
+    timer.current = setTimeout(() => setStatus('unknown'), ms);
+    speaker.play(clip, text, (s) => {
       clearTimeout(timer.current);
-      patch({ ended: true });
+      setStatus(s);
     });
   };
+
   const showTranscript = () => {
     patch({ transcript: true });
     log('transcript_opened', { activity: step.id });
   };
 
-  const view = chunked ? { ...sec, sentences: [sec.sentences[idx]] } : sec;
-  const showText = mode === 'read' || mode === 'combined' || st.transcript;
-  const finished = chunked ? last : true;
-  const nextLabel = mode === 'read' ? 'Elolvastam' : 'Készen állok';
-  const readyToGo = mode === 'read' || mode === 'combined' ? true : !!st.played && !!st.ended;
+  const finish = (selfReported) => {
+    speaker.stop();
+    log('passage_completed', {
+      activity: step.id,
+      mode,
+      listen: listening ? (selfReported ? 'self-reported' : (status ?? 'not-played')) : null,
+      selfReported: !!selfReported,
+      shorter: chunked,
+      replays: st.replays || 0,
+      transcript: !!st.transcript
+    });
+    next();
+  };
 
-  const noAudio = listening && !audioOk;
+  const showText = mode === 'read' || mode === 'combined' || st.transcript;
+  const words = showText ? wordsIn(adv.glossary, view.sentences) : [];
+
+  // The button that moves on. In listening-only mode it needs a finished (or self-confirmed) listening.
+  let main;
+  if (chunked && !last) {
+    main = (
+      <Btn
+        iconAfter="arrow_forward"
+        disabled={mode === 'listen' && status !== 'completed' && !unfinished}
+        onClick={() => patch({ chunk: idx + 1, listen: undefined, played: false })}
+      >
+        Következő rész
+      </Btn>
+    );
+  } else if (mode === 'listen') {
+    if (status === 'completed')
+      main = (
+        <Btn iconAfter="arrow_forward" onClick={() => finish(false)}>
+          Készen állok
+        </Btn>
+      );
+    else if (unfinished && !noAudio)
+      main = (
+        <Btn iconAfter="check" onClick={() => finish(true)}>
+          Befejeztem a hallgatást
+        </Btn>
+      );
+    else
+      main = (
+        <Btn iconAfter="arrow_forward" disabled>
+          Készen állok
+        </Btn>
+      );
+  } else {
+    main = (
+      <Btn iconAfter="arrow_forward" onClick={() => finish(false)}>
+        {mode === 'read' ? 'Elolvastam' : 'Készen állok'}
+      </Btn>
+    );
+  }
 
   return (
     <div className="stack">
@@ -79,6 +156,13 @@ export default function Passage({ api }) {
               </Btn>
             </div>
           )}
+          {unfinished ? (
+            <p className="muted center-text" role="status">
+              {status === 'interrupted'
+                ? 'A lejátszás megszakadt. Újra meghallgathatod, vagy jelezheted, hogy végeztél.'
+                : 'Nem tudjuk biztosan, hogy a lejátszás véget ért. Újra meghallgathatod, vagy jelezheted, hogy végeztél.'}
+            </p>
+          ) : null}
         </div>
       ) : null}
 
@@ -116,29 +200,30 @@ export default function Passage({ api }) {
         </article>
       ) : null}
 
+      {words.length ? (
+        <div className="stack tight" aria-label="Szómagyarázat">
+          <span className="eyebrow">Szavak, ha kíváncsi vagy rájuk</span>
+          <div className="chips">
+            {words.map((g) => (
+              <button key={g.key} type="button" className="pill" onClick={() => openWord(g)}>
+                {g.word}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
       <div className="row">
-        {chunked && !last ? (
-          <Btn
-            iconAfter="arrow_forward"
-            onClick={() => patch({ chunk: idx + 1, ended: false, played: false })}
-            disabled={mode === 'listen' && !st.ended}
-          >
-            Következő rész
-          </Btn>
-        ) : (
-          <Btn iconAfter="arrow_forward" disabled={mode === 'listen' ? noAudio || !readyToGo : false} onClick={next}>
-            {nextLabel}
-          </Btn>
-        )}
+        {main}
         {chunked && idx > 0 ? (
           <Btn kind="ghost" icon="arrow_back" onClick={() => patch({ chunk: idx - 1 })}>
             Előző rész
           </Btn>
         ) : null}
       </div>
-      {!finished && !last ? (
+      {chunked && parts.length > 1 ? (
         <span className="muted">
-          Kisebb részekben haladunk: {idx + 1}/{sec.sentences.length}
+          Rövidebb részletekben haladunk: {idx + 1}/{parts.length}
         </span>
       ) : null}
     </div>

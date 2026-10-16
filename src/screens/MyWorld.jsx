@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useStore } from '../app/store.jsx';
 import { Btn, Icon } from '../app/ui.jsx';
-import { ROUTINE, TOOLS, findAdventure, sectionOf } from '../content/index.js';
+import { BADGES, ROUTINE, TOOLS, findAdventure, sectionOf } from '../content/index.js';
+import { Glyph } from '../app/ui.jsx';
 import { AdventureCard } from './Explore.jsx';
 
 const TABS = [
@@ -57,7 +58,10 @@ function Discoveries({ adventures }) {
         const key = `${d.adv.id}:${d.id}`;
         return (
           <article key={key} className="card stack tight">
-            <span className="eyebrow">{d.kind === 'fact' ? 'Érdekesség' : 'Kitalált történetből'}</span>
+            <span className="eyebrow">
+              {d.label || (d.kind === 'fact' ? 'Érdekesség' : 'Kitalált történetből származó felfedezés')}
+            </span>
+            {d.title ? <strong className="h3">{d.title}</strong> : null}
             <p className="lead">{d.text}</p>
             <span className="muted">Kaland: {d.adv.title}</span>
             <label htmlFor={key} className="muted">
@@ -87,17 +91,30 @@ function Tools({ go, badges }) {
             <img className="tool-img" src={t.src} alt="" />
             <strong className="h3">{t.name}</strong>
             <span>{t.explain}</span>
-            {badges.includes(t.id) ? (
-              <span className="chip good">
-                <Icon name="verified" /> Jelvény megszerezve
-              </span>
-            ) : null}
             <Btn kind="ghost" onClick={() => go({ name: 'tool', id: t.id })}>
               Kipróbálom
             </Btn>
           </article>
         ))}
       </div>
+      <section className="card stack" aria-label="Jelvényeim">
+        <h2 className="h3">Jelvényeim</h2>
+        <p className="muted">A jelvények csak díszek. Az eszközeid mindig használhatók, jelvény nélkül is.</p>
+        {badges.length ? (
+          <div className="chips">
+            {badges
+              .map((id) => BADGES[id])
+              .filter(Boolean)
+              .map((b) => (
+                <span key={b.id} className="chip good badge-chip">
+                  {b.art ? <img src={b.art} alt="" /> : <Glyph name={b.icon} size={22} />} {b.name}
+                </span>
+              ))}
+          </div>
+        ) : (
+          <p className="muted">Még nincs jelvényed.</p>
+        )}
+      </section>
       <section className="card stack">
         <h2 className="h3">A hősök módszere</h2>
         <ul className="routine">
@@ -149,11 +166,6 @@ export function ToolDemo({ id, go }) {
         <div className="stack tight">
           <h1 className="h1">{tool.name}</h1>
           <p className="lead">{tool.explain}</p>
-          {earned ? (
-            <span className="chip good">
-              <Icon name="verified" /> Jelvény megszerezve
-            </span>
-          ) : null}
         </div>
       </div>
 

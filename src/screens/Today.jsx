@@ -1,5 +1,6 @@
 import { useStore, statusOf } from '../app/store.jsx';
 import { Btn, Icon, Chip } from '../app/ui.jsx';
+import { classLabel } from '../content/index.js';
 
 // Mai kaland: continue the unfinished adventure, else suggest the next one the child has not completed.
 // Nothing unavailable is ever suggested, and finished content is offered as practice, not as new.
@@ -55,7 +56,7 @@ export default function Today({ go, adventures }) {
                 <Icon name="check_circle" /> Utoljára befejezett lépés: {lastDone}
               </p>
             ) : null}
-            {adv.fiction ? <Chip>Kitalált történet</Chip> : null}
+            {classLabel(adv) ? <Chip>{classLabel(adv)}</Chip> : null}
             <div className="row">
               <Btn iconAfter="arrow_forward" onClick={() => go({ name: 'adventure', id: adv.id })}>
                 {label}

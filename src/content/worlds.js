@@ -10,15 +10,19 @@ export const WORLDS = [
     artAlt: 'A lebegő szigetek világa',
     series: [
       { id: 'academy', name: 'Akadémiai küldetések' },
-      { id: 'practice', name: 'Gyakorló szövegek' }
+      {
+        id: 'practice',
+        name: 'Gyakorló szövegek',
+        note: 'Az előző változatból átvett rövid gyakorló szövegek. Külön sorozatot alkotnak az új, szerzői kalandoktól.'
+      }
     ]
   },
   {
     id: 'dinosaurs',
     name: 'Dinoszaurusz-expedíció',
     description: 'Ősi nyomok, különös felfedezések és kutatókalandok.',
-    icon: 'footprint',
-    series: []
+    icon: 'dino',
+    series: [{ id: 'research-station', name: 'A kutatóállomás rejtélyei' }]
   },
   {
     id: 'animals',
@@ -49,6 +53,7 @@ export const MODE_NAMES = { read: 'Olvasok', listen: 'Hallgatok', combined: 'Olv
 
 export const OBJECTIVE_NAMES = {
   detail: 'Részletek felidézése',
+  evidence: 'Bizonyíték keresése',
   sequence: 'Sorrend',
   cause: 'Ok és következmény',
   mainIdea: 'A lényeg',

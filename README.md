@@ -40,6 +40,14 @@ Each scored step needs a prompt, the correct answer, authored `hints`, and a sou
 (`BUILTIN`). Nothing in the activity components knows about a particular story. Factual adventures should add
 sources and an adult-review status to the content; fiction is marked `fiction: true`.
 
+### Content model fields
+
+Every adventure carries `classification` (`fiction` | `factual`), `sources` (a list of references) and
+`review` (`{ status: 'unreviewed' | 'adult-reviewed', note }`). `validateAdventure` in `src/content/index.js`
+holds back a factual adventure that has no sources or no adult review. Sections may declare authored `chunks`
+(shorter presentations, offered as "Rövidebb részt kérek"); sentences have stable ids. Decorative badges live in
+`src/content/badges.js` and never unlock tools.
+
 ### Learning rules in code
 
 - Every scored activity records its first answer, hints, rereads, replays and transcript use separately, and
@@ -48,6 +56,27 @@ sources and an adult-review status to the content; fiction is marked `fiction: t
   The child is never required to guess until correct.
 - Completion is idempotent: finishing an adventure removes its active run and records one completion.
 - Replaying a finished adventure is labelled as practice and does not award the badge again.
+
+### Listening status
+
+Playback ends as `completed` (the audio or speech engine said so), `interrupted` (paused, replaced or left) or
+`error`. A device that reports nothing within a length-based time is `unknown` – never "completed". In listening-only
+mode the child then confirms „Befejeztem a hallgatást", recorded as self-reported. Narration is stopped whenever the
+passage is left, so clips never overlap. Parent observations show these statuses separately.
+
+### Retelling
+
+Completion methods are `self-reported`, `typed` or `adult-observed`. The adult checklist (per-item
+Önállóan / Segítséggel / Most nem említette / Nem figyeltem meg) opens behind the parent PIN when one is set; no score is
+ever shown to the child.
+
+### Updates
+
+The service worker uses `registerType: 'prompt'`. A new version downloads in the background and the banner
+„Új verzió érhető el" → „Frissítés" appears; it is never shown during an adventure and nothing reloads until
+someone taps it. Progress lives in localStorage and survives the reload. Limits: the check runs when the app
+opens, when it returns to the foreground and hourly, so a device that stays offline or closed keeps the old
+version until it next opens online (iOS may only check at launch).
 
 ## PWA notes
 

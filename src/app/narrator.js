@@ -1,11 +1,16 @@
-// Generated from design/NOVA.dc.html by scripts/convert-dc.mjs, then edited by hand as needed.
-
-// Narration service: recorded files (by id) take priority over browser speech.
+// Narration service: recorded files (by clip id) take priority over browser speech.
+//
+// Every playback ends with exactly one status, reported to the callback passed to speak():
+//   'completed'   – the audio or speech engine reported that it finished
+//   'interrupted' – it was stopped (pause, new clip, leaving the passage) before it finished
+//   'error'       – the engine reported a failure
+// A device that never reports anything simply never calls back; the caller treats that as "unknown".
 export const Narrator = {
   voice: null,
   available: null,
   recorded: {},
   _a: null,
+  _cur: null,
   init(cb) {
     if (typeof window === 'undefined' || !window.speechSynthesis || !window.SpeechSynthesisUtterance) {
       this.available = false;
@@ -29,25 +34,41 @@ export const Narrator = {
       }
     }, 2500);
   },
-  speak(id, text, rate, onEnd) {
-    this.stop();
+  speak(id, text, rate, onDone) {
+    this.stop(); // a previous clip ends as 'interrupted', so two clips never overlap
+    const cur = { finished: false, interrupted: false };
+    cur.finish = (status) => {
+      if (cur.finished) return;
+      cur.finished = true;
+      if (this._cur === cur) this._cur = null;
+      onDone?.(status);
+    };
+    this._cur = cur;
+
     if (this.recorded[id]) {
       const a = new Audio(this.recorded[id]);
       this._a = a;
       a.playbackRate = rate;
-      a.onended = onEnd;
-      a.play();
+      a.onended = () => cur.finish('completed');
+      a.onerror = () => cur.finish('error');
+      a.play().catch(() => cur.finish('error'));
       return;
     }
     const u = new SpeechSynthesisUtterance(text);
     u.voice = this.voice;
     u.lang = 'hu-HU';
     u.rate = rate;
-    u.onend = onEnd;
-    u.onerror = onEnd;
+    u.onend = () => cur.finish(cur.interrupted ? 'interrupted' : 'completed');
+    u.onerror = (e) =>
+      cur.finish(cur.interrupted || e?.error === 'interrupted' || e?.error === 'canceled' ? 'interrupted' : 'error');
     speechSynthesis.speak(u);
   },
   stop() {
+    const cur = this._cur;
+    if (cur) {
+      cur.interrupted = true;
+      cur.finish('interrupted'); // decided here, so engines that stay silent on cancel cannot leave it open
+    }
     if (this._a) {
       this._a.pause();
       this._a = null;

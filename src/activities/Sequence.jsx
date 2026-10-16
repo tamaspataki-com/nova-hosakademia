@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { shuffle, Btn, Icon } from '../app/ui.jsx';
 import { touchDrag } from '../app/touchDrag.js';
-import { Feedback, Hints, useScored } from './shared.jsx';
+import { Feedback, Guided, Hints, useScored } from './shared.jsx';
 import { ReflectionCard } from './Reflection.jsx';
 
 // Arrange event cards into labelled positions. Works by mouse drag, finger drag (hold, then drag) and by tapping
@@ -26,6 +26,9 @@ export default function Sequence({ api }) {
   }, []);
 
   const slots = st.slots || Array(n).fill(null);
+  // Second support (authored per step): the first card is placed for the child and locked.
+  const locked = (i) => !!(st.lockedFirst && i === 0);
+  const revealAt = step.support?.placeFirst ? 3 : 2;
   const result = st.result || null; // per slot true / false after a check
   const sel = st.sel || null;
   const done = rules.solved;
@@ -33,19 +36,19 @@ export default function Sequence({ api }) {
   const dragId = useRef(null);
 
   const place = (id, i) => {
-    if (done || result?.[i]) return;
+    if (done || result?.[i] || locked(i)) return;
     const placed = slots.map((x) => (x === id ? null : x));
     placed[i] = id;
     patch({ slots: placed, sel: null, result: null });
   };
   const remove = (id) => {
-    if (done) return;
+    if (done || (st.lockedFirst && id === slots[0])) return;
     patch({ slots: slots.map((x) => (x === id ? null : x)), sel: null, result: null });
   };
   const tapSlot = (i) => {
     if (done) return;
     if (sel) return place(sel, i);
-    if (slots[i] && !result?.[i]) remove(slots[i]);
+    if (slots[i] && !result?.[i] && !locked(i)) remove(slots[i]);
   };
   const tapCard = (id) => {
     if (!done) patch({ sel: sel === id ? null : id });
@@ -57,21 +60,38 @@ export default function Sequence({ api }) {
     const res = slots.map((id, i) => id === step.correctOrder[i]);
     const ok = res.every(Boolean);
     patch({ result: res });
-    rules.submit(ok, { order: slots.join(','), correctCount: res.filter(Boolean).length }, 'sequence_submitted');
+    const attemptNo = rules.submit(
+      ok,
+      { order: slots.join(','), correctCount: res.filter(Boolean).length },
+      'sequence_submitted'
+    );
+    if (!ok && step.support?.placeFirst && attemptNo === 2 && !st.lockedFirst) {
+      const first = step.correctOrder[0];
+      patch({
+        slots: [first, ...Array(n - 1).fill(null)],
+        result: null,
+        sel: null,
+        lockedFirst: true,
+        guidedPlacement: true
+      });
+      api.log('guided_placement', { activity: step.id, card: first, position: 1 });
+    }
   };
-  const retry = () => patch({ slots: slots.map((id, i) => (result?.[i] ? id : null)), result: null, sel: null });
-  const reset = () => patch({ slots: Array(n).fill(null), result: null, sel: null });
+  const retry = () =>
+    patch({ slots: slots.map((id, i) => (result?.[i] || locked(i) ? id : null)), result: null, sel: null });
+  const reset = () => patch({ slots: slots.map((id, i) => (locked(i) ? id : null)), result: null, sel: null });
   const reveal = () => {
     patch({ slots: [...step.correctOrder], result: step.correctOrder.map(() => true), sel: null });
     rules.reveal();
   };
 
-  const filledAny = slots.some(Boolean);
+  const filledAny = slots.some((x, i) => x && !locked(i));
   const full = slots.every(Boolean);
 
   const Card = ({ id, placed }) => (
     <>
       {!hideArt && items[id].src ? <img src={items[id].src} alt="" className="seq-img" /> : null}
+      {items[id].icon ? <Icon name={items[id].icon} size={34} className="seq-icon" /> : null}
       <span className="option-text">{items[id].text}</span>
       {placed ? null : sel === id ? <span className="option-tag on">Kiválasztva</span> : null}
     </>
@@ -114,9 +134,9 @@ export default function Sequence({ api }) {
                 data-drag=""
                 className={`slot ${id ? 'filled' : 'empty'} ${sel && !id ? 'ready' : ''} ${r === true ? 'ok' : ''} ${r === false ? 'no' : ''}`}
                 aria-label={id ? `${label}: ${items[id].text}. Koppints a visszavételhez.` : `${label}: üres hely`}
-                draggable={!!id && !done && !r}
+                draggable={!!id && !done && !r && !locked(i)}
                 onDragStart={() => (dragId.current = id)}
-                onTouchStart={id && !done && !r ? touchDrag((to) => drop(id, to)) : undefined}
+                onTouchStart={id && !done && !r && !locked(i) ? touchDrag((to) => drop(id, to)) : undefined}
                 onClick={() => tapSlot(i)}
               >
                 {id ? (
@@ -163,13 +183,22 @@ export default function Sequence({ api }) {
       ) : null}
 
       <Hints shown={st.shown} />
+      {st.lockedFirst && !done ? (
+        <div className="note guided" role="status">
+          <Icon name="push_pin" />
+          <span>Az első kártyát a helyére tettem. A másik kettőt te rendezd!</span>
+        </div>
+      ) : null}
+      {!done && rules.misses >= revealAt ? <Guided adv={adv} step={step} /> : null}
 
       {done ? (
         <>
           <Feedback ok>
-            {rules.guided ? 'Így történtek az események.' : (step.feedback?.correct ?? 'Pontos sorrend!')}
+            {rules.guided
+              ? (step.guided?.text ?? 'Így történtek az események.')
+              : (step.feedback?.correct ?? 'Pontos sorrend!')}
           </Feedback>
-          {rules.guided ? <ReflectionCard api={api} /> : null}
+          {rules.guided || st.guidedPlacement ? <ReflectionCard api={api} /> : null}
           <Btn iconAfter="arrow_forward" onClick={next}>
             Tovább
           </Btn>
@@ -190,7 +219,7 @@ export default function Sequence({ api }) {
               Újrakezdem
             </Btn>
           ) : null}
-          {rules.misses >= 2 ? (
+          {rules.misses >= revealAt ? (
             <Btn kind="ghost" icon="visibility" onClick={reveal}>
               Megmutatom a sorrendet
             </Btn>
