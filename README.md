@@ -49,3 +49,9 @@ It also emits `assets/*.png` paths; switch them back to `.webp`.
 - Earlier builds kept artwork in a runtime `nova-art` cache; `src/main.jsx` deletes it.
 - Fonts come from Google Fonts and are cached at runtime.
 - `base: './'` makes the build work from any sub-path (e.g. GitHub Pages).
+
+## Publishing
+
+Live at **https://tamaspataki-com.github.io/nova-hosakademia/** (GitHub Pages, served from the `gh-pages` branch).
+After changing the app: commit, `git push`, then `npm run deploy` to rebuild and publish.
+Installed copies pick up the new version automatically the next time they are opened online.
