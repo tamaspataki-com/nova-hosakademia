@@ -17,7 +17,7 @@ npm run preview   # serve dist/ (service worker active)
 | `src/App.jsx` | All state and behaviour (practice runner, adaptive levels, mission, parent area, persistence). `renderVals()` builds a flat view-model `v`. |
 | `src/AppView.jsx` | Layout shell: rail/bottom nav, active screen, bottom sheet. |
 | `src/screens/*.jsx` | One component per screen; pure rendering of `v`. |
-| `src/content.js` | Authored content: mission, tools, map hotspots, 17 practice passages (`ACTS`), labels. |
+| `src/content.js` | Authored content: mission, tools, map hotspots, the hero journey (`JOURNEY`), 17 practice passages (`ACTS`), labels. |
 | `src/model.js` | State factories, localStorage load, formatting. |
 | `src/narrator.js` | Speech: recorded audio by id (`Narrator.recorded[id]`) or Hungarian browser voice. |
 | `src/touchDrag.js` | Finger dragging for the sequencing cards (hold, then drag); mouse uses HTML5 drag-and-drop. |
@@ -27,6 +27,19 @@ npm run preview   # serve dist/ (service worker active)
 
 Design system, screens, practice logic and known limits are documented in [design/HANDOFF.md](design/HANDOFF.md).
 Saved progress lives in localStorage under `nova.hosakademia.v1` (same key as the design prototype).
+
+## The hero journey
+
+The child follows one path of five islands; each finished island earns one tool, and the next island unlocks:
+
+1. Energiaállomás – the energiamag adventure → Nyomkereső szemüveg
+2. Emlékkert – Sorrendbe rendezem → Időrendező kesztyű
+3. Jelzőállomás – Elmondom a lényeget → Lényeglátó pajzs
+4. Szókönyvtár – Olvasok és megértem → Szómagyarázó kristály
+5. Nyomozólabor – Hallgatok és megjegyzem → Újratervező iránytű
+
+Home shows only the next island (one button) and the tool trail; the mixed daily practice and breathing are
+secondary. The order lives in `JOURNEY` in `src/content.js`; progress is simply which tools are earned.
 
 ## How this was ported
 

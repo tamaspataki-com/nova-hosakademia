@@ -177,7 +177,7 @@ export default function Practice({ v }) {
                     color: '#F3C568'
                   }}
                 >
-                  Mai hősküldetés
+                  Napi gyakorlás
                 </div>
                 <h1
                   style={{
@@ -1305,6 +1305,41 @@ export default function Practice({ v }) {
                 {v.pEndTitle}
               </h1>
             </div>
+            {v.pEarned ? (
+              <div
+                role="status"
+                style={{
+                  display: 'flex',
+                  gap: '16px',
+                  alignItems: 'center',
+                  background: 'rgba(243,197,104,.12)',
+                  border: '2px solid #F3C568',
+                  borderRadius: '20px',
+                  padding: '14px 18px'
+                }}
+              >
+                <img
+                  src={v.pEarned.src}
+                  alt=""
+                  style={{ width: '88px', height: '88px', flex: 'none', objectFit: 'contain' }}
+                />
+                <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      fontWeight: '900',
+                      letterSpacing: '.12em',
+                      textTransform: 'uppercase',
+                      color: '#F3C568'
+                    }}
+                  >
+                    Új felszerelés
+                  </span>
+                  <span style={{ fontSize: '20px', fontWeight: '900', color: '#FFF4DF' }}>{v.pEarned.name}</span>
+                  <span style={{ fontSize: '16px', color: '#E4D8BE' }}>{v.pEarned.strategy}</span>
+                </span>
+              </div>
+            ) : null}
             <p style={{ margin: '0', fontSize: '19px', color: '#F6EAD2' }}>
               Ma ezeket gyakoroltad, és közben a hősök módszerét használtad:
             </p>

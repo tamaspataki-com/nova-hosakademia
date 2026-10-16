@@ -150,14 +150,14 @@ export const HOTSPOTS = [
     label: 'Jelzőállomás',
     x: 16,
     y: 20,
-    purpose: 'Ide érkeznek a jelzések a városból. Itt azt gyakorolhatod, melyik információ fontos.'
+    purpose: 'Ide érkeznek a jelzések a városból. Itt azt gyakorolod, hogyan mondd el egy történet lényegét.'
   },
   {
     id: 'lab',
     label: 'Nyomozólabor',
     x: 15,
     y: 52,
-    purpose: 'Nyomokat vizsgálsz, és összekapcsolod az okokat a következményekkel.'
+    purpose: 'A nyomozók jól figyelnek. Itt meghallgatsz egy rövid szöveget, és felidézed, mit hallottál.'
   },
   {
     id: 'garden',
@@ -166,7 +166,13 @@ export const HOTSPOTS = [
     y: 58,
     purpose: 'Itt gyakorolhatod, hogyan idézd fel egy történet eseményeit sorrendben.'
   },
-  { id: 'library', label: 'Szókönyvtár', x: 85, y: 20, purpose: 'Új szavak jelentésének járhatsz itt utána.' },
+  {
+    id: 'library',
+    label: 'Szókönyvtár',
+    x: 85,
+    y: 20,
+    purpose: 'A könyvtárban elolvasol egy rövid szöveget, és megmutatod, mit értettél meg belőle.'
+  },
   {
     id: 'energy',
     label: 'Energiaállomás',
@@ -174,6 +180,27 @@ export const HOTSPOTS = [
     y: 54,
     purpose: 'Az első küldetés helyszíne. Segíts Mirának helyreállítani a fényhíd energiaellátását!',
     playable: true
+  }
+];
+// The hero journey: one island after the other, each earns one tool.
+// kind 'mission' = the story adventure; kind 'path' = a practice session of that path.
+export const JOURNEY = [
+  { island: 'energy', kind: 'mission', tool: 'goggles', task: 'Segíts Mirának visszahozni a fényt a hídra!' },
+  { island: 'garden', kind: 'path', path: 'seq', tool: 'glove', task: 'Rakd sorrendbe egy történet eseményeit.' },
+  { island: 'signal', kind: 'path', path: 'main', tool: 'shield', task: 'Mondd el, miről szól egy rövid történet.' },
+  {
+    island: 'library',
+    kind: 'path',
+    path: 'read',
+    tool: 'crystal',
+    task: 'Olvass el egy rövid szöveget, és válaszolj.'
+  },
+  {
+    island: 'lab',
+    kind: 'path',
+    path: 'listen',
+    tool: 'compass',
+    task: 'Hallgass meg egy rövid szöveget, és emlékezz rá.'
   }
 ];
 export const MODES = { read: 'Elolvasom', listen: 'Meghallgatom', both: 'Olvasom és hallgatom' };

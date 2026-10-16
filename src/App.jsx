@@ -16,6 +16,7 @@ import {
   NOTE_TAGS,
   STRAT,
   ACTS,
+  JOURNEY,
   DEF_SETTINGS
 } from './content.js';
 import { STORE, freshMission, freshRun, defaultProg, blankHw, loadSaved, fmt, ICON_OK, ICON_NO } from './model.js';
@@ -328,6 +329,24 @@ export default class App extends React.Component {
     };
   }
 
+  // Journey steps with their state: 'done' (tool earned), 'next' (the one to play now) or 'locked'.
+  journeySteps() {
+    const S = this.state;
+    let open = true;
+    return JOURNEY.map((j, i) => {
+      const h = HOTSPOTS.find((x) => x.id === j.island);
+      const t = TOOLS.find((x) => x.id === j.tool);
+      const done = S.tools.includes(j.tool);
+      const state = done ? 'done' : open ? 'next' : 'locked';
+      if (!done) open = false;
+      const prev = i > 0 ? HOTSPOTS.find((x) => x.id === JOURNEY[i - 1].island).label : null;
+      return { ...j, n: i + 1, label: h.label, x: h.x, y: h.y, toolName: t.name, toolSrc: t.src, state, prev };
+    });
+  }
+  startStep(j) {
+    if (j.kind === 'mission') this.startMission();
+    else this.startSession(j.path);
+  }
   baseVals() {
     const S = this.state,
       st = S.settings,
@@ -363,26 +382,35 @@ export default class App extends React.Component {
       };
     });
 
-    // map
-    const hotspots = HOTSPOTS.map((h, i) => {
+    // map: islands follow the journey order; the academy is the home base
+    const steps = this.journeySteps();
+    const stepOf = (id) => steps.find((j) => j.island === id);
+    const mapOrder = ['academy', ...JOURNEY.map((j) => j.island)];
+    const hotspots = mapOrder.map((id) => {
+      const h = HOTSPOTS.find((x) => x.id === id);
+      const j = stepOf(id);
       const on = S.mapSel === h.id;
+      const st = j ? j.state : 'base';
       return {
         ...h,
-        n: i + 1,
+        badge: st === 'done' ? 'check' : st === 'locked' ? 'lock' : st === 'base' ? 'home' : String(j.n),
+        badgeIcon: st !== 'next',
         left: h.x + '%',
         top: h.y + '%',
         pressed: on ? 'true' : 'false',
         onClick: () => this.setState({ mapSel: on ? null : h.id }),
         showLabel: wide,
         pad: wide ? '6px 16px 6px 8px' : '8px',
-        border: on ? '#F3C568' : 'rgba(255,244,223,.85)',
+        border: on || st === 'next' ? '#F3C568' : 'rgba(255,244,223,.85)',
         bg: on ? '#F3C568' : 'rgba(16,45,53,.88)',
         color: on ? '#18343A' : '#FFF4DF',
-        numBg: on ? '#18343A' : '#F3C568',
-        numColor: on ? '#F3C568' : '#18343A',
-        listBorder: on ? '#F3C568' : 'rgba(235,213,163,.18)',
-        tag: h.playable ? 'Küldetés' : 'Előnézet',
-        tagColor: h.playable ? '#F3C568' : '#CFC3A8'
+        opacity: st === 'locked' && !on ? 0.75 : 1,
+        glow: st === 'next' && !rm,
+        numBg: on ? '#18343A' : st === 'done' ? '#91D7E8' : st === 'locked' ? '#5E6F6E' : '#F3C568',
+        numColor: on ? '#F3C568' : st === 'locked' ? '#E4D8BE' : '#18343A',
+        listBorder: on || st === 'next' ? '#F3C568' : 'rgba(235,213,163,.18)',
+        tag: st === 'done' ? 'Kész' : st === 'next' ? 'Következő' : st === 'locked' ? 'Zárva' : 'Bázis',
+        tagColor: st === 'next' ? '#F3C568' : st === 'done' ? '#91D7E8' : '#CFC3A8'
       };
     });
     const selH = HOTSPOTS.find((h) => h.id === S.mapSel);
@@ -390,18 +418,21 @@ export default class App extends React.Component {
     // gear
     const toolView = (t) => {
       const u = S.tools.includes(t.id);
+      const where = steps.find((j) => j.tool === t.id).label;
       return {
         ...t,
         unlocked: u,
-        status: u ? 'Megszerezve' : 'Felfedezésre vár',
+        status: u ? 'Megszerezve' : 'Itt szerzed meg: ' + where,
         statusIcon: u ? 'check_circle' : 'lock',
         statusColor: u ? '#91D7E8' : '#CFC3A8',
         opacity: u ? 1 : 0.5,
         filter: u ? 'none' : 'saturate(.35)',
         border: u ? 'rgba(145,215,232,.5)' : 'rgba(235,213,163,.14)',
         note: u
-          ? 'Az első küldetésben szerezted meg. Az eszköz emlékeztet a stratégiára; a stratégiát te használod.'
-          : 'Egy későbbi küldetésben szerezheted meg. A stratégiát addig is bármikor kipróbálhatod.',
+          ? 'Ezen az állomáson szerezted meg: ' +
+            where +
+            '. Az eszköz emlékeztet a stratégiára; a stratégiát te használod.'
+          : 'A hősutad ' + where + ' állomásán szerezheted meg. A stratégiát addig is bármikor kipróbálhatod.',
         onClick: () => {
           this.setState({ gearSel: t.id });
           this.top();
@@ -730,7 +761,7 @@ export default class App extends React.Component {
         case 'break':
           return 'Szünetet kért';
         case 'p_start':
-          return e.single ? 'Gyakorlás elindítva' : 'Napi hősküldetés elindítva';
+          return e.single ? 'Gyakorlás elindítva' : 'Napi gyakorlás elindítva';
         case 'p_end':
           return 'Gyakorlás befejezve';
         case 'p_support':
@@ -961,9 +992,23 @@ export default class App extends React.Component {
       // map
       hotspots,
       mapHasSel: !!selH,
-      mapSel: selH
-        ? { label: selH.label, purpose: selH.purpose, playable: !!selH.playable, soon: !selH.playable }
-        : { label: '', purpose: '', playable: false, soon: false },
+      mapSel: (() => {
+        if (!selH) return { label: '', purpose: '' };
+        const j = stepOf(selH.id);
+        if (!j) return { label: selH.label, purpose: selH.purpose, base: true };
+        const inMis = j.kind === 'mission' && inProgress;
+        return {
+          label: j.n + '. állomás: ' + selH.label,
+          purpose: selH.purpose,
+          playable: j.state !== 'locked',
+          locked: j.state === 'locked',
+          lockText: 'Előbb fejezd be ezt az állomást: ' + j.prev + '.',
+          btnLabel: inMis ? 'Folytatás' : j.state === 'done' ? 'Újra játszom' : 'Indulás',
+          reward: j.state === 'done' ? 'Itt szerezted meg: ' + j.toolName : 'Jutalom: ' + j.toolName,
+          toolSrc: j.toolSrc,
+          start: () => this.startStep(j)
+        };
+      })(),
       mapClose: () => this.setState({ mapSel: null }),
       // gear
       tools,
@@ -1615,7 +1660,12 @@ export default class App extends React.Component {
     if (c.it.type === 'act') this.adapt(c.it, ps.id);
     const idx = ps.idx + 1;
     if (idx >= ps.plan.length) {
-      this.pset({ phase: 'end', idx });
+      // A single practice on the journey's current island earns that island's tool.
+      const step = ps.single && this.journeySteps().find((j) => j.kind === 'path' && j.path === ps.plan[0].path);
+      const earned = step && step.state === 'next' ? step.tool : null;
+      if (earned) this.setState((s) => ({ tools: s.tools.includes(earned) ? s.tools : [...s.tools, earned] }));
+      if (earned) this.log('tool', { tool: earned });
+      this.pset({ phase: 'end', idx, earned });
       if (!ps.single) this.setState((s) => ({ prog: { ...s.prog, sessions: s.prog.sessions + 1 } }));
       this.log('p_end');
       this.tone('done');
@@ -1714,21 +1764,66 @@ export default class App extends React.Component {
     o.planBtnLabel = active ? 'Folytatás' : 'Kezdjük';
     o.planMinutes = 'Kb. ' + plan.length * 2 + '–' + plan.length * 3 + ' perc';
     o.startDaily = () => this.startSession();
-    o.pathTiles = Object.keys(PATHS).map((p) => ({
-      icon: PATHS[p].icon,
-      label: PATHS[p].label,
-      sub: LEVEL_SHORT[S.prog.levels[p] || 1],
-      onClick: () => this.startSession(p)
-    }));
+    // home: the next journey step, the tool trail and two quiet extras
+    const steps = this.journeySteps();
+    const next = steps.find((j) => j.state === 'next');
+    const doneCount = steps.filter((j) => j.state === 'done').length;
     const m = S.mission;
-    o.destCards = [
-      {
-        icon: 'auto_awesome',
-        label: 'Kaland: Az eltűnt energiamag',
-        sub: m.completed ? 'Teljesítve' : m.started && m.stage > 0 ? 'Folytatható' : 'Kb. 8–10 perc',
-        onClick: this.startMission
-      },
-      { icon: 'backpack', label: 'Hősfelszerelésem', sub: b.gearCount + ' / 5 eszköz', onClick: () => this.go('gear') },
+    o.allDone = !next;
+    o.nextCard = next
+      ? {
+          eyebrow: 'Következő állomás · ' + next.n + ' / ' + steps.length,
+          title: next.label,
+          task: next.task,
+          reward: next.toolName,
+          toolSrc: next.toolSrc,
+          imgPos: next.x + '% ' + next.y + '%',
+          btnLabel: next.kind === 'mission' && m.started && !m.completed && m.stage > 0 ? 'Folytatás' : 'Indulás',
+          onClick: () => this.startStep(next)
+        }
+      : {
+          eyebrow: 'Hősút teljesítve',
+          title: 'Mind az öt eszközt megszerezted!',
+          task: 'Gyakorolj tovább naponta, hogy az eszközök erősek maradjanak.',
+          reward: null,
+          toolSrc: 'assets/nova-star.webp',
+          imgPos: '50% 45%',
+          btnLabel: active ? 'Folytatás' : 'Napi gyakorlás',
+          onClick: () => this.startSession()
+        };
+    o.homeLead = !doneCount
+      ? 'Indulj el a hősutadon a lebegő városban!'
+      : next
+        ? 'Folytasd a hősutadat!'
+        : 'Hős vagy! Minden állomást teljesítettél.';
+    o.trailCols = w >= 600 ? 'repeat(5,minmax(0,1fr))' : 'repeat(3,minmax(0,1fr))';
+    o.extraCols = w >= 600 ? 'repeat(2,minmax(0,1fr))' : '1fr';
+    o.trailTitle = 'Hősutad · ' + doneCount + ' / ' + steps.length + ' eszköz';
+    o.trail = steps.map((j) => ({
+      n: j.n,
+      label: j.label,
+      toolName: j.toolName,
+      toolSrc: j.toolSrc,
+      state: j.state,
+      opacity: j.state === 'locked' ? 0.45 : 1,
+      filter: j.state === 'locked' ? 'grayscale(.7)' : 'none',
+      border: j.state === 'next' ? '#F3C568' : j.state === 'done' ? 'rgba(145,215,232,.55)' : 'rgba(235,213,163,.14)',
+      badge: j.state === 'done' ? 'check_circle' : j.state === 'next' ? 'arrow_forward' : 'lock',
+      badgeColor: j.state === 'done' ? '#91D7E8' : j.state === 'next' ? '#F3C568' : '#CFC3A8',
+      sub: j.state === 'done' ? 'Megszerezve' : j.state === 'next' ? 'Most ez jön' : 'Zárva',
+      onClick: () => (j.state === 'locked' ? this.go('map', { mapSel: j.island }) : this.startStep(j))
+    }));
+    o.homeExtras = [
+      ...(next
+        ? [
+            {
+              icon: 'auto_stories',
+              label: active ? 'Napi gyakorlás folytatása' : 'Napi gyakorlás',
+              sub: 'Vegyes feladatok · ' + o.planMinutes,
+              onClick: () => this.startSession()
+            }
+          ]
+        : []),
       {
         icon: 'air',
         label: 'Egy perc megérkezés',
@@ -1774,7 +1869,7 @@ export default class App extends React.Component {
                 .map((p) => PATHS[p].label + ': ' + (LEVEL_SHORT[S.prog.levels[p] || 1] || '').toLowerCase())
                 .join(' · ')
             },
-            { label: 'Befejezett napi hősküldetések', value: String(S.prog.sessions) }
+            { label: 'Befejezett napi gyakorlások', value: String(S.prog.sessions) }
           ])
       }
     ];
@@ -1830,7 +1925,7 @@ export default class App extends React.Component {
     }));
     o.practiceSettings = [
       {
-        label: 'Egy napi hősküldetés hossza',
+        label: 'Egy napi gyakorlás hossza',
         sub: 'Ennyi rövid feladatból áll, plusz egy későbbi felidézős kérdés.',
         opts: [2, 3, 4].map((n) => ({
           label: n + ' feladat',
@@ -1936,7 +2031,9 @@ export default class App extends React.Component {
       bg: i === stepIdx ? '#F3C568' : i < stepIdx ? 'rgba(243,197,104,.18)' : 'rgba(235,213,163,.08)',
       color: i === stepIdx ? '#18343A' : i < stepIdx ? '#F3C568' : '#CFC3A8'
     }));
-    o.pEndTitle = ps.single ? 'Gyakorlás kész!' : 'Mai hősküldetés kész!';
+    o.pEndTitle = ps.single ? 'Gyakorlás kész!' : 'Napi gyakorlás kész!';
+    const earnedTool = ps.earned && TOOLS.find((t) => t.id === ps.earned);
+    o.pEarned = earnedTool ? { name: earnedTool.name, src: earnedTool.src, strategy: earnedTool.strategy } : null;
     o.pEndRows = ps.plan.map((x) => ({
       icon: x.type === 'later' ? 'history' : PATHS[x.path].icon,
       label: x.type === 'later' ? 'Emlékszel még?' : ACTS[x.act].title,

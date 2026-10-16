@@ -17,7 +17,9 @@ export default function MapScreen({ v }) {
         <h1 style={{ margin: '0', fontSize: v.h1Size, fontWeight: '900', color: '#FFF4DF', lineHeight: '1.15' }}>
           Világok
         </h1>
-        <p style={{ margin: '6px 0 0', color: '#CFC3A8' }}>Válassz egy szigetet a térképen.</p>
+        <p style={{ margin: '6px 0 0', color: '#CFC3A8' }}>
+          Kövesd a számokat: minden szigeten egy új eszközt szerezhetsz.
+        </p>
       </div>
       <div
         style={{
@@ -59,7 +61,10 @@ export default function MapScreen({ v }) {
               fontWeight: '800',
               fontSize: '15px',
               cursor: 'pointer',
-              boxShadow: '0 6px 18px rgba(4,18,22,.4)',
+              opacity: h.opacity,
+              boxShadow: h.glow
+                ? '0 0 0 6px rgba(243,197,104,.35), 0 6px 18px rgba(4,18,22,.4)'
+                : '0 6px 18px rgba(4,18,22,.4)',
               whiteSpace: 'nowrap'
             }}
           >
@@ -73,10 +78,11 @@ export default function MapScreen({ v }) {
                 display: 'grid',
                 placeItems: 'center',
                 fontSize: '15px',
-                fontWeight: '900'
+                fontWeight: '900',
+                fontFamily: h.badgeIcon ? "'Material Symbols Rounded'" : 'inherit'
               }}
             >
-              {h.n}
+              {h.badge}
             </span>{' '}
             {h.showLabel ? <span>{h.label}</span> : null}
           </button>
@@ -117,10 +123,16 @@ export default function MapScreen({ v }) {
             </button>
           </div>
           <p style={{ margin: '0', color: '#E4D8BE', textWrap: 'pretty' }}>{v.mapSel?.purpose}</p>
+          {v.mapSel?.reward ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#91D7E8', fontWeight: '700' }}>
+              <img src={v.mapSel?.toolSrc} alt="" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
+              {v.mapSel?.reward}
+            </div>
+          ) : null}
           {v.mapSel?.playable ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginTop: '6px' }}>
               <button
-                onClick={v.startMission}
+                onClick={v.mapSel?.start}
                 style={{
                   minHeight: '56px',
                   padding: '0 26px',
@@ -137,7 +149,7 @@ export default function MapScreen({ v }) {
                 }}
                 className="nv-hover-2"
               >
-                {v.missionBtnLabel}
+                {v.mapSel?.btnLabel}
                 <span
                   aria-hidden="true"
                   style={{ fontFamily: "'Material Symbols Rounded'", fontSize: '24px', lineHeight: '1' }}
@@ -145,28 +157,17 @@ export default function MapScreen({ v }) {
                   arrow_forward
                 </span>
               </button>
-              <span style={{ fontSize: '16px', color: '#CFC3A8' }}>Az eltűnt energiamag · Kb. 8–10 perc</span>
             </div>
           ) : null}
-          {v.mapSel?.soon ? (
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
+          {v.mapSel?.locked ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', color: '#EBD5A3' }}>
               <span
-                style={{
-                  fontSize: '13px',
-                  fontWeight: '900',
-                  letterSpacing: '.1em',
-                  textTransform: 'uppercase',
-                  color: '#18343A',
-                  background: '#EBD5A3',
-                  padding: '4px 10px',
-                  borderRadius: '999px'
-                }}
+                aria-hidden="true"
+                style={{ fontFamily: "'Material Symbols Rounded'", fontSize: '22px', lineHeight: '1' }}
               >
-                Előnézet
-              </span>{' '}
-              <span style={{ color: '#91D7E8', fontWeight: '700' }}>
-                Ez a terület hamarosan új küldetésekkel bővül.
+                lock
               </span>
+              <span style={{ fontWeight: '700' }}>{v.mapSel?.lockText}</span>
             </div>
           ) : null}
         </section>
@@ -206,10 +207,11 @@ export default function MapScreen({ v }) {
                   display: 'grid',
                   placeItems: 'center',
                   fontSize: '15px',
-                  fontWeight: '900'
+                  fontWeight: '900',
+                  fontFamily: h.badgeIcon ? "'Material Symbols Rounded'" : 'inherit'
                 }}
               >
-                {h.n}
+                {h.badge}
               </span>{' '}
               <span style={{ flex: '1' }}>{h.label}</span>{' '}
               <span style={{ fontSize: '14px', color: h.tagColor, fontWeight: '700' }}>{h.tag}</span>

@@ -113,9 +113,7 @@ export default function Home({ v }) {
               >
                 Szia, {v.name}!
               </h1>
-              <p style={{ margin: '6px 0 0', fontSize: v.leadSize, color: '#E4D8BE' }}>
-                Új kaland vár a lebegő városban.
-              </p>
+              <p style={{ margin: '6px 0 0', fontSize: v.leadSize, color: '#E4D8BE' }}>{v.homeLead}</p>
             </div>
           </div>
           <article
@@ -129,18 +127,39 @@ export default function Home({ v }) {
               boxShadow: '0 24px 60px rgba(4,18,22,.45)'
             }}
           >
-            <div style={{ position: 'relative', aspectRatio: v.cardImgAspect, minHeight: v.cardImgMinH }}>
+            <div
+              style={{
+                position: 'relative',
+                aspectRatio: v.cardImgAspect,
+                minHeight: v.cardImgMinH,
+                overflow: 'hidden'
+              }}
+            >
               <img
                 src="assets/map.webp"
-                alt="A lebegő szigetek világa"
+                alt={v.nextCard.title}
                 style={{
                   position: 'absolute',
                   inset: '0',
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: '50% 45%',
+                  objectPosition: v.nextCard.imgPos,
+                  transform: 'scale(1.7)',
+                  transformOrigin: v.nextCard.imgPos,
                   display: 'block'
+                }}
+              />
+              <img
+                src={v.nextCard.toolSrc}
+                alt=""
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  bottom: '10px',
+                  width: '34%',
+                  maxWidth: '140px',
+                  filter: 'drop-shadow(0 10px 18px rgba(0,0,0,.45))'
                 }}
               />
             </div>
@@ -163,7 +182,7 @@ export default function Home({ v }) {
                   color: '#F3C568'
                 }}
               >
-                Mai hősküldetés
+                {v.nextCard.eyebrow}
               </div>
               <h2
                 style={{
@@ -175,46 +194,30 @@ export default function Home({ v }) {
                   textWrap: 'balance'
                 }}
               >
-                Olvass, hallgass, fedezd fel a lényeget!
+                {v.nextCard.title}
               </h2>
-              <ol
-                style={{
-                  margin: '0',
-                  padding: '0',
-                  listStyle: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px'
-                }}
-              >
-                {list(v.planRows).map((pr, prIndex) => (
-                  <li key={prIndex} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '16px' }}>
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        flex: 'none',
-                        borderRadius: '10px',
-                        background: 'rgba(145,215,232,.12)',
-                        color: pr.color,
-                        display: 'grid',
-                        placeItems: 'center',
-                        fontFamily: "'Material Symbols Rounded'",
-                        fontSize: '20px',
-                        lineHeight: '1'
-                      }}
-                    >
-                      {pr.icon}
-                    </span>{' '}
-                    <span style={{ flex: '1', minWidth: '0', fontWeight: pr.weight }}>{pr.label}</span>{' '}
-                    <span style={{ fontSize: '14px', color: '#CFC3A8', textAlign: 'right' }}>{pr.sub}</span>
-                  </li>
-                ))}
-              </ol>
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '14px', marginTop: '4px' }}>
+              <p style={{ margin: '0', fontSize: '18px', color: '#F6EAD2', textWrap: 'pretty' }}>{v.nextCard.task}</p>
+              {v.nextCard.reward ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', color: '#E4D8BE' }}>
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      fontFamily: "'Material Symbols Rounded'",
+                      fontSize: '20px',
+                      lineHeight: '1',
+                      color: '#91D7E8'
+                    }}
+                  >
+                    redeem
+                  </span>
+                  <span>
+                    Jutalom: <b style={{ color: '#FFF4DF' }}>{v.nextCard.reward}</b>
+                  </span>
+                </div>
+              ) : null}
+              <div style={{ display: 'flex', marginTop: '4px' }}>
                 <button
-                  onClick={v.startDaily}
+                  onClick={v.nextCard.onClick}
                   style={{
                     flex: v.ctaFlex,
                     minHeight: '58px',
@@ -234,7 +237,7 @@ export default function Home({ v }) {
                   }}
                   className="nv-hover-2 nv-active-3"
                 >
-                  {v.planBtnLabel}
+                  {v.nextCard.btnLabel}
                   <span
                     aria-hidden="true"
                     style={{ fontFamily: "'Material Symbols Rounded'", fontSize: '24px', lineHeight: '1' }}
@@ -242,75 +245,82 @@ export default function Home({ v }) {
                     arrow_forward
                   </span>
                 </button>
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '16px',
-                    color: '#E4D8BE'
-                  }}
-                >
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      fontFamily: "'Material Symbols Rounded'",
-                      fontSize: '20px',
-                      lineHeight: '1',
-                      color: '#91D7E8'
-                    }}
-                  >
-                    schedule
-                  </span>
-                  {v.planMinutes}
-                </span>
               </div>
             </div>
           </article>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <h2 style={{ margin: '0', fontSize: '16px', fontWeight: '800', color: '#EBD5A3' }}>
-              Vagy válassz egy gyakorlást
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: v.pathCols, gap: '10px' }}>
-              {list(v.pathTiles).map((pt, ptIndex) => (
-                <button
-                  key={ptIndex}
-                  onClick={pt.onClick}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: '6px',
-                    textAlign: 'left',
-                    minHeight: '84px',
-                    padding: '12px 14px',
-                    borderRadius: '18px',
-                    border: '1px solid rgba(235,213,163,.18)',
-                    background: 'rgba(16,45,53,.86)',
-                    color: '#F6EAD2',
-                    cursor: 'pointer'
-                  }}
-                  className="nv-hover-4"
-                >
-                  <span
-                    aria-hidden="true"
+            <h2 style={{ margin: '0', fontSize: '16px', fontWeight: '800', color: '#EBD5A3' }}>{v.trailTitle}</h2>
+            <ol
+              style={{
+                margin: '0',
+                padding: '0',
+                listStyle: 'none',
+                display: 'grid',
+                gridTemplateColumns: v.trailCols,
+                gap: '10px'
+              }}
+            >
+              {list(v.trail).map((t, tIndex) => (
+                <li key={tIndex} style={{ display: 'flex' }}>
+                  <button
+                    onClick={t.onClick}
+                    aria-label={t.n + '. állomás: ' + t.label + ', ' + t.toolName + ' – ' + t.sub}
                     style={{
-                      fontFamily: "'Material Symbols Rounded'",
-                      fontSize: '24px',
-                      lineHeight: '1',
-                      color: '#91D7E8'
+                      flex: '1',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px',
+                      textAlign: 'center',
+                      minHeight: '120px',
+                      padding: '10px 8px 12px',
+                      borderRadius: '18px',
+                      border: `2px solid ${t.border ?? ''}`,
+                      background: 'rgba(16,45,53,.86)',
+                      color: '#F6EAD2',
+                      cursor: 'pointer'
                     }}
+                    className="nv-hover-4"
                   >
-                    {pt.icon}
-                  </span>{' '}
-                  <span style={{ fontSize: '16px', fontWeight: '800', lineHeight: '1.2' }}>{pt.label}</span>{' '}
-                  <span style={{ fontSize: '13px', color: '#CFC3A8' }}>{pt.sub}</span>
-                </button>
+                    <img
+                      src={t.toolSrc}
+                      alt=""
+                      style={{
+                        width: '56px',
+                        height: '56px',
+                        objectFit: 'contain',
+                        opacity: t.opacity,
+                        filter: t.filter
+                      }}
+                    />
+                    <span style={{ fontSize: '14px', fontWeight: '800', lineHeight: '1.2' }}>
+                      {t.n}. {t.label}
+                    </span>
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        fontSize: '13px',
+                        fontWeight: '700',
+                        color: t.badgeColor
+                      }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        style={{ fontFamily: "'Material Symbols Rounded'", fontSize: '16px', lineHeight: '1' }}
+                      >
+                        {t.badge}
+                      </span>
+                      {t.sub}
+                    </span>
+                  </button>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: v.destCols, gap: '10px' }}>
-            {list(v.destCards).map((d, dIndex) => (
+          <div style={{ display: 'grid', gridTemplateColumns: v.extraCols, gap: '10px' }}>
+            {list(v.homeExtras).map((d, dIndex) => (
               <button
                 key={dIndex}
                 onClick={d.onClick}
