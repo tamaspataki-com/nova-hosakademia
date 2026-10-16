@@ -1,72 +1,64 @@
-# NOVA Hősakadémia
+# NOVA
 
-Hungarian reading/listening comprehension practice app for a 10-year-old, set in a superhero academy world.
-React 18 + Vite, installable as a PWA (phone, tablet, desktop).
+Hungarian reading and listening comprehension adventures, first for a 10-year-old (Lacika) who likes superheroes.
+React 18 + Vite, installable as a PWA (phone, tablet, desktop). Educational practice only: no diagnosis, no claims
+about attention or the brain, no speed scoring.
 
 ```bash
 npm install
 npm run dev       # http://localhost:5173
 npm run build     # production build in dist/
 npm run preview   # serve dist/ (service worker active)
+npm run deploy    # build and publish to https://nova-hosakademia.pages.dev (Cloudflare Pages)
 ```
 
-## Structure
+Add `?noaudio` to the address to simulate a device without a Hungarian voice.
+
+## Architecture
+
+**World → series → adventure → steps.** The academy is the home, adventures are the content, and the learning
+system is shared by every topic.
 
 | Path | What |
 | --- | --- |
-| `src/App.jsx` | All state and behaviour (practice runner, adaptive levels, mission, parent area, persistence). `renderVals()` builds a flat view-model `v`. |
-| `src/AppView.jsx` | Layout shell: rail/bottom nav, active screen, bottom sheet. |
-| `src/screens/*.jsx` | One component per screen; pure rendering of `v`. |
-| `src/content.js` | Authored content: mission, tools, map hotspots, the hero journey (`JOURNEY`), 17 practice passages (`ACTS`), labels. |
-| `src/model.js` | State factories, localStorage load, formatting. |
-| `src/narrator.js` | Speech: recorded audio by id (`Narrator.recorded[id]`) or Hungarian browser voice. |
-| `src/touchDrag.js` | Finger dragging for the sequencing cards (hold, then drag); mouse uses HTML5 drag-and-drop. |
-| `src/styles/` | Global CSS/keyframes and hover/press classes. |
-| `public/assets/` | Artwork (WebP, generated). Originals: `design/source-art/app/`. `public/icons/` – PWA icons. |
-| `design/` | Original Claude Design export (`NOVA.dc.html`, earlier snapshots, `HANDOFF.md`, source art). |
+| `src/content/` | All educational content, as data. `worlds.js` (4 worlds), `energymag.js` (the first adventure), `practice.js` (the prototype's practice texts converted to adventures), `tools.js`, `authored.js` (original authored text), `index.js` (registry and parent-made adventures). |
+| `src/activities/` | One component per activity type: `passage`, `choice`, `sequence`, `evidence`, `vocabulary`, `retell`, `delayedRecall`, `reflection`. `shared.jsx` holds the common scoring rules (`useScored`). |
+| `src/screens/` | Today (Mai kaland), Explore (Felfedezés) + world view, MyWorld (Saját világom) + tool demos, Rest (Pihenő), Adventure (intro, mode choice, step player, help), Complete, Parent. |
+| `src/app/store.jsx` | All state, persisted to localStorage (`nova.hosakademia.v2`), with migration from the prototype's v1 save. |
+| `src/app/audio.js`, `narrator.js` | Audio provider: recorded files (`Narrator.recorded[id]`) → Hungarian browser voice → none. |
+| `src/app/observations.js` | Parent observations derived from recorded events. |
+| `src/app/touchDrag.js` | Finger dragging for sequence cards (hold, then drag). |
+| `public/assets/` | Artwork (WebP). Originals in `design/source-art/app/`. |
+| `design/` | The original Claude Design prototype and its handoff note (historical). |
 
-Design system, screens, practice logic and known limits are documented in [design/HANDOFF.md](design/HANDOFF.md).
-Saved progress lives in localStorage under `nova.hosakademia.v1` (same key as the design prototype).
+### Adding an adventure
 
-## The hero journey
+An adventure is an object (see `src/content/energymag.js`): `id`, `version`, `worldId`, `seriesId`, `title`,
+`description`, `format`, `modes`, `objectives`, `passages` (sections of sentences with stable ids) and `steps`.
+Each scored step needs a prompt, the correct answer, authored `hints`, and a source passage; a step may also carry a
+`guided` quote for the guided explanation and `wrong` (feedback per attempt). Register it in `src/content/index.js`
+(`BUILTIN`). Nothing in the activity components knows about a particular story. Factual adventures should add
+sources and an adult-review status to the content; fiction is marked `fiction: true`.
 
-The child follows one path of five islands; each finished island earns one tool, and the next island unlocks:
+### Learning rules in code
 
-1. Energiaállomás – the energiamag adventure → Nyomkereső szemüveg
-2. Emlékkert – Sorrendbe rendezem → Időrendező kesztyű
-3. Jelzőállomás – Elmondom a lényeget → Lényeglátó pajzs
-4. Szókönyvtár – Olvasok és megértem → Szómagyarázó kristály
-5. Nyomozólabor – Hallgatok és megjegyzem → Újratervező iránytű
-
-Home shows only the next island (one button) and the tool trail; the mixed daily practice and breathing are
-secondary. The order lives in `JOURNEY` in `src/content.js`; progress is simply which tools are earned.
-
-## How this was ported
-
-`scripts/convert-dc.mjs` converted the `.dc.html` template to JSX and split its script into modules; the logic is
-unchanged. The port was checked against the original prototype by driving both with identical click sequences and
-comparing layout, colours and text of every element (desktop and phone widths, all screens, mission stages,
-sheets and parent tabs).
-
-Re-running the converter overwrites the generated files in `src/` — only do that to diff against a newer design export.
-It also emits `assets/*.png` paths; switch them back to `.webp`.
+- Every scored activity records its first answer, hints, rereads, replays and transcript use separately, and
+  completion as **independent**, **supported** or **guided** (`useScored` in `src/activities/shared.jsx`).
+- Wrong answers show the authored hint; from the second miss a guided explanation and "Megmutatom a megoldást" appear.
+  The child is never required to guess until correct.
+- Completion is idempotent: finishing an adventure removes its active run and records one completion.
+- Replaying a finished adventure is labelled as practice and does not award the badge again.
 
 ## PWA notes
 
-- Everything is precached: app shell, icons and all artwork, ~2.6 MB in total, so the whole app works offline
-  after the first visit.
-- Artwork is WebP (q90; transparent images keep a lossless alpha channel), ~2.2 MB down from ~15 MB of PNG. The
-  original PNGs live in `design/source-art/app/`; after changing one, regenerate with `node scripts/optimize-art.mjs`
-  (needs the `sharp` dev dependency) and reference it in code as `assets/<name>.webp`.
-- `maximumFileSizeToCacheInBytes` is 3 MB; a single image above that would be silently left out of the precache.
-- Earlier builds kept artwork in a runtime `nova-art` cache; `src/main.jsx` deletes it.
+- Everything is precached (app shell, icons, all artwork, ~2.6 MB), so the whole app works offline after the first visit.
 - Fonts come from Google Fonts and are cached at runtime.
-- `base: './'` makes the build work from any sub-path (e.g. GitHub Pages).
+- `base: './'` keeps the build working from any sub-path.
+- Artwork is WebP generated from the PNGs in `design/source-art/app/` with `node scripts/optimize-art.mjs`
+  (needs the `sharp` dev dependency).
 
 ## Publishing
 
 Live at **https://nova-hosakademia.pages.dev** (Cloudflare Pages project `nova-hosakademia`, direct upload).
-After changing the app: commit, `git push`, then `npm run deploy` to rebuild and publish (uses `wrangler`; run
-`npx wrangler login` once per machine). The project uses classic Cloudflare Pages, so `wrangler pages` commands
-need no `--force` anymore.
-Installed copies pick up the new version automatically the next time they are opened online.
+After changing the app: commit, `git push`, then `npm run deploy` (uses `wrangler`; run `npx wrangler login` once per
+machine). Installed copies update the next time they are opened online.

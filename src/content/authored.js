@@ -1,16 +1,6 @@
-// Generated from design/NOVA.dc.html by scripts/convert-dc.mjs, then edited by hand as needed.
-// Authored learning content: mission, tools, map, practice passages, labels.
+// Authored learning content carried over from the design prototype: the energy-core mission, the five tools and
+// the practice passages. Nothing here is rendered directly; src/content/*.js arrange it into adventures.
 
-export const STAGES = [
-  'Bevezetés',
-  'Gyakorlási mód',
-  'Történet',
-  'A probléma',
-  'Sorrend',
-  'Bizonyíték',
-  'Elmesélés',
-  'Megoldás'
-];
 // Mission content is data; screens only render it.
 export const MISSION = {
   id: 'energiamag',
@@ -137,87 +127,12 @@ export const TOOLS = [
     ]
   }
 ];
-export const HOTSPOTS = [
-  {
-    id: 'academy',
-    label: 'Akadémia',
-    x: 50,
-    y: 20,
-    purpose: 'Itt kezdődik minden kaland. Az akadémián ismerkedsz meg a hősökkel és a küldetésekkel.'
-  },
-  {
-    id: 'signal',
-    label: 'Jelzőállomás',
-    x: 16,
-    y: 20,
-    purpose: 'Ide érkeznek a jelzések a városból. Itt azt gyakorolod, hogyan mondd el egy történet lényegét.'
-  },
-  {
-    id: 'lab',
-    label: 'Nyomozólabor',
-    x: 15,
-    y: 52,
-    purpose: 'A nyomozók jól figyelnek. Itt meghallgatsz egy rövid szöveget, és felidézed, mit hallottál.'
-  },
-  {
-    id: 'garden',
-    label: 'Emlékkert',
-    x: 50,
-    y: 58,
-    purpose: 'Itt gyakorolhatod, hogyan idézd fel egy történet eseményeit sorrendben.'
-  },
-  {
-    id: 'library',
-    label: 'Szókönyvtár',
-    x: 85,
-    y: 20,
-    purpose: 'A könyvtárban elolvasol egy rövid szöveget, és megmutatod, mit értettél meg belőle.'
-  },
-  {
-    id: 'energy',
-    label: 'Energiaállomás',
-    x: 84,
-    y: 54,
-    purpose: 'Az első küldetés helyszíne. Segíts Mirának helyreállítani a fényhíd energiaellátását!',
-    playable: true
-  }
-];
-// The hero journey: one island after the other, each earns one tool.
-// kind 'mission' = the story adventure; kind 'path' = a practice session of that path.
-export const JOURNEY = [
-  { island: 'energy', kind: 'mission', tool: 'goggles', task: 'Segíts Mirának visszahozni a fényt a hídra!' },
-  { island: 'garden', kind: 'path', path: 'seq', tool: 'glove', task: 'Rakd sorrendbe egy történet eseményeit.' },
-  { island: 'signal', kind: 'path', path: 'main', tool: 'shield', task: 'Mondd el, miről szól egy rövid történet.' },
-  {
-    island: 'library',
-    kind: 'path',
-    path: 'read',
-    tool: 'crystal',
-    task: 'Olvass el egy rövid szöveget, és válaszolj.'
-  },
-  {
-    island: 'lab',
-    kind: 'path',
-    path: 'listen',
-    tool: 'compass',
-    task: 'Hallgass meg egy rövid szöveget, és emlékezz rá.'
-  }
-];
-export const MODES = { read: 'Elolvasom', listen: 'Meghallgatom', both: 'Olvasom és hallgatom' };
-
 // ---- Practice library: reviewed starter collection (structured content, separate from screens)
 export const PATHS = {
   read: { label: 'Olvasok és megértem', icon: 'menu_book' },
   listen: { label: 'Hallgatok és megjegyzem', icon: 'headphones' },
   seq: { label: 'Sorrendbe rendezem', icon: 'format_list_numbered' },
   main: { label: 'Elmondom a lényeget', icon: 'record_voice_over' }
-};
-export const TASK_LABELS = {
-  understand: 'Megértés',
-  recall: 'Azonnali felidézés',
-  seq: 'Sorrend',
-  main: 'Lényeg',
-  later: 'Későbbi felidézés'
 };
 export const TASK_CHILD = {
   understand: 'Megértés',
@@ -226,16 +141,6 @@ export const TASK_CHILD = {
   main: 'A lényeg',
   later: 'Emlékszel még?'
 };
-export const MODE_LABELS = { read: 'Olvasás', listen: 'Hallgatás', both: 'Olvasás + hallgatás' };
-export const LEVEL_LABELS = { 1: 'Rövid (2–3 mondat)', 2: 'Közepes (4 mondat)', 3: 'Hosszabb (5 mondat)' };
-export const LEVEL_SHORT = { 1: 'Rövid szövegek', 2: 'Közepes szövegek', 3: 'Hosszabb szövegek' };
-export const NOTE_TAGS = ['Elterelődött a figyelme', 'Fáradt volt', 'Megszakítás történt', 'Jól ment'];
-export const STRAT = [
-  { icon: 'pan_tool', label: 'Megállok', text: 'Ha elolvastam vagy meghallgattam egy részt, megállok egy pillanatra.' },
-  { icon: 'psychology', label: 'Átgondolom', text: 'Átgondolom, ki szerepelt, és mi volt a legfontosabb.' },
-  { icon: 'record_voice_over', label: 'Elmondom', text: 'Elmondom magamban vagy hangosan egy mondatban.' },
-  { icon: 'fact_check', label: 'Ellenőrzöm', text: 'Visszanézek a szövegbe, hogy jól emlékszem-e.' }
-];
 export const ACTS = {
   r1: {
     path: 'read',
@@ -764,13 +669,4 @@ export const ACTS = {
       }
     ]
   }
-};
-export const DEF_SETTINGS = {
-  name: 'Lacika',
-  textSize: 22,
-  rate: 1,
-  sound: false,
-  reducedMotion: false,
-  sessionLen: 3,
-  autoLevel: true
 };

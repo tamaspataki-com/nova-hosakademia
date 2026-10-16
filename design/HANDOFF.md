@@ -1,3 +1,5 @@
+> **Historical.** This is the handoff note for the original single-file prototype (`NOVA.dc.html`). The app has since been rebuilt in React; see the root README for the current architecture. The design tokens below still apply.
+
 # NOVA Hősakadémia – handoff
 
 Continue building from this package. Main file: `NOVA.dc.html` (single-file app; open in a browser served from this folder so `assets/` resolves).
