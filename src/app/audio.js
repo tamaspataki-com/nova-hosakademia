@@ -39,27 +39,42 @@ export const NO_AUDIO_TEXT =
   'Ezen az eszközön most nincs elérhető magyar felolvasás. Olvasással folytathatod a kalandot.';
 
 // Playback hook. play(id, text, onDone) – onDone(status) with 'completed' | 'interrupted' | 'error'.
-// Pressing play on the clip that is playing pauses it (which ends it as 'interrupted').
+// pause(id) returns true when the position is kept (recorded files) and false when the clip was stopped (speech),
+// in which case playing it again starts from the beginning. resume(id) continues a kept position.
 export function useSpeaker(rate = 1) {
   const [playing, setPlaying] = useState(null);
+  const [paused, setPaused] = useState(null);
   useEffect(() => () => Narrator.stop(), []);
   const stop = useCallback(() => {
     Narrator.stop();
     setPlaying(null);
+    setPaused(null);
   }, []);
   const play = useCallback(
     (id, text, onDone) => {
-      if (playing === id) {
-        stop();
-        return;
-      }
+      setPaused(null);
       setPlaying(id);
       Narrator.speak(id, text, rate, (status) => {
         setPlaying((p) => (p === id ? null : p));
+        setPaused((p) => (p === id ? null : p));
         onDone?.(status);
       });
     },
-    [playing, rate, stop]
+    [rate]
   );
-  return { playing, play, stop };
+  const pause = useCallback((id) => {
+    const kept = Narrator.pause();
+    setPlaying(null);
+    setPaused(kept ? id : null);
+    return kept;
+  }, []);
+  const resume = useCallback((id) => {
+    const ok = Narrator.resume();
+    if (ok) {
+      setPaused(null);
+      setPlaying(id);
+    }
+    return ok;
+  }, []);
+  return { playing, paused, play, pause, resume, stop };
 }

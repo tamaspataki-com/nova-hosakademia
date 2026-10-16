@@ -36,6 +36,7 @@ export default function Parent({ go, adventures, tab: tab0 = 'obs' }) {
     return (
       <div className="page narrow stack">
         <h1 className="h1">Szülői tér</h1>
+        {!state.pinCode ? <strong className="lead">A szülői PIN még nincs beállítva.</strong> : null}
         <p className="lead">
           {state.pinCode
             ? 'Add meg a PIN-kódot.'

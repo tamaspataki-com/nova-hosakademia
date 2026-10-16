@@ -36,9 +36,10 @@ export default function Passage({ api }) {
   const text = chunked ? parts[idx].map((s) => s.text).join(' ') : (sec.narration ?? sectionText(sec));
   const audioOk = canPlay(voiceReady, clip);
   const playing = speaker.playing === clip;
+  const paused = speaker.paused === clip; // paused with the position kept (recorded audio only)
   const status = st.listen; // undefined | playing | completed | interrupted | unknown | error
   const noAudio = listening && !audioOk;
-  const unfinished = ['interrupted', 'unknown', 'error'].includes(status);
+  const unfinished = ['paused', 'interrupted', 'unknown', 'error'].includes(status);
 
   useEffect(() => {
     // Speech does not survive a reload or a break: a clip that was "playing" was interrupted.
@@ -59,24 +60,41 @@ export default function Passage({ api }) {
     log('audio_status', { activity: step.id, status: s });
   };
 
-  const play = () => {
-    if (playing) {
-      speaker.stop(); // pausing is not a replay; the clip ends as 'interrupted'
-      return;
-    }
-    if (st.played) {
-      patch((s) => ({ ...s, replays: (s.replays || 0) + 1 }));
-      log('audio_replayed', { activity: step.id });
-    }
-    patch({ played: true, listen: 'playing' });
+  const armTimer = () => {
     // If the device reports neither an end nor an interruption, say "unknown" – do not pretend it finished.
     clearTimeout(timer.current);
     const ms = Math.max(2500, (text.length * 95) / (settings.rate || 1) + 1500);
     timer.current = setTimeout(() => setStatus('unknown'), ms);
+  };
+
+  const play = () => {
+    if (st.played) {
+      // Playing again after a pause that could not keep its position starts from the beginning: say so.
+      const fromPause = st.stoppedBy === 'pause';
+      patch((s) => ({ ...s, replays: (s.replays || 0) + 1 }));
+      log('audio_replayed', { activity: step.id, fromPause, restartedFromStart: true });
+    }
+    patch({ played: true, listen: 'playing', stoppedBy: undefined });
+    armTimer();
     speaker.play(clip, text, (s) => {
       clearTimeout(timer.current);
       setStatus(s);
     });
+  };
+
+  const pause = () => {
+    clearTimeout(timer.current);
+    const kept = speaker.pause(clip);
+    patch({ stoppedBy: 'pause', positionKept: kept });
+    log('audio_paused', { activity: step.id, positionKept: kept });
+    if (kept) setStatus('paused'); // speech: the stop reports 'interrupted' itself
+  };
+
+  const resume = () => {
+    if (!speaker.resume(clip)) return play();
+    patch({ listen: 'playing' });
+    log('audio_resumed', { activity: step.id, positionKept: true });
+    armTimer();
   };
 
   const showTranscript = () => {
@@ -102,6 +120,22 @@ export default function Passage({ api }) {
   const words = showText ? wordsIn(adv.glossary, view.sentences) : [];
 
   // The button that moves on. In listening-only mode it needs a finished (or self-confirmed) listening.
+  const restart = st.played && st.stoppedBy === 'pause' && !st.positionKept;
+  const audioBtn = (kind) =>
+    playing ? (
+      <Btn kind={kind} icon="pause" onClick={pause}>
+        Szünet
+      </Btn>
+    ) : paused ? (
+      <Btn kind={kind} icon="play_arrow" onClick={resume}>
+        Folytatom
+      </Btn>
+    ) : (
+      <Btn kind={kind} icon={restart ? 'replay' : st.played ? 'play_arrow' : 'play_arrow'} onClick={play}>
+        {restart ? 'Újra az elejéről' : st.played ? 'Újra meghallgatom' : 'Meghallgatom'}
+      </Btn>
+    );
+
   let main;
   if (chunked && !last) {
     main = (
@@ -149,30 +183,20 @@ export default function Passage({ api }) {
           <div className={`listen-orb ${playing ? 'playing' : ''}`} aria-hidden="true">
             <Icon name="headphones" size={56} />
           </div>
-          {noAudio ? null : (
-            <div className="row center">
-              <Btn icon={playing ? 'pause' : 'play_arrow'} onClick={play}>
-                {playing ? 'Szünet' : st.played ? 'Újra meghallgatom' : 'Meghallgatom'}
-              </Btn>
-            </div>
-          )}
+          {noAudio ? null : <div className="row center">{audioBtn('primary')}</div>}
           {unfinished ? (
             <p className="muted center-text" role="status">
-              {status === 'interrupted'
-                ? 'A lejátszás megszakadt. Újra meghallgathatod, vagy jelezheted, hogy végeztél.'
-                : 'Nem tudjuk biztosan, hogy a lejátszás véget ért. Újra meghallgathatod, vagy jelezheted, hogy végeztél.'}
+              {status === 'paused'
+                ? 'Szünet. Folytathatod, ahol abbahagytad, vagy jelezheted, hogy végeztél.'
+                : status === 'interrupted'
+                  ? `A lejátszás megállt.${restart ? ' Újra az elejéről indul.' : ''} Hallgasd újra, vagy jelezd, hogy végeztél.`
+                  : 'Nem tudjuk, hogy a lejátszás véget ért-e. Hallgasd újra, vagy jelezd, hogy végeztél.'}
             </p>
           ) : null}
         </div>
       ) : null}
 
-      {mode === 'combined' && !noAudio ? (
-        <div className="row">
-          <Btn kind="ghost" icon={playing ? 'pause' : 'volume_up'} onClick={play}>
-            {playing ? 'Szünet' : st.played ? 'Újra meghallgatom' : 'Meghallgatom'}
-          </Btn>
-        </div>
-      ) : null}
+      {mode === 'combined' && !noAudio ? <div className="row">{audioBtn('ghost')}</div> : null}
 
       {noAudio ? (
         <div className="note soft" role="status">

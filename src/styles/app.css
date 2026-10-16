@@ -1473,12 +1473,8 @@ details summary {
   object-fit: contain;
 }
 
-/* Words inside running text keep their line height; their touch area is enlarged invisibly to 48px tall. */
-.gloss::after {
-  content: '';
-  position: absolute;
-  inset: -6px -8px;
-}
+/* Inline words are a convenience only: they keep their natural size so they never overlap neighbouring words or
+   controls. The separate 48px word buttons under the text are the accessible way to open a definition. */
 
 .update-bar {
   position: fixed;

@@ -12,6 +12,7 @@ const METHOD = {
 };
 const LISTEN = {
   completed: 'Lejátszás befejeződött (az eszköz jelezte)',
+  paused: 'Lejátszás szüneteltetve (a hely megmaradt)',
   interrupted: 'Lejátszás megszakadt',
   unknown: 'A lejátszás végét az eszköz nem jelezte',
   error: 'Lejátszási hiba',
@@ -297,6 +298,9 @@ function Extra({ adventures }) {
   const { state } = useStore();
   const ev = state.events;
   const passages = ev.filter((e) => e.type === 'passage_completed' && e.listen);
+  const pauses = ev.filter((e) => e.type === 'audio_paused');
+  const kept = pauses.filter((e) => e.positionKept).length;
+  const restarted = ev.filter((e) => e.type === 'audio_replayed' && e.fromPause).length;
   const obs = ev
     .filter((e) => e.type === 'retell_observed')
     .slice(-5)
@@ -313,7 +317,7 @@ function Extra({ adventures }) {
   };
   return (
     <>
-      {passages.length ? (
+      {passages.length || pauses.length ? (
         <section className="card stack" aria-label="Hallgatás">
           <h2 className="h3">Hallgatás</h2>
           <p className="muted">
@@ -326,6 +330,12 @@ function Extra({ adventures }) {
                 {LISTEN[k] || k}: <strong>{n}</strong>
               </li>
             ))}
+            {pauses.length ? (
+              <li>
+                Szünetek: <strong>{pauses.length}</strong> – folytatható hellyel: {kept}, ismételt lejátszás az
+                elejéről: {restarted}
+              </li>
+            ) : null}
           </ul>
         </section>
       ) : null}

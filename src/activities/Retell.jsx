@@ -22,6 +22,7 @@ export default function Retell({ api }) {
   const [text, setText] = useState(st.text || '');
   const [openPrompts, setOpenPrompts] = useState(false);
   const [adult, setAdult] = useState(false);
+  const hasPin = !!useStore().state.pinCode;
   const done = !!st.done;
   const checklist = step.adultChecklist;
   const labels = step.options || { spoken: 'Elmondom valakinek', write: 'Leírom' };
@@ -181,7 +182,15 @@ export default function Retell({ api }) {
       {done && checklist ? (
         <div className="adult-box">
           <span className="muted">
-            <Icon name="lock" /> Csak felnőttnek
+            {hasPin ? (
+              <>
+                <Icon name="lock" /> Csak felnőttnek
+              </>
+            ) : (
+              <>
+                <Icon name="lock_open" /> Felnőttnek szánt rész. A szülői PIN még nincs beállítva, ezért nem védett.
+              </>
+            )}
           </span>
           <Btn kind="ghost" icon="supervisor_account" onClick={() => setAdult(true)}>
             {st.observation ? 'Megfigyelés módosítása' : 'Megfigyelés rögzítése'}
@@ -253,9 +262,12 @@ function AdultSheet({ step, initial, onClose, onSave }) {
     <Sheet title="Megfigyelés" wide onClose={onClose}>
       <div className="stack">
         {!state.pinCode ? (
-          <div className="note soft">
-            <Icon name="info" />
-            <span>A Szülői térben beállított PIN-kóddal ez a rész csak felnőttnek érhető el.</span>
+          <div className="note soft" role="status">
+            <Icon name="lock_open" />
+            <div className="stack tight">
+              <strong>A szülői PIN még nincs beállítva.</strong>
+              <span>Ezért ez a rész nem védett. A PIN a Szülői térben állítható be.</span>
+            </div>
           </div>
         ) : null}
         <p className="muted">Nem kell pontos megfogalmazás. Ezt az eredményt a gyerek nem látja.</p>

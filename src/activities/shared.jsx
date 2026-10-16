@@ -33,7 +33,7 @@ export function GlossText({ text, glossary = [], onWord }) {
     const g = bare && glossary.find((x) => bare.startsWith(x.key));
     if (!g) return tok;
     return (
-      <button key={i} type="button" className="gloss" onClick={() => onWord(g)}>
+      <button key={i} type="button" className="gloss" tabIndex={-1} aria-hidden="true" onClick={() => onWord(g)}>
         {tok}
       </button>
     );
@@ -55,6 +55,10 @@ export function SectionText({ sec, mark, glossary, onWord }) {
 
 export function Reference({ adv, step, mark, glossary, onWord }) {
   const secs = sourceSections(adv, step);
+  const words = wordsIn(
+    glossary,
+    secs.flatMap((sec) => sec.sentences)
+  );
   return (
     <div className="stack">
       {secs.map((sec) => (
@@ -63,6 +67,18 @@ export function Reference({ adv, step, mark, glossary, onWord }) {
           <SectionText sec={sec} mark={mark} glossary={glossary} onWord={onWord} />
         </article>
       ))}
+      {words.length ? (
+        <div className="stack tight" aria-label="Szómagyarázat">
+          <span className="eyebrow">Szavak, ha kíváncsi vagy rájuk</span>
+          <div className="chips">
+            {words.map((g) => (
+              <button key={g.key} type="button" className="pill" onClick={() => onWord(g)}>
+                {g.word}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

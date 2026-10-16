@@ -64,6 +64,18 @@ Playback ends as `completed` (the audio or speech engine said so), `interrupted`
 mode the child then confirms „Befejeztem a hallgatást", recorded as self-reported. Narration is stopped whenever the
 passage is left, so clips never overlap. Parent observations show these statuses separately.
 
+Pausing keeps the position only where the audio provider supports it: a recorded file resumes exactly where it
+stopped („Folytatom"). Browser speech cannot be relied on to resume, so a pause stops it and the next play starts again
+from the beginning („Újra az elejéről"); the event log records `audio_paused` with `positionKept` and the replay as
+`restartedFromStart`.
+
+### Links
+
+Screens can be opened from a link. The dinosaur adventure: **https://nova-hosakademia.pages.dev/#/dino** (long form
+`#/kaland/dino-muddy-footprints-01`). Also `#/vilag/dinosaurs`, `#/felfedezes`, `#/mai-kaland`, `#/sajat-vilagom/tools`,
+`#/piheno`, `#/szuloi-ter` (still asks for the PIN). Following a link never changes saved progress; an adventure
+in progress resumes where it stopped. By hand: Felfedezés → Dinoszaurusz-expedíció → A sáros lábnyomok rejtélye.
+
 ### Retelling
 
 Completion methods are `self-reported`, `typed` or `adult-observed`. The adult checklist (per-item

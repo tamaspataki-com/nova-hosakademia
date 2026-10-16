@@ -57,6 +57,15 @@ export default function Settings({ go }) {
       </section>
 
       <section className="card stack">
+        <h2 className="h3">Szülői PIN</h2>
+        <p>{state.pinCode ? 'A szülői PIN be van állítva.' : 'A szülői PIN még nincs beállítva.'}</p>
+        <p className="muted">
+          A PIN védi a Szülői teret és az elmesélés felnőtt megfigyelését.{' '}
+          {state.pinCode ? '' : 'Amíg nincs beállítva, ezek nem védettek.'}
+        </p>
+      </section>
+
+      <section className="card stack">
         <h2 className="h3">Szövegméret</h2>
         <div className="chips" role="group" aria-label="Szövegméret">
           {SIZES.map(([v, l]) => (

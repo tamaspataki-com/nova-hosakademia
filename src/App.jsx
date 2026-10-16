@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StoreProvider, useStore } from './app/store.jsx';
 import { initAudio } from './app/audio.js';
 import { applyUpdate, useUpdateReady } from './app/update.js';
+import { fromHash, toHash } from './app/routes.js';
 import { Icon, Sheet, Btn } from './app/ui.jsx';
 import { allAdventures, customAdventures, findAdventure } from './content/index.js';
 import Welcome from './screens/Welcome.jsx';
@@ -41,31 +42,41 @@ export default function App() {
 
 function Shell() {
   const { state } = useStore();
-  const [route, setRoute] = useState(() => ({ name: 'welcome' }));
+  // A link such as #/dino opens that screen directly (no welcome screen); otherwise the app starts at the welcome.
+  const [route, setRoute] = useState(() => fromHash(window.location.hash) || { name: 'welcome' });
   const [profile, setProfile] = useState(false);
   const updateReady = useUpdateReady();
   const [later, setLater] = useState(false);
   const settings = state.settings;
 
+  // history entries carry their depth (i), so "back" only leaves the app's own screens.
+  const url = (r) => window.location.pathname + window.location.search + toHash(r);
+
   useEffect(() => {
     initAudio();
-    history.replaceState({ route: { name: 'welcome' } }, '');
-    const onPop = (e) => setRoute(e.state?.route || { name: 'today' });
+    history.replaceState({ route, i: 0 }, '', url(route));
+    const onPop = (e) => setRoute(e.state?.route || fromHash(window.location.hash) || { name: 'today' });
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Navigation keeps the browser history in step, so the phone's back gesture works inside the app.
   const go = useCallback((r) => {
     if (r.name === 'back') {
-      if (history.length > 1 && history.state?.route && history.state.route.name !== 'welcome') history.back();
-      else setRoute({ name: 'today' });
+      if ((history.state?.i || 0) > 0) history.back();
+      else {
+        const t = { name: 'today' };
+        history.replaceState({ route: t, i: 0 }, '', url(t));
+        setRoute(t);
+      }
       return;
     }
     setProfile(false);
     const { replace, ...clean } = r;
-    if (replace) history.replaceState({ route: clean }, '');
-    else history.pushState({ route: clean }, '');
+    const i = history.state?.i || 0;
+    if (replace) history.replaceState({ route: clean, i }, '', url(clean));
+    else history.pushState({ route: clean, i: i + 1 }, '', url(clean));
     setRoute(clean);
     window.scrollTo(0, 0);
   }, []);

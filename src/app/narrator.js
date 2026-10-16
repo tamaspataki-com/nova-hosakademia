@@ -63,6 +63,28 @@ export const Narrator = {
       cur.finish(cur.interrupted || e?.error === 'interrupted' || e?.error === 'canceled' ? 'interrupted' : 'error');
     speechSynthesis.speak(u);
   },
+  // Pause keeps the position only when the provider can: a recorded file can be paused and resumed exactly.
+  // Browser speech cannot be relied on to resume (several phones restart or drop it), so for speech a pause is a
+  // stop and the next play starts again from the beginning. Returns true when the position is preserved.
+  pause() {
+    const cur = this._cur;
+    if (cur && this._a) {
+      this._a.pause();
+      cur.paused = true;
+      return true;
+    }
+    this.stop();
+    return false;
+  },
+  resume() {
+    const cur = this._cur;
+    if (cur?.paused && this._a) {
+      cur.paused = false;
+      this._a.play().catch(() => cur.finish('error'));
+      return true;
+    }
+    return false;
+  },
   stop() {
     const cur = this._cur;
     if (cur) {
