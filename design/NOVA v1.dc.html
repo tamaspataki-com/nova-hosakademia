@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0..1,0&display=block">
+<style>
+html,body{margin:0;background:#102D35;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+button,input,textarea{font-family:inherit}
+a{color:#91D7E8}a:hover{color:#F3C568}
+:focus-visible{outline:3px solid #91D7E8;outline-offset:3px}
+input::placeholder,textarea::placeholder{color:#7F8F8C}
+@keyframes novaBreathe{0%,100%{transform:scale(.62)}50%{transform:scale(1)}}
+@keyframes novaGlow{0%{opacity:0}100%{opacity:1}}
+@keyframes novaDim{0%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#102D35;color:#F6EAD2;font-family:'Nunito Sans',system-ui,sans-serif;font-size:18px;line-height:1.5;display:flex;flex-direction:{{ rootDir }}">
+
+<sc-if value="{{ showRail }}" hint-placeholder-val="{{ false }}">
+<nav aria-label="Fő navigáció" style="width:108px;flex:none;position:sticky;top:0;height:100vh;background:#0B2329;border-right:1px solid rgba(235,213,163,.12);display:flex;flex-direction:column;align-items:center;padding:22px 0 18px;gap:8px;z-index:5">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:18px">
+    <img src="assets/nova-star.png" alt="" style="width:40px;height:40px;object-fit:contain">
+    <span style="font-weight:900;letter-spacing:.2em;font-size:14px;color:#EBD5A3;padding-left:.2em">NOVA</span>
+  </div>
+  <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="4">
+    <button onClick="{{ item.onClick }}" aria-current="{{ item.current }}" style="width:88px;min-height:74px;border:0;border-radius:20px;background:{{ item.bg }};color:{{ item.color }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:14px;font-weight:800;transition:background .15s" style-hover="background:rgba(235,213,163,.1)">
+      <span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:27px;line-height:1">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </button>
+  </sc-for>
+  <div style="flex:1"></div>
+  <button onClick="{{ openProfile }}" aria-label="Profil és beállítások" style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(235,213,163,.4);background:#1C454D;color:#F6EAD2;font-weight:900;font-size:19px;cursor:pointer">{{ initial }}</button>
+</nav>
+</sc-if>
+
+<main style="flex:1;min-width:0;position:relative;padding-bottom:{{ mainPadBottom }}">
+
+<sc-if value="{{ sHome }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative;min-height:{{ homeMinH }};overflow:hidden">
+  <img src="assets/command-room.png" alt="" style="position:absolute;inset:0;width:100%;height:{{ homeBgH }};object-fit:cover;object-position:60% 40%">
+  <div style="position:absolute;inset:0;pointer-events:none;background:{{ homeScrim }}"></div>
+  <sc-if value="{{ showHeroRight }}" hint-placeholder-val="{{ false }}">
+    <img src="assets/hero.png" alt="Lacika hőse az akadémia egyenruhájában" style="position:absolute;right:3%;bottom:0;height:92%;max-height:860px;width:auto;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(0,0,0,.35))">
+  </sc-if>
+  <div style="position:relative;padding:{{ homePad }};max-width:{{ homeMaxW }};display:flex;flex-direction:column;gap:22px">
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="assets/nova-star.png" alt="" style="width:30px;height:30px;object-fit:contain">
+          <span style="font-weight:900;letter-spacing:.2em;font-size:15px;color:#EBD5A3">NOVA</span>
+        </div>
+        <button onClick="{{ openProfile }}" aria-label="Profil és beállítások" style="width:48px;height:48px;border-radius:50%;border:2px solid rgba(235,213,163,.45);background:rgba(16,45,53,.75);color:#F6EAD2;font-weight:900;font-size:18px;cursor:pointer">{{ initial }}</button>
+      </div>
+    </sc-if>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;min-height:{{ greetMinH }}">
+      <div style="padding-bottom:6px">
+        <h1 style="margin:0;font-size:{{ h1Size }};line-height:1.1;font-weight:900;letter-spacing:-.01em;color:#FFF4DF;text-shadow:0 2px 18px rgba(16,45,53,.6)">Szia, {{ name }}!</h1>
+        <p style="margin:8px 0 0;font-size:19px;color:#F6EAD2;text-shadow:0 1px 10px rgba(16,45,53,.8)">Új kaland vár a lebegő városban.</p>
+      </div>
+      <sc-if value="{{ showHeroCompact }}" hint-placeholder-val="{{ true }}">
+        <img src="assets/hero.png" alt="Lacika hőse" style="height:250px;width:auto;margin:0 -8px -26px 0;flex:none;filter:drop-shadow(0 12px 24px rgba(0,0,0,.35))">
+      </sc-if>
+    </div>
+
+    <article style="position:relative;background:rgba(16,45,53,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(235,213,163,.22);border-radius:26px;overflow:hidden;box-shadow:0 24px 60px rgba(4,18,22,.45)">
+      <div style="position:relative;aspect-ratio:16/8;overflow:hidden">
+        <img src="assets/bridge.png" alt="A fényhíd és a kapu melletti üres energiaállvány" style="width:100%;height:100%;object-fit:cover;object-position:60% 50%;display:block">
+        <sc-if value="{{ missionDone }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;background:#FFF4DF;color:#18343A;font-weight:800;font-size:14px;padding:6px 12px 6px 8px;border-radius:999px">
+            <span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">check_circle</span>Teljesítve
+          </div>
+        </sc-if>
+      </div>
+      <div style="padding:22px 24px 24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:14px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#F3C568">Első küldetés</div>
+        <h2 style="margin:0;font-size:28px;line-height:1.15;font-weight:900;color:#FFF4DF">Az eltűnt energiamag</h2>
+        <p style="margin:0;font-size:18px;color:#E4D8BE;text-wrap:pretty">A fényhíd kialudt. Fedezd fel, mi történt, és segíts helyreállítani az energiaellátást!</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:8px">
+          <button onClick="{{ startMission }}" style="min-height:56px;padding:0 28px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(243,197,104,.25);flex:{{ ctaFlex }};justify-content:center" style-hover="background:#F7D387" style-active="transform:scale(.98)">
+            {{ missionBtnLabel }}<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span>
+          </button>
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:16px;color:#E4D8BE"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#91D7E8">schedule</span>Kb. 8–10 perc</span>
+        </div>
+        <sc-if value="{{ missionInProgress }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:15px;color:#91D7E8;display:flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">bookmark</span>Mentett állapot: {{ savedStageName }}</div>
+        </sc-if>
+      </div>
+    </article>
+
+    <div style="display:grid;grid-template-columns:{{ destCols }};gap:12px">
+      <sc-for list="{{ destCards }}" as="d" hint-placeholder-count="3">
+        <button onClick="{{ d.onClick }}" style="display:flex;align-items:center;gap:14px;text-align:left;min-height:76px;padding:14px 16px;border-radius:20px;border:1px solid rgba(235,213,163,.18);background:rgba(28,69,77,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#F6EAD2;cursor:pointer" style-hover="background:rgba(36,84,93,.95)">
+          <span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:14px;background:rgba(145,215,232,.14);color:#91D7E8;display:grid;place-items:center;font-family:'Material Symbols Rounded';font-size:24px;line-height:1">{{ d.icon }}</span>
+          <span style="display:flex;flex-direction:column;min-width:0;flex:1">
+            <span style="font-size:17px;font-weight:800;line-height:1.25">{{ d.label }}</span>
+            <span style="font-size:15px;color:#CFC3A8">{{ d.sub }}</span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sMap }}" hint-placeholder-val="{{ false }}">
+<div style="padding:{{ pagePad }};max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+  <div>
+    <h1 style="margin:0;font-size:{{ h1Size }};font-weight:900;color:#FFF4DF;line-height:1.15">Világok</h1>
+    <p style="margin:6px 0 0;color:#CFC3A8">Válassz egy szigetet a térképen.</p>
+  </div>
+  <div style="position:relative;width:100%;aspect-ratio:3/2;border-radius:24px;overflow:hidden;border:1px solid rgba(235,213,163,.2);box-shadow:0 20px 50px rgba(4,18,22,.4)">
+    <img src="assets/map.png" alt="Hat lebegő sziget hidakkal összekötve" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+    <sc-for list="{{ hotspots }}" as="h" hint-placeholder-count="0">
+      <button onClick="{{ h.onClick }}" aria-label="{{ h.label }}" aria-pressed="{{ h.pressed }}" style="position:absolute;left:{{ h.left }};top:{{ h.top }};transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;min-height:48px;min-width:48px;padding:{{ h.pad }};border-radius:999px;border:2px solid {{ h.border }};background:{{ h.bg }};color:{{ h.color }};font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 6px 18px rgba(4,18,22,.4);white-space:nowrap">
+        <span style="width:30px;height:30px;border-radius:50%;background:{{ h.numBg }};color:{{ h.numColor }};display:grid;place-items:center;font-size:15px;font-weight:900">{{ h.n }}</span>
+        <sc-if value="{{ h.showLabel }}"><span>{{ h.label }}</span></sc-if>
+      </button>
+    </sc-for>
+  </div>
+  <sc-if value="{{ mapHasSel }}" hint-placeholder-val="{{ false }}">
+    <section aria-live="polite" style="background:#1C454D;border:1px solid rgba(235,213,163,.2);border-radius:24px;padding:22px 24px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <h2 style="margin:0;font-size:24px;font-weight:900;color:#FFF4DF">{{ mapSel.label }}</h2>
+        <button onClick="{{ mapClose }}" aria-label="Bezárás" style="width:48px;height:48px;flex:none;border-radius:14px;border:0;background:rgba(235,213,163,.1);color:#F6EAD2;cursor:pointer;font-family:'Material Symbols Rounded';font-size:24px">close</button>
+      </div>
+      <p style="margin:0;color:#E4D8BE;text-wrap:pretty">{{ mapSel.purpose }}</p>
+      <sc-if value="{{ mapSel.playable }}">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:6px">
+          <button onClick="{{ startMission }}" style="min-height:56px;padding:0 26px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:10px" style-hover="background:#F7D387">{{ missionBtnLabel }}<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+          <span style="font-size:16px;color:#CFC3A8">Az eltűnt energiamag · Kb. 8–10 perc</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ mapSel.soon }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:4px">
+          <span style="font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#18343A;background:#EBD5A3;padding:4px 10px;border-radius:999px">Előnézet</span>
+          <span style="color:#91D7E8;font-weight:700">Ez a terület hamarosan új küldetésekkel bővül.</span>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+  <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <h2 style="margin:6px 0 2px;font-size:17px;font-weight:800;color:#EBD5A3">Úti célok</h2>
+      <sc-for list="{{ hotspots }}" as="h" hint-placeholder-count="6">
+        <button onClick="{{ h.onClick }}" aria-pressed="{{ h.pressed }}" style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 14px;border-radius:16px;border:1px solid {{ h.listBorder }};background:#1C454D;color:#F6EAD2;font-size:17px;font-weight:700;text-align:left;cursor:pointer">
+          <span style="width:30px;height:30px;flex:none;border-radius:50%;background:{{ h.numBg }};color:{{ h.numColor }};display:grid;place-items:center;font-size:15px;font-weight:900">{{ h.n }}</span>
+          <span style="flex:1">{{ h.label }}</span>
+          <span style="font-size:14px;color:{{ h.tagColor }};font-weight:700">{{ h.tag }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sGear }}" hint-placeholder-val="{{ false }}">
+<div style="padding:{{ pagePad }};max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+  <sc-if value="{{ gearList }}">
+    <div>
+      <h1 style="margin:0;font-size:{{ h1Size }};font-weight:900;color:#FFF4DF;line-height:1.15">Felszerelés</h1>
+      <p style="margin:6px 0 0;color:#CFC3A8">{{ gearCount }} / 5 eszköz megszerezve. Minden eszköz egy olvasási stratégiára emlékeztet.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:{{ gearCols }};gap:14px">
+      <sc-for list="{{ tools }}" as="t" hint-placeholder-count="5">
+        <button onClick="{{ t.onClick }}" style="display:flex;flex-direction:column;gap:10px;text-align:left;padding:14px 14px 16px;border-radius:24px;border:1px solid {{ t.border }};background:#1C454D;color:#F6EAD2;cursor:pointer" style-hover="background:#22505A">
+          <span style="display:block;aspect-ratio:1/1;border-radius:18px;background:radial-gradient(70% 70% at 50% 45%, rgba(145,215,232,.16), rgba(11,35,41,.6));display:grid;place-items:center;padding:16px">
+            <img src="{{ t.src }}" alt="" style="max-width:100%;max-height:100%;object-fit:contain;opacity:{{ t.opacity }};filter:{{ t.filter }}">
+          </span>
+          <span style="font-size:17px;font-weight:800;line-height:1.25">{{ t.name }}</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:{{ t.statusColor }}"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ t.statusIcon }}</span>{{ t.status }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ gearDetail }}">
+    <button onClick="{{ gearBack }}" style="align-self:flex-start;min-height:48px;padding:0 16px 0 10px;border-radius:14px;border:1.5px solid rgba(235,213,163,.4);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">arrow_back</span>Vissza a felszereléshez</button>
+    <div style="display:grid;grid-template-columns:{{ detailCols }};gap:28px;align-items:center;background:#1C454D;border:1px solid rgba(235,213,163,.2);border-radius:28px;padding:{{ detailPad }}">
+      <div style="aspect-ratio:1/1;border-radius:22px;background:radial-gradient(70% 70% at 50% 45%, rgba(145,215,232,.2), rgba(11,35,41,.7));display:grid;place-items:center;padding:28px">
+        <img src="{{ gd.src }}" alt="{{ gd.name }}" style="max-width:100%;max-height:100%;object-fit:contain;opacity:{{ gd.opacity }};filter:{{ gd.filter }}">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:800;color:{{ gd.statusColor }}"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ gd.statusIcon }}</span>{{ gd.status }}</span>
+        <h1 style="margin:0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.15">{{ gd.name }}</h1>
+        <div style="background:#FFF4DF;color:#18343A;border-radius:18px;padding:16px 18px">
+          <div style="font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5A6E6B">Stratégia</div>
+          <div style="font-size:20px;font-weight:800;margin-top:4px">{{ gd.strategy }}</div>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#EBD5A3;margin-bottom:8px">Hogyan használd?</div>
+          <ol style="margin:0;padding-left:24px;display:flex;flex-direction:column;gap:6px;color:#F6EAD2">
+            <sc-for list="{{ gd.steps }}" as="st"><li>{{ st }}</li></sc-for>
+          </ol>
+        </div>
+        <p style="margin:0;font-size:16px;color:#CFC3A8">{{ gd.note }}</p>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sRest }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;min-height:{{ restMinH }};overflow:hidden;display:flex;align-items:center;justify-content:center">
+  <img src="assets/observatory.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%">
+  <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg, rgba(16,45,53,.25) 0%, rgba(16,45,53,.55) 45%, rgba(16,45,53,.92) 100%)"></div>
+  <div style="position:relative;width:100%;max-width:560px;padding:{{ pagePad }};display:flex;flex-direction:column;gap:16px;align-items:stretch">
+    <sc-if value="{{ restMenu }}" hint-placeholder-val="{{ true }}">
+      <div style="background:rgba(16,45,53,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(235,213,163,.2);border-radius:28px;padding:26px 24px;display:flex;flex-direction:column;gap:14px">
+        <h1 style="margin:0;font-size:{{ h1Size }};font-weight:900;color:#FFF4DF;line-height:1.15">Pihenő</h1>
+        <p style="margin:0 0 6px;color:#E4D8BE">Itt nincs feladat. Maradj, ameddig jólesik.</p>
+        <sc-for list="{{ restChoices }}" as="r" hint-placeholder-count="3">
+          <button onClick="{{ r.onClick }}" style="display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 16px;border-radius:18px;border:1px solid rgba(235,213,163,.22);background:#1C454D;color:#F6EAD2;font-size:18px;font-weight:800;text-align:left;cursor:pointer" style-hover="background:#24535C">
+            <span aria-hidden="true" style="width:42px;height:42px;flex:none;border-radius:50%;background:rgba(243,197,104,.16);color:#F3C568;display:grid;place-items:center;font-family:'Material Symbols Rounded';font-size:24px;line-height:1">{{ r.icon }}</span>{{ r.label }}
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ restBreath }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center">
+        <div style="width:240px;height:240px;display:grid;place-items:center">{{ sphereEl }}</div>
+        <div style="background:rgba(16,45,53,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(235,213,163,.2);border-radius:24px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;align-items:center">
+          <h1 style="margin:0;font-size:24px;font-weight:900;color:#FFF4DF">Lassan megérkezem</h1>
+          <p style="margin:0;font-size:19px;color:#F6EAD2;text-wrap:pretty">Lélegezz kényelmesen, a saját ritmusodban. A fényt akkor követheted, ha jólesik.</p>
+          <sc-if value="{{ rmOn }}"><p style="margin:0;font-size:15px;color:#CFC3A8">Csökkentett mozgás: a fény most nyugalomban marad.</p></sc-if>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+            <button onClick="{{ toggleBreath }}" style="min-height:52px;padding:0 20px;border-radius:16px;border:0;background:#91D7E8;color:#18343A;font-size:17px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">{{ breathIcon }}</span>{{ breathLabel }}</button>
+            <button onClick="{{ restExit }}" style="min-height:52px;padding:0 20px;border-radius:16px;border:1.5px solid rgba(235,213,163,.45);background:transparent;color:#F6EAD2;font-size:17px;font-weight:700;cursor:pointer">Kilépés</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ restText }}" hint-placeholder-val="{{ false }}">
+      <div style="background:rgba(16,45,53,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(235,213,163,.2);border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;gap:16px">
+        <span aria-hidden="true" style="width:52px;height:52px;border-radius:50%;background:rgba(243,197,104,.16);color:#F3C568;display:grid;place-items:center;font-family:'Material Symbols Rounded';font-size:28px;line-height:1">{{ restInfo.icon }}</span>
+        <h1 style="margin:0;font-size:26px;font-weight:900;color:#FFF4DF">{{ restInfo.title }}</h1>
+        <p style="margin:0;font-size:20px;line-height:1.6;color:#F6EAD2;text-wrap:pretty">{{ restInfo.text }}</p>
+        <button onClick="{{ restExit }}" style="align-self:flex-start;min-height:52px;padding:0 20px;border-radius:16px;border:1.5px solid rgba(235,213,163,.45);background:transparent;color:#F6EAD2;font-size:17px;font-weight:700;cursor:pointer">Kilépés</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ restFromMission }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ startMission }}" style="min-height:52px;padding:0 20px;border-radius:16px;border:0;background:#F3C568;color:#18343A;font-size:17px;font-weight:800;cursor:pointer">Vissza a küldetéshez</button>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sParent }}" hint-placeholder-val="{{ false }}">
+<div style="padding:{{ pagePad }};max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:14px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#91D7E8">Felnőtteknek</div>
+      <h1 style="margin:2px 0 0;font-size:30px;font-weight:800;color:#FFF4DF">Szülői tér</h1>
+    </div>
+    <button onClick="{{ leaveParent }}" style="min-height:48px;padding:0 16px 0 10px;border-radius:12px;border:1px solid rgba(235,213,163,.35);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">arrow_back</span>Vissza a gyerekfelülethez</button>
+  </div>
+
+  <sc-if value="{{ pGate }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#1C454D;border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:12px;max-width:480px">
+      <h2 style="margin:0;font-size:20px;font-weight:800">{{ pinTitle }}</h2>
+      <p style="margin:0;font-size:16px;color:#CFC3A8">Ez a helyi PIN csak kényelmi akadály, hogy a gyerek ne lépjen be véletlenül. Nem nyújt valódi fiókbiztonságot.</p>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:700;color:#EBD5A3">4 számjegyű PIN
+        <input type="password" inputMode="numeric" maxLength="4" value="{{ pinInput }}" onChange="{{ onPin }}" onKeyDown="{{ pinKey }}" aria-label="PIN-kód" style="min-height:52px;font-size:24px;letter-spacing:.4em;padding:0 16px;border-radius:12px;border:1.5px solid rgba(235,213,163,.35);background:#102D35;color:#FFF4DF;max-width:200px">
+      </label>
+      <sc-if value="{{ pinErr }}"><div role="alert" style="font-size:15px;color:#F3C568">{{ pinErr }}</div></sc-if>
+      <button onClick="{{ submitPin }}" style="align-self:flex-start;min-height:52px;padding:0 22px;border-radius:12px;border:0;background:#F3C568;color:#18343A;font-size:17px;font-weight:800;cursor:pointer">{{ pinBtn }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ pIn }}" hint-placeholder-val="{{ false }}">
+    <div role="tablist" style="display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid rgba(235,213,163,.15);padding-bottom:10px">
+      <sc-for list="{{ pTabs }}" as="pt" hint-placeholder-count="3">
+        <button role="tab" aria-selected="{{ pt.selected }}" onClick="{{ pt.onClick }}" style="min-height:48px;padding:0 16px;border-radius:12px;border:0;background:{{ pt.bg }};color:{{ pt.color }};font-size:16px;font-weight:800;cursor:pointer">{{ pt.label }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ pOverview }}">
+      <p style="margin:0;font-size:16px;color:#CFC3A8;border-left:0;background:rgba(145,215,232,.08);padding:12px 16px;border-radius:12px">Az alkalmazás gyakorlást és megfigyelést támogat. A feladatok eredményei önmagukban nem állapítják meg a tanulási nehézség okát.</p>
+      <sc-if value="{{ noActivity }}">
+        <div style="background:#1C454D;border-radius:18px;padding:28px 24px;color:#E4D8BE;font-size:17px">Itt jelennek meg a küldetések során gyűjtött megfigyelések.</div>
+      </sc-if>
+      <sc-if value="{{ hasActivity }}">
+        <div style="background:#1C454D;border-radius:18px;overflow:hidden">
+          <sc-for list="{{ obsRows }}" as="o">
+            <div style="display:flex;justify-content:space-between;gap:16px;padding:13px 20px;border-bottom:1px solid rgba(235,213,163,.1);font-size:16px">
+              <span style="color:#CFC3A8">{{ o.label }}</span><span style="font-weight:800;text-align:right">{{ o.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ hasRetellTexts }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <h2 style="margin:0;font-size:18px;font-weight:800">Leírt elmesélések</h2>
+            <sc-for list="{{ retellTexts }}" as="rt">
+              <blockquote style="margin:0;background:#FFF4DF;color:#18343A;border-radius:14px;padding:14px 16px;font-size:17px">{{ rt.text }}<div style="font-size:14px;color:#5A6E6B;margin-top:6px">{{ rt.time }}</div></blockquote>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <h2 style="margin:0;font-size:18px;font-weight:800">Legutóbbi események</h2>
+          <div style="background:#1C454D;border-radius:18px;padding:6px 0">
+            <sc-for list="{{ eventRows }}" as="e">
+              <div style="display:flex;gap:14px;padding:8px 20px;font-size:15px"><span style="color:#91D7E8;font-variant-numeric:tabular-nums;flex:none;width:96px">{{ e.time }}</span><span>{{ e.text }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font-size:18px;font-weight:800">Szülői jegyzetek</h2>
+        <textarea value="{{ noteDraft }}" onChange="{{ onNoteDraft }}" rows="3" placeholder="Pl. ma szívesebben hallgatta, mint olvasta a szöveget." aria-label="Új jegyzet" style="font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(235,213,163,.3);background:#102D35;color:#FFF4DF;resize:vertical"></textarea>
+        <button onClick="{{ addNote }}" style="align-self:flex-start;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:#F3C568;color:#18343A;font-size:16px;font-weight:800;cursor:pointer">Jegyzet mentése</button>
+        <sc-for list="{{ notes }}" as="nt">
+          <div style="display:flex;gap:12px;align-items:flex-start;background:#1C454D;border-radius:14px;padding:12px 14px">
+            <div style="flex:1"><div style="font-size:16px;white-space:pre-wrap">{{ nt.text }}</div><div style="font-size:14px;color:#CFC3A8;margin-top:4px">{{ nt.time }}</div></div>
+            <button onClick="{{ nt.onDelete }}" aria-label="Jegyzet törlése" style="width:48px;height:48px;flex:none;border-radius:12px;border:0;background:transparent;color:#CFC3A8;cursor:pointer;font-family:'Material Symbols Rounded';font-size:22px">delete</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ pSettings }}">
+      <div style="background:#1C454D;border-radius:18px;padding:8px 0">
+        <label style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(235,213,163,.1)">
+          <span style="font-weight:700">Megjelenített név</span>
+          <input value="{{ nameVal }}" onChange="{{ onName }}" maxLength="24" style="min-height:48px;font-size:17px;padding:0 14px;border-radius:12px;border:1.5px solid rgba(235,213,163,.3);background:#102D35;color:#FFF4DF;width:220px;max-width:100%">
+        </label>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:14px 20px;border-bottom:1px solid rgba(235,213,163,.1)">
+          <label for="ts" style="display:flex;justify-content:space-between;font-weight:700">Olvasási betűméret<span style="color:#91D7E8">{{ textSizeLabel }}</span></label>
+          <input id="ts" type="range" min="18" max="30" step="1" value="{{ textSize }}" onChange="{{ onTextSize }}" style="width:100%;accent-color:#F3C568;min-height:32px">
+          <div style="background:#FFF4DF;color:#18343A;border-radius:12px;padding:12px 16px;font-size:{{ readSize }};line-height:1.65">Mira a műhelyhez sietett.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:14px 20px;border-bottom:1px solid rgba(235,213,163,.1)">
+          <span style="font-weight:700">Felolvasás sebessége</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ rateOpts }}" as="ro">
+              <button onClick="{{ ro.onClick }}" aria-pressed="{{ ro.pressed }}" style="min-height:48px;padding:0 16px;border-radius:12px;border:1.5px solid {{ ro.border }};background:{{ ro.bg }};color:{{ ro.color }};font-size:16px;font-weight:800;cursor:pointer">{{ ro.label }}</button>
+            </sc-for>
+          </div>
+          <span style="font-size:15px;color:#CFC3A8">{{ narrStatusText }}</span>
+        </div>
+        <sc-for list="{{ toggles }}" as="tg">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(235,213,163,.1)">
+            <span><span style="font-weight:700;display:block">{{ tg.label }}</span><span style="font-size:15px;color:#CFC3A8">{{ tg.sub }}</span></span>
+            <button role="switch" aria-checked="{{ tg.on }}" aria-label="{{ tg.label }}" onClick="{{ tg.onClick }}" style="position:relative;width:60px;height:34px;flex:none;border-radius:999px;border:0;background:{{ tg.track }};cursor:pointer;padding:0">
+              <span style="position:absolute;top:4px;left:{{ tg.knob }};width:26px;height:26px;border-radius:50%;background:#FFF4DF;transition:left .15s"></span>
+            </button>
+          </div>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:14px 20px">
+          <span style="font-weight:700">Helyi tevékenységadatok törlése</span>
+          <span style="font-size:15px;color:#CFC3A8">Törli a küldetés állapotát, az eseményeket, a jegyzeteket, a megszerzett eszközöket és a saját szövegeket ezen az eszközön. A beállítások megmaradnak.</span>
+          <sc-if value="{{ notConfirmClear }}">
+            <button onClick="{{ askClear }}" style="align-self:flex-start;min-height:48px;padding:0 18px;border-radius:12px;border:1.5px solid #EBD5A3;background:transparent;color:#F6EAD2;font-size:16px;font-weight:800;cursor:pointer">Adatok törlése</button>
+          </sc-if>
+          <sc-if value="{{ confirmClear }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <span style="font-weight:700;color:#F3C568">Biztosan törlöd?</span>
+              <button onClick="{{ doClear }}" style="min-height:48px;padding:0 18px;border-radius:12px;border:0;background:#F3C568;color:#18343A;font-size:16px;font-weight:800;cursor:pointer">Igen, törlöm</button>
+              <button onClick="{{ cancelClear }}" style="min-height:48px;padding:0 18px;border-radius:12px;border:1.5px solid rgba(235,213,163,.4);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer">Mégsem</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ pHomework }}">
+      <sc-if value="{{ hwEditing }}">
+        <p style="margin:0;color:#CFC3A8;font-size:16px">Illessz be egy rövid magyar bekezdést, és készíts belőle egy gyakorlófeladatot. A kérdést és a válaszokat te írod meg; az alkalmazás nem generál tartalmat.</p>
+        <div style="background:#1C454D;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px">
+          <h2 style="margin:0;font-size:17px;font-weight:800;color:#EBD5A3">1. Szöveg beillesztése</h2>
+          <textarea value="{{ hw.text }}" onChange="{{ onHwText }}" rows="6" placeholder="Illeszd ide a szöveget…" aria-label="Saját szöveg" style="font-size:17px;line-height:1.6;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(235,213,163,.3);background:#102D35;color:#FFF4DF;resize:vertical"></textarea>
+          <button onClick="{{ hwSplit }}" style="align-self:flex-start;min-height:48px;padding:0 18px;border-radius:12px;border:1.5px solid #91D7E8;background:transparent;color:#91D7E8;font-size:16px;font-weight:800;cursor:pointer">Szakaszokra bontás</button>
+        </div>
+        <div style="background:#1C454D;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px">
+          <h2 style="margin:0;font-size:17px;font-weight:800;color:#EBD5A3">2. Szakaszok szerkesztése</h2>
+          <sc-if value="{{ hwNoSections }}"><span style="font-size:15px;color:#CFC3A8">Még nincsenek szakaszok. Bontsd fel a szöveget, vagy adj hozzá egyet.</span></sc-if>
+          <sc-for list="{{ hwSections }}" as="hs">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="font-weight:800;color:#91D7E8;width:28px;padding-top:12px">{{ hs.n }}.</span>
+              <textarea value="{{ hs.text }}" onChange="{{ hs.onChange }}" rows="3" aria-label="{{ hs.aria }}" style="flex:1;min-width:0;font-size:16px;line-height:1.55;padding:10px 12px;border-radius:12px;border:1.5px solid rgba(235,213,163,.3);background:#102D35;color:#FFF4DF;resize:vertical"></textarea>
+              <button onClick="{{ hs.onRemove }}" aria-label="Szakasz törlése" style="width:48px;height:48px;flex:none;border-radius:12px;border:0;background:transparent;color:#CFC3A8;cursor:pointer;font-family:'Material Symbols Rounded';font-size:22px">delete</button>
+            </div>
+          </sc-for>
+          <button onClick="{{ hwAddSection }}" style="align-self:flex-start;min-height:48px;padding:0 16px;border-radius:12px;border:1.5px solid rgba(235,213,163,.35);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer">+ Új szakasz</button>
+        </div>
+        <div style="background:#1C454D;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px">
+          <h2 style="margin:0;font-size:17px;font-weight:800;color:#EBD5A3">3–4. Kérdés és válaszlehetőségek</h2>
+          <input value="{{ hw.question }}" onChange="{{ onHwQuestion }}" placeholder="Kérdés" aria-label="Kérdés" style="min-height:52px;font-size:17px;padding:0 14px;border-radius:12px;border:1.5px solid rgba(235,213,163,.3);background:#102D35;color:#FFF4DF">
+          <sc-for list="{{ hwOptions }}" as="ho">
+            <div style="display:flex;gap:8px;align-items:center">
+              <button onClick="{{ ho.onCorrect }}" role="radio" aria-checked="{{ ho.isCorrect }}" aria-label="{{ ho.radioLabel }}" style="width:48px;height:48px;flex:none;border-radius:12px;border:1.5px solid {{ ho.border }};background:{{ ho.bg }};color:{{ ho.color }};cursor:pointer;font-family:'Material Symbols Rounded';font-size:24px">{{ ho.icon }}</button>
+              <input value="{{ ho.text }}" onChange="{{ ho.onChange }}" placeholder="{{ ho.ph }}" aria-label="{{ ho.ph }}" style="flex:1;min-width:0;min-height:48px;font-size:16px;padding:0 14px;border-radius:12px;border:1.5px solid rgba(235,213,163,.3);background:#102D35;color:#FFF4DF">
+            </div>
+          </sc-for>
+          <span style="font-size:14px;color:#CFC3A8">A pipával jelöld a helyes választ.</span>
+        </div>
+        <sc-if value="{{ hwMsg }}"><div role="status" style="color:#F3C568;font-weight:700">{{ hwMsg }}</div></sc-if>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onClick="{{ hwPreviewOpen }}" style="min-height:52px;padding:0 20px;border-radius:12px;border:1.5px solid #91D7E8;background:transparent;color:#91D7E8;font-size:17px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">visibility</span>5. Előnézet</button>
+          <button onClick="{{ hwSave }}" style="min-height:52px;padding:0 20px;border-radius:12px;border:0;background:#F3C568;color:#18343A;font-size:17px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">save</span>6. Mentés</button>
+        </div>
+        <sc-if value="{{ hwHasSaved }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <h2 style="margin:8px 0 0;font-size:18px;font-weight:800">Mentett feladatok</h2>
+            <sc-for list="{{ hwSaved }}" as="sv">
+              <div style="display:flex;gap:8px;align-items:center;background:#1C454D;border-radius:14px;padding:8px 8px 8px 16px">
+                <div style="flex:1;min-width:0"><div style="font-weight:700">{{ sv.title }}</div><div style="font-size:14px;color:#CFC3A8">{{ sv.meta }}</div></div>
+                <button onClick="{{ sv.onOpen }}" style="min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid #91D7E8;background:transparent;color:#91D7E8;font-size:15px;font-weight:800;cursor:pointer">Előnézet</button>
+                <button onClick="{{ sv.onDelete }}" aria-label="Feladat törlése" style="width:48px;height:48px;flex:none;border-radius:12px;border:0;background:transparent;color:#CFC3A8;cursor:pointer;font-family:'Material Symbols Rounded';font-size:22px">delete</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+      <sc-if value="{{ hwPreviewing }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <span style="font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#18343A;background:#EBD5A3;padding:4px 10px;border-radius:999px">Gyerek nézet · előnézet</span>
+          <button onClick="{{ pvClose }}" style="min-height:48px;padding:0 16px;border-radius:12px;border:1.5px solid rgba(235,213,163,.4);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer">Vissza a szerkesztéshez</button>
+        </div>
+        <div style="background:#0B2329;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:16px">
+          <sc-for list="{{ pvSections }}" as="ps">
+            <div style="background:#FFF4DF;color:#18343A;border-radius:20px;padding:20px 22px;font-size:{{ readSize }};line-height:1.65;max-width:65ch">
+              <div style="font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#5A6E6B;margin-bottom:6px">{{ ps.label }}</div>{{ ps.text }}
+            </div>
+          </sc-for>
+          <h2 style="margin:6px 0 0;font-size:24px;font-weight:900;color:#FFF4DF">{{ pv.question }}</h2>
+          <sc-for list="{{ pvOptions }}" as="po">
+            <button onClick="{{ po.onClick }}" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:12px 16px;border-radius:18px;border:2px solid {{ po.border }};background:{{ po.bg }};color:#F6EAD2;font-size:18px;font-weight:700;text-align:left;cursor:pointer">
+              <span style="flex:1">{{ po.text }}</span>
+              <sc-if value="{{ po.showTag }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:15px;font-weight:800;color:{{ po.tagColor }}"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ po.icon }}</span>{{ po.tag }}</span></sc-if>
+            </button>
+          </sc-for>
+          <sc-if value="{{ pvFeedback }}"><div role="status" style="background:rgba(145,215,232,.12);border:1px solid rgba(145,215,232,.5);border-radius:16px;padding:14px 16px;font-size:18px">{{ pvFeedback }}</div></sc-if>
+        </div>
+      </sc-if>
+    </sc-if>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sMission }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <header style="position:sticky;top:0;z-index:6;background:#0B2329;border-bottom:1px solid rgba(235,213,163,.12);display:flex;align-items:center;gap:10px;padding:8px 12px;min-height:66px">
+    <button onClick="{{ exitMission }}" aria-label="Kilépés a küldetésből (az állapot mentve marad)" style="min-height:48px;padding:0 14px 0 10px;border-radius:14px;border:0;background:rgba(235,213,163,.08);color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">close</span>{{ exitLabel }}</button>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="font-size:15px;font-weight:800;color:#EBD5A3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">{{ stageNum }} · {{ stageName }}</div>
+      <div aria-hidden="true" style="display:flex;gap:5px">
+        <sc-for list="{{ stageDots }}" as="sd" hint-placeholder-count="8"><span style="height:6px;width:{{ sd.w }};border-radius:3px;background:{{ sd.bg }};transition:width .2s"></span></sc-for>
+      </div>
+    </div>
+    <sc-if value="{{ showTopAudio }}">
+      <button onClick="{{ topAudio }}" aria-label="{{ topAudioLabel }}" style="width:48px;height:48px;border-radius:14px;border:0;background:rgba(145,215,232,.14);color:#91D7E8;cursor:pointer;font-family:'Material Symbols Rounded';font-size:24px">{{ topAudioIcon }}</button>
+    </sc-if>
+    <button onClick="{{ openHelp }}" style="min-height:48px;padding:0 14px 0 10px;border-radius:14px;border:0;background:rgba(145,215,232,.14);color:#91D7E8;font-size:16px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">help</span>{{ helpLabel }}</button>
+  </header>
+
+  <div style="flex:1;width:100%;max-width:780px;margin:0 auto;padding:{{ missionPad }};display:flex;flex-direction:column;gap:20px">
+
+    <sc-if value="{{ st0 }}">
+      <div style="border-radius:24px;overflow:hidden;aspect-ratio:3/2;box-shadow:0 20px 50px rgba(4,18,22,.4)"><img src="assets/bridge.png" alt="A kialudt fényhíd és a kapu melletti üres energiaállvány" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+      <div style="font-size:14px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#F3C568">Első küldetés</div>
+      <h1 style="margin:-8px 0 0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.15">Az eltűnt energiamag</h1>
+      <p style="margin:0;font-size:20px;line-height:1.6;color:#F6EAD2;text-wrap:pretty">A lebegő város két része között kialudtak a fényhíd lámpái. Mira, az akadémia fiatal hőse, elindul kideríteni, mi történt. Segíts neki összegyűjteni és összekapcsolni a nyomokat!</p>
+      <button onClick="{{ begin }}" style="align-self:flex-start;min-height:56px;padding:0 30px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(243,197,104,.25)" style-hover="background:#F7D387">Indulhatunk<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+    </sc-if>
+
+    <sc-if value="{{ st1 }}">
+      <h1 style="margin:0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.2">Hogyan ismerkednél meg a történettel?</h1>
+      <p style="margin:-6px 0 0;color:#CFC3A8">Ez csak azt választja ki, hogyan jelenik meg a szöveg. Legközelebb másikat is választhatsz.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ modes }}" as="md" hint-placeholder-count="3">
+          <button onClick="{{ md.onClick }}" aria-disabled="{{ md.disabled }}" style="display:flex;align-items:center;gap:16px;min-height:80px;padding:14px 18px;border-radius:22px;border:2px solid {{ md.border }};background:#1C454D;color:#F6EAD2;text-align:left;cursor:{{ md.cursor }};opacity:{{ md.opacity }}" style-hover="background:#22505A">
+            <span aria-hidden="true" style="width:52px;height:52px;flex:none;border-radius:16px;background:rgba(243,197,104,.16);color:#F3C568;display:grid;place-items:center;font-family:'Material Symbols Rounded';font-size:28px;line-height:1">{{ md.icon }}</span>
+            <span style="flex:1;display:flex;flex-direction:column"><span style="font-size:19px;font-weight:900">{{ md.label }}</span><span style="font-size:15px;color:#CFC3A8">{{ md.desc }}</span></span>
+            <sc-if value="{{ md.disabled }}"><span style="font-size:14px;font-weight:800;color:#EBD5A3">Nem elérhető</span></sc-if>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ narrNotice }}">
+        <div role="status" style="display:flex;gap:12px;align-items:flex-start;background:rgba(235,213,163,.1);border:1px solid rgba(235,213,163,.3);border-radius:18px;padding:14px 16px;font-size:16px">
+          <span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#EBD5A3">info</span><span>{{ narrNoticeText }}</span>
+        </div>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ st2 }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div style="font-size:16px;font-weight:800;color:#EBD5A3">{{ secLabel }}</div>
+        <button onClick="{{ openGlossary }}" style="min-height:48px;padding:0 14px 0 10px;border-radius:14px;border:1.5px solid rgba(145,215,232,.5);background:transparent;color:#91D7E8;font-size:16px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">diamond</span>Szómagyarázat</button>
+      </div>
+      <sc-if value="{{ textVisible }}">
+        <article style="background:#FFF4DF;color:#18343A;border-radius:24px;padding:{{ readPad }};box-shadow:0 16px 40px rgba(4,18,22,.35)">
+          <p style="margin:0;font-size:{{ readSize }};line-height:1.65;max-width:62ch;text-align:left"><sc-for list="{{ secSegs }}" as="sg"><sc-if value="{{ sg.isWord }}"><button onClick="{{ sg.onClick }}" aria-label="{{ sg.aria }}" style="font:inherit;line-height:inherit;color:#18343A;background:rgba(243,197,104,.42);border:0;border-bottom:2px dotted #18343A;padding:0 3px;margin:0;border-radius:5px;cursor:pointer">{{ sg.text }}</button></sc-if><sc-if value="{{ sg.plain }}"><span>{{ sg.text }}</span></sc-if></sc-for></p>
+          <p style="margin:16px 0 0;font-size:15px;color:#4E6461">A kiemelt szavakra koppintva megnézheted a jelentésüket.</p>
+        </article>
+      </sc-if>
+      <sc-if value="{{ textHidden }}">
+        <div style="background:#1C454D;border-radius:24px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+          <button onClick="{{ playSection }}" aria-label="{{ playLabel }}" style="width:96px;height:96px;border-radius:50%;border:0;background:#91D7E8;color:#18343A;cursor:pointer;font-family:'Material Symbols Rounded';font-size:48px">{{ playIcon }}</button>
+          <div style="font-size:18px;font-weight:800">{{ playLabel }}</div>
+          <button onClick="{{ toggleText }}" style="min-height:48px;padding:0 16px;border-radius:14px;border:1.5px solid rgba(235,213,163,.4);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer">Szöveg megjelenítése</button>
+        </div>
+      </sc-if>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button onClick="{{ readBack }}" style="min-height:56px;padding:0 18px 0 12px;border-radius:16px;border:1.5px solid rgba(235,213,163,.45);background:transparent;color:#F6EAD2;font-size:17px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">arrow_back</span>Vissza</button>
+        <sc-if value="{{ showSecAudio }}">
+          <button onClick="{{ playSection }}" style="min-height:56px;padding:0 18px 0 12px;border-radius:16px;border:0;background:rgba(145,215,232,.16);color:#91D7E8;font-size:17px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">{{ playIcon }}</span>{{ playBtnLabel }}</button>
+        </sc-if>
+        <div style="flex:1"></div>
+        <button onClick="{{ readNext }}" style="min-height:56px;padding:0 24px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px" style-hover="background:#F7D387">Tovább<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ st3 }}">
+      <h1 style="margin:0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.2">Miért aludtak ki a híd lámpái?</h1>
+      <div role="radiogroup" aria-label="Válaszlehetőségek" style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ qOptions }}" as="qo" hint-placeholder-count="3">
+          <button onClick="{{ qo.onClick }}" aria-pressed="{{ qo.pressed }}" style="display:flex;align-items:center;gap:12px;min-height:64px;padding:14px 18px;border-radius:20px;border:2px solid {{ qo.border }};background:{{ qo.bg }};color:#F6EAD2;font-size:19px;font-weight:700;text-align:left;cursor:pointer;opacity:{{ qo.opacity }}" style-hover="border-color:#EBD5A3">
+            <span style="flex:1">{{ qo.text }}</span>
+            <sc-if value="{{ qo.showTag }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:15px;font-weight:800;color:{{ qo.tagColor }};flex:none"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">{{ qo.icon }}</span>{{ qo.tag }}</span></sc-if>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ qWrong }}">
+        <div role="status" style="background:rgba(235,213,163,.1);border:1px solid rgba(235,213,163,.4);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:18px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#F3C568">lightbulb</span><span>Keressük meg együtt a nyomot! Mit mondott a hídőr az energiamagról?</span></div>
+          <sc-if value="{{ qGuided }}">
+            <div style="background:#FFF4DF;color:#18343A;border-radius:14px;padding:14px 16px;font-size:18px;line-height:1.6">Nézd meg ezt a mondatot: <mark style="background:rgba(243,197,104,.6);color:#18343A;padding:0 3px;border-radius:4px">„A hídőr elmondta, hogy reggel egy szerelő vitte el az energiamagot ellenőrzésre.”</mark> Hol volt akkor az energiamag?</div>
+          </sc-if>
+          <button onClick="{{ openStory2 }}" style="align-self:flex-start;min-height:48px;padding:0 16px 0 12px;border-radius:14px;border:1.5px solid #91D7E8;background:transparent;color:#91D7E8;font-size:16px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">menu_book</span>Megnézem a történetet</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ qSolved }}">
+        <div role="status" style="background:rgba(145,215,232,.12);border:1px solid rgba(145,215,232,.55);border-radius:20px;padding:16px 18px;display:flex;gap:10px;align-items:flex-start;font-size:18px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#91D7E8">check_circle</span><span>Jól összekapcsoltad a nyomokat. Az energiamag hiányzott a foglalatból.</span></div>
+        <button onClick="{{ toStage4 }}" style="align-self:flex-end;min-height:56px;padding:0 24px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px">Tovább<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ st4 }}">
+      <h1 style="margin:0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.2">Tedd sorrendbe az eseményeket!</h1>
+      <p style="margin:-6px 0 0;font-size:16px;color:#CFC3A8">Koppints egy kártyára, majd a helyére. Húzással is működik.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ seqSlots }}" as="sl" hint-placeholder-count="3">
+          <div onDragOver="{{ sl.onDragOver }}" onDrop="{{ sl.onDrop }}" style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span style="font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#F3C568">{{ sl.label }}</span>
+              <sc-if value="{{ sl.showStatus }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:15px;font-weight:800;color:{{ sl.statusColor }}"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ sl.statusIcon }}</span>{{ sl.status }}</span></sc-if>
+            </div>
+            <button onClick="{{ sl.onClick }}" draggable="{{ sl.draggable }}" onDragStart="{{ sl.onDragStart }}" aria-label="{{ sl.aria }}" style="display:flex;align-items:center;gap:14px;min-height:92px;padding:10px 14px;border-radius:20px;border:2px {{ sl.borderStyle }} {{ sl.border }};background:{{ sl.bg }};color:{{ sl.color }};text-align:left;cursor:pointer;font-size:17px;font-weight:700">
+              <sc-if value="{{ sl.filled }}"><img src="{{ sl.src }}" alt="" style="width:70px;height:70px;object-fit:contain;flex:none"><span style="flex:1">{{ sl.text }}</span></sc-if>
+              <sc-if value="{{ sl.empty }}"><span style="flex:1;text-align:center;font-size:16px;color:{{ sl.color }}">{{ sl.emptyText }}</span></sc-if>
+            </button>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ seqPoolHas }}">
+        <div onDragOver="{{ poolDragOver }}" onDrop="{{ poolDrop }}" style="display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:22px;background:rgba(11,35,41,.6);border:1px solid rgba(235,213,163,.14)">
+          <span style="font-size:15px;font-weight:800;color:#EBD5A3">Eseménykártyák</span>
+          <sc-for list="{{ seqPool }}" as="pc" hint-placeholder-count="3">
+            <button onClick="{{ pc.onClick }}" draggable="true" onDragStart="{{ pc.onDragStart }}" aria-pressed="{{ pc.pressed }}" style="display:flex;align-items:center;gap:14px;min-height:88px;padding:10px 14px;border-radius:18px;border:3px solid {{ pc.border }};background:#FFF4DF;color:#18343A;text-align:left;cursor:grab;font-size:17px;font-weight:700;box-shadow:{{ pc.shadow }};transform:{{ pc.lift }};transition:transform .12s, box-shadow .12s">
+              <img src="{{ pc.src }}" alt="" style="width:66px;height:66px;object-fit:contain;flex:none">
+              <span style="flex:1">{{ pc.text }}</span>
+              <sc-if value="{{ pc.pressed }}"><span style="font-size:14px;font-weight:900;color:#18343A;background:#F3C568;padding:3px 9px;border-radius:999px;flex:none">Kiválasztva</span></sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ seqHintShow }}">
+        <div role="status" style="background:rgba(235,213,163,.1);border:1px solid rgba(235,213,163,.4);border-radius:18px;padding:14px 16px;display:flex;gap:10px;font-size:17px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#F3C568">lightbulb</span><span>Melyik eseményt vette észre Mira, amikor megérkezett a hídhoz?</span></div>
+      </sc-if>
+      <sc-if value="{{ seqSolved }}">
+        <div role="status" style="background:rgba(145,215,232,.12);border:1px solid rgba(145,215,232,.55);border-radius:20px;padding:16px 18px;display:flex;gap:10px;font-size:18px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#91D7E8">check_circle</span><span>Pontos sorrend! Végigkövetted, hogyan oldódott meg a probléma.</span></div>
+      </sc-if>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <sc-if value="{{ seqShowHintBtn }}">
+          <button onClick="{{ seqHint }}" style="min-height:52px;padding:0 16px 0 12px;border-radius:16px;border:1.5px solid rgba(235,213,163,.45);background:transparent;color:#F6EAD2;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">lightbulb</span>Tipp</button>
+        </sc-if>
+        <div style="flex:1"></div>
+        <sc-if value="{{ seqCanRetry }}">
+          <button onClick="{{ seqRetry }}" style="min-height:56px;padding:0 22px;border-radius:16px;border:0;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer">Újrapróbálom</button>
+        </sc-if>
+        <sc-if value="{{ seqCanCheckShow }}">
+          <button onClick="{{ seqCheck }}" disabled="{{ seqCheckDisabled }}" style="min-height:56px;padding:0 22px;border-radius:16px;border:0;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;opacity:{{ seqCheckOpacity }}">Megnézem a sorrendet</button>
+        </sc-if>
+        <sc-if value="{{ seqSolved }}">
+          <button onClick="{{ toStage5 }}" style="min-height:56px;padding:0 24px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px">Tovább<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ st5 }}">
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="assets/tool-goggles.png" alt="Nyomkereső szemüveg" style="width:96px;height:auto;flex:none">
+        <h1 style="margin:0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.2">Melyik mondatból tudjuk, hogy a szerelő befejezte a munkát?</h1>
+      </div>
+      <p style="margin:-6px 0 0;font-size:16px;color:#CFC3A8">Koppints a mondatra, amely a bizonyítékot tartalmazza.</p>
+      <article style="background:#FFF4DF;color:#18343A;border-radius:24px;padding:{{ evPad }};display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#5A6E6B;padding:0 12px 4px">2. rész</div>
+        <sc-for list="{{ evSentences }}" as="es" hint-placeholder-count="4">
+          <button onClick="{{ es.onClick }}" aria-pressed="{{ es.pressed }}" style="display:flex;align-items:flex-start;gap:10px;width:100%;min-height:48px;padding:8px 12px;border-radius:14px;border:2px solid {{ es.border }};background:{{ es.bg }};color:#18343A;font-size:{{ readSize }};line-height:1.6;text-align:left;cursor:pointer;font-weight:{{ es.weight }}" style-hover="background:rgba(243,197,104,.18)">
+            <span style="flex:1">{{ es.text }}</span>
+            <sc-if value="{{ es.showTag }}"><span style="display:inline-flex;align-items:center;gap:3px;font-size:14px;font-weight:900;color:{{ es.tagColor }};flex:none;padding-top:4px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ es.icon }}</span>{{ es.tag }}</span></sc-if>
+          </button>
+        </sc-for>
+      </article>
+      <sc-if value="{{ evWrong }}">
+        <div role="status" style="background:rgba(235,213,163,.1);border:1px solid rgba(235,213,163,.4);border-radius:18px;padding:14px 16px;display:flex;gap:10px;font-size:17px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#F3C568">lightbulb</span><span>{{ evWrongText }}</span></div>
+      </sc-if>
+      <sc-if value="{{ evSolved }}">
+        <div role="status" style="background:rgba(145,215,232,.12);border:1px solid rgba(145,215,232,.55);border-radius:20px;padding:16px 18px;display:flex;gap:10px;font-size:18px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#91D7E8">check_circle</span><span>Megtaláltad a bizonyítékot a szövegben.</span></div>
+        <button onClick="{{ toStage6 }}" style="align-self:flex-end;min-height:56px;padding:0 24px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px">Tovább<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ st6 }}">
+      <h1 style="margin:0;font-size:{{ h2Size }};font-weight:900;color:#FFF4DF;line-height:1.2">Most te vagy a küldetés mesélője. Mondd el a saját szavaiddal, mi történt!</h1>
+      <div style="background:#1C454D;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:15px;font-weight:800;color:#EBD5A3">Segítő kérdések, ha jólesik:</span>
+        <sc-for list="{{ exGuides }}" as="g"><div style="display:flex;gap:10px;align-items:center;font-size:18px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#91D7E8">chevron_right</span>{{ g }}</div></sc-for>
+      </div>
+      <div role="tablist" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <sc-for list="{{ exTabs }}" as="xt" hint-placeholder-count="2">
+          <button role="tab" aria-selected="{{ xt.selected }}" onClick="{{ xt.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:92px;padding:12px;border-radius:20px;border:2px solid {{ xt.border }};background:{{ xt.bg }};color:{{ xt.color }};font-size:17px;font-weight:800;cursor:pointer">
+            <span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1">{{ xt.icon }}</span>{{ xt.label }}
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ exSpokenOpen }}">
+        <div style="background:#1C454D;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <p style="margin:0;font-size:18px">Mesélj el mindent egy felnőttnek vagy egy barátodnak. Ha végeztetek, a felnőtt jelölje meg itt.</p>
+          <sc-if value="{{ exNotSpoken }}">
+            <button onClick="{{ markSpoken }}" style="align-self:flex-start;min-height:52px;padding:0 18px 0 12px;border-radius:14px;border:1.5px solid #EBD5A3;background:transparent;color:#F6EAD2;font-size:16px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">supervisor_account</span>Felnőtt: elmondta, megjelölöm</button>
+          </sc-if>
+          <sc-if value="{{ exSpoken }}">
+            <div role="status" style="display:flex;gap:8px;align-items:center;color:#91D7E8;font-weight:800"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">check_circle</span>Elmesélve – egy felnőtt megjelölte.</div>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ exWriteOpen }}">
+        <div style="background:#1C454D;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <label for="retell" style="font-size:16px;font-weight:700;color:#EBD5A3">Írd le két-három mondatban:</label>
+          <textarea id="retell" value="{{ exText }}" onChange="{{ onExText }}" rows="4" placeholder="A probléma az volt, hogy…" style="font-size:{{ readSize }};line-height:1.6;padding:14px 16px;border-radius:16px;border:2px solid rgba(235,213,163,.3);background:#FFF4DF;color:#18343A;resize:vertical"></textarea>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button onClick="{{ saveEx }}" style="min-height:52px;padding:0 18px;border-radius:14px;border:1.5px solid #91D7E8;background:transparent;color:#91D7E8;font-size:16px;font-weight:800;cursor:pointer">Mentés</button>
+            <sc-if value="{{ exSaved }}"><span role="status" style="display:inline-flex;gap:6px;align-items:center;color:#91D7E8;font-weight:800"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">check_circle</span>Elmentve ezen az eszközön</span></sc-if>
+            <sc-if value="{{ exMsg }}"><span style="color:#F3C568;font-weight:700">{{ exMsg }}</span></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ exCanFinish }}">
+        <button onClick="{{ finishMission }}" style="align-self:flex-end;min-height:56px;padding:0 24px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px">Küldetés lezárása<span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">arrow_forward</span></button>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ st7 }}">
+      <div style="position:relative;border-radius:28px;overflow:hidden;background:radial-gradient(90% 80% at 50% 70%, #1C454D, #0B2329);aspect-ratio:{{ resAspect }};display:flex;align-items:flex-end;justify-content:center;gap:4%;padding:6% 6% 5%">
+        {{ glowEl }}
+        <img src="assets/obj-bridge-lit.png" alt="A kivilágított híd" style="position:relative;width:52%;height:auto;object-fit:contain">
+        <img src="assets/obj-pedestal-lit.png" alt="Az energiaállvány a helyére tett energiamaggal" style="position:relative;width:26%;height:auto;object-fit:contain">
+      </div>
+      <h1 style="margin:0;font-size:{{ h1Size }};font-weight:900;color:#FFF4DF;line-height:1.15">Újra világít a fényhíd!</h1>
+      <p style="margin:-6px 0 0;font-size:20px;color:#F6EAD2;text-wrap:pretty">Összegyűjtötted a nyomokat, sorrendbe rendezted az eseményeket, és elmesélted a megoldást.</p>
+      <div style="display:flex;gap:16px;align-items:center;background:#1C454D;border:1px solid rgba(235,213,163,.3);border-radius:24px;padding:16px 18px">
+        <div style="width:110px;height:110px;flex:none;border-radius:20px;background:radial-gradient(70% 70% at 50% 45%, rgba(145,215,232,.22), rgba(11,35,41,.7));display:grid;place-items:center;padding:10px"><img src="assets/tool-goggles.png" alt="" style="max-width:100%;max-height:100%;object-fit:contain"></div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:14px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#EBD5A3">Új felszerelés</span>
+          <span style="font-size:21px;font-weight:900;color:#FFF4DF">Nyomkereső szemüveg</span>
+          <span style="font-size:17px;color:#E4D8BE">Ezzel a stratégiával megkeresheted a válaszhoz tartozó mondatot.</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button onClick="{{ goHome }}" style="min-height:56px;padding:0 24px;border:0;border-radius:16px;background:#F3C568;color:#18343A;font-size:18px;font-weight:900;cursor:pointer">Vissza a bázisra</button>
+        <button onClick="{{ goGearGoggles }}" style="min-height:56px;padding:0 22px;border-radius:16px;border:1.5px solid rgba(235,213,163,.45);background:transparent;color:#F6EAD2;font-size:17px;font-weight:700;cursor:pointer">Megnézem a felszerelést</button>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+</main>
+
+<sc-if value="{{ showBottomNav }}" hint-placeholder-val="{{ true }}">
+<nav aria-label="Fő navigáció" style="position:fixed;left:0;right:0;bottom:0;z-index:5;background:rgba(11,35,41,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(235,213,163,.14);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))">
+  <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="4">
+    <button onClick="{{ item.onClick }}" aria-current="{{ item.current }}" style="flex:1;min-height:62px;border:0;border-radius:16px;background:{{ item.bg }};color:{{ item.color }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;font-size:13px;font-weight:800">
+      <span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </button>
+  </sc-for>
+</nav>
+</sc-if>
+
+<sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeSheet }}" style="position:fixed;inset:0;z-index:20;background:rgba(6,20,24,.72);display:flex;align-items:{{ sheetAlign }};justify-content:center;padding:{{ sheetOuterPad }}">
+  <div role="dialog" aria-modal="true" aria-label="{{ sheetTitle }}" onClick="{{ stop }}" style="width:100%;max-width:580px;max-height:86vh;overflow:auto;background:#1C454D;border:1px solid rgba(235,213,163,.2);border-radius:{{ sheetRadius }};padding:22px 22px 26px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -10px 50px rgba(0,0,0,.4)">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <h2 style="margin:0;font-size:22px;font-weight:900;color:#FFF4DF">{{ sheetTitle }}</h2>
+      <button onClick="{{ closeSheet }}" aria-label="Bezárás" style="width:48px;height:48px;flex:none;border-radius:14px;border:0;background:rgba(235,213,163,.1);color:#F6EAD2;cursor:pointer;font-family:'Material Symbols Rounded';font-size:24px">close</button>
+    </div>
+
+    <sc-if value="{{ shGlossary }}">
+      <sc-for list="{{ glossList }}" as="gl">
+        <div style="background:#FFF4DF;color:#18343A;border-radius:18px;padding:14px 16px;border:3px solid {{ gl.border }}">
+          <div style="font-size:20px;font-weight:900">{{ gl.word }}</div>
+          <div style="font-size:18px;line-height:1.55;margin-top:2px">{{ gl.def }}</div>
+        </div>
+      </sc-for>
+    </sc-if>
+
+    <sc-if value="{{ shStory }}">
+      <sc-for list="{{ storySecs }}" as="ss">
+        <article style="background:#FFF4DF;color:#18343A;border-radius:18px;padding:16px 18px">
+          <div style="font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#5A6E6B;margin-bottom:4px">{{ ss.label }}</div>
+          <p style="margin:0;font-size:{{ readSize }};line-height:1.65"><sc-for list="{{ ss.sentences }}" as="sn"><span style="background:{{ sn.bg }};border-radius:4px">{{ sn.text }} </span></sc-for></p>
+        </article>
+      </sc-for>
+    </sc-if>
+
+    <sc-if value="{{ shHelp }}">
+      <sc-if value="{{ helpHintShown }}">
+        <div style="background:rgba(235,213,163,.1);border:1px solid rgba(235,213,163,.4);border-radius:16px;padding:14px 16px;display:flex;gap:10px;font-size:17px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#F3C568">lightbulb</span><span>{{ helpHintText }}</span></div>
+      </sc-if>
+      <sc-for list="{{ helpActions }}" as="ha">
+        <button onClick="{{ ha.onClick }}" style="display:flex;align-items:center;gap:14px;min-height:60px;padding:10px 16px;border-radius:16px;border:1px solid rgba(235,213,163,.2);background:#102D35;color:#F6EAD2;font-size:17px;font-weight:800;text-align:left;cursor:pointer" style-hover="background:#153A43">
+          <span aria-hidden="true" style="width:40px;height:40px;flex:none;border-radius:12px;background:rgba(145,215,232,.14);color:#91D7E8;display:grid;place-items:center;font-family:'Material Symbols Rounded';font-size:22px;line-height:1">{{ ha.icon }}</span>
+          <span style="display:flex;flex-direction:column"><span>{{ ha.label }}</span><span style="font-size:14px;font-weight:600;color:#CFC3A8">{{ ha.sub }}</span></span>
+        </button>
+      </sc-for>
+      <p style="margin:0;font-size:15px;color:#CFC3A8">Amit eddig csináltál, el van mentve.</p>
+    </sc-if>
+
+    <sc-if value="{{ shProfile }}">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:64px;height:64px;border-radius:50%;background:#102D35;border:2px solid #EBD5A3;display:grid;place-items:center;font-size:26px;font-weight:900">{{ initial }}</div>
+        <div><div style="font-size:20px;font-weight:900">{{ name }}</div><div style="font-size:15px;color:#CFC3A8">Az akadémia tanulója</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:#102D35;border-radius:16px;padding:12px 14px"><div style="font-size:24px;font-weight:900;color:#F3C568">{{ completedCount }} / 1</div><div style="font-size:14px;color:#CFC3A8">teljesített küldetés</div></div>
+        <div style="background:#102D35;border-radius:16px;padding:12px 14px"><div style="font-size:24px;font-weight:900;color:#F3C568">{{ gearCount }} / 5</div><div style="font-size:14px;color:#CFC3A8">felfedezett eszköz</div></div>
+      </div>
+      <button onClick="{{ goParent }}" style="align-self:flex-start;min-height:48px;padding:0 14px 0 10px;border-radius:12px;border:1px solid rgba(235,213,163,.3);background:transparent;color:#CFC3A8;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true" style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">lock</span>Szülői tér</button>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STORE='nova.hosakademia.v1';
+const STAGES=['Bevezetés','Gyakorlási mód','Történet','A probléma','Sorrend','Bizonyíték','Elmesélés','Megoldás'];
+// Mission content is data; screens only render it.
+const MISSION={
+  id:'energiamag',
+  sections:[
+    ['Mira az akadémia műhelyében dolgozott, amikor jelzés érkezett a fényhídról.','A híd lámpái kialudtak.','Mira odament, és észrevette, hogy a kapu melletti energiaállvány foglalata üres.'],
+    ['A hídőr elmondta, hogy reggel egy szerelő vitte el az energiamagot ellenőrzésre.','Mira a műhelyhez sietett.','Ott megtalálta a szerelőt, aki már végzett az ellenőrzéssel.','Az energiamag egy nyitott szállítódobozban feküdt.'],
+    ['Mira visszavitte az energiamagot a hídhoz.','Óvatosan a hatszögletű foglalatba illesztette.','A jelzőfény kéken felragyogott, és a híd lámpái sorban bekapcsoltak.','Mira szólt a hídőrnek, hogy a világítás újra működik.']
+  ],
+  glossary:[
+    {key:'foglalat',word:'foglalat',def:'Az a hely, ahová egy alkatrész pontosan beleilleszkedik.'},
+    {key:'energiamag',word:'energiamag',def:'A történetben egy olyan eszköz, amely energiát ad a híd lámpáinak.'},
+    {key:'ellenőrzés',word:'ellenőrzés',def:'Amikor valaki megvizsgálja, hogy egy eszköz megfelelően működik-e.'}
+  ],
+  question:{options:[
+    {id:'a',text:'Az energiamagot elvitték ellenőrzésre.',correct:true},
+    {id:'b',text:'A hídőr kikapcsolta a világítást.'},
+    {id:'c',text:'Mira bezárta az akadémiát.'}]},
+  sequence:{labels:['Először','Azután','Végül'],correct:['e1','e2','e3'],events:{
+    e1:{text:'Az energiaállvány foglalata üres.',src:'assets/obj-pedestal-empty.png'},
+    e2:{text:'Mira megtalálja az energiamagot a műhelyben.',src:'assets/obj-box.png'},
+    e3:{text:'Mira visszahelyezi az energiamagot, és a lámpák felgyulladnak.',src:'assets/obj-pedestal-lit.png'}}},
+  evidence:{section:1,correct:2,wrong1:'Ez a mondat mást mond el. Keress olyan mondatot, amely a szerelő munkájáról szól!',wrong2:'Figyeld a „végzett” szót! Melyik mondatban szerepel?'},
+  hints:['Olvasd el a küldetés leírását, majd indulj el Mirával!','Válaszd azt a módot, amelyik most kényelmes.','Ha egy szó ismeretlen, koppints rá, vagy nyisd meg a Szómagyarázatot.','Keressük meg együtt a nyomot! Mit mondott a hídőr az energiamagról?','Melyik eseményt vette észre Mira, amikor megérkezett a hídhoz?','Keress olyan mondatot, amely arról szól, hogy a szerelő végzett a munkával.','Kezdheted így: „A probléma az volt, hogy…”','Visszamehetsz a bázisra, vagy megnézheted a felszerelésedet.'],
+  adaptation:{passageLength:11,vocabulary:['foglalat','energiamag','ellenőrzés'],hintLevels:2,taskTypes:['choice','sequence','evidence','retell']}
+};
+const TOOLS=[
+  {id:'goggles',name:'Nyomkereső szemüveg',strategy:'Megkeresem a választ alátámasztó mondatot.',src:'assets/tool-goggles.png',steps:['Olvasd el újra a kérdést.','Keresd meg a szövegben azt a részt, amelyről a kérdés szól.','Mutass rá arra a mondatra, amely bizonyítja a válaszodat.']},
+  {id:'glove',name:'Időrendező kesztyű',strategy:'Sorrendbe rendezem az eseményeket.',src:'assets/tool-glove.png',steps:['Keresd meg, mi történt legelőször.','Kérdezd meg magadtól: és utána mi jött?','Nézd meg, hogyan oldódott meg a végén a probléma.']},
+  {id:'shield',name:'Lényeglátó pajzs',strategy:'Megfogalmazom, miről szól a történet.',src:'assets/tool-shield.png',steps:['Ki a főszereplő?','Mi volt a probléma?','Hogyan oldódott meg? Mondd el két-három mondatban.']},
+  {id:'crystal',name:'Szómagyarázó kristály',strategy:'Utánajárok az ismeretlen szavaknak.',src:'assets/tool-crystal.png',steps:['Vedd észre a szót, amelyet nem értesz.','Nézd meg a szómagyarázatot, vagy kérdezz meg valakit.','Olvasd el újra a mondatot az új jelentéssel.']},
+  {id:'compass',name:'Újratervező iránytű',strategy:'Választok egy másik segítséget vagy megközelítést.',src:'assets/tool-compass.png',steps:['Ha elakadsz, állj meg egy pillanatra.','Próbáld meghallgatni a szöveget, vagy kérj egy tippet.','Választhatsz egy másik eszközt is.']}
+];
+const HOTSPOTS=[
+  {id:'academy',label:'Akadémia',x:50,y:20,purpose:'Itt kezdődik minden kaland. Az akadémián ismerkedsz meg a hősökkel és a küldetésekkel.'},
+  {id:'signal',label:'Jelzőállomás',x:16,y:20,purpose:'Ide érkeznek a jelzések a városból. Itt azt gyakorolhatod, melyik információ fontos.'},
+  {id:'lab',label:'Nyomozólabor',x:15,y:52,purpose:'Nyomokat vizsgálsz, és összekapcsolod az okokat a következményekkel.'},
+  {id:'garden',label:'Emlékkert',x:50,y:58,purpose:'Itt gyakorolhatod, hogyan idézd fel egy történet eseményeit sorrendben.'},
+  {id:'library',label:'Szókönyvtár',x:85,y:20,purpose:'Új szavak jelentésének járhatsz itt utána.'},
+  {id:'energy',label:'Energiaállomás',x:84,y:54,purpose:'Az első küldetés helyszíne. Segíts Mirának helyreállítani a fényhíd energiaellátását!',playable:true}
+];
+const MODES={read:'Elolvasom',listen:'Meghallgatom',both:'Olvasom és hallgatom'};
+
+// Narration service: recorded files (by id) take priority over browser speech.
+const Narrator={voice:null,available:null,recorded:{},_a:null,
+  init(cb){
+    if(typeof window==='undefined'||!window.speechSynthesis||!window.SpeechSynthesisUtterance){this.available=false;cb(false);return;}
+    const pick=()=>{const vs=speechSynthesis.getVoices();if(!vs.length)return;const v=vs.find(v=>/^hu([-_]|$)/i.test(v.lang));this.voice=v||null;this.available=!!v;cb(this.available);};
+    pick();speechSynthesis.addEventListener('voiceschanged',pick);
+    setTimeout(()=>{if(this.available===null){this.available=false;cb(false);}},2500);
+  },
+  speak(id,text,rate,onEnd){
+    this.stop();
+    if(this.recorded[id]){const a=new Audio(this.recorded[id]);this._a=a;a.playbackRate=rate;a.onended=onEnd;a.play();return;}
+    const u=new SpeechSynthesisUtterance(text);u.voice=this.voice;u.lang='hu-HU';u.rate=rate;u.onend=onEnd;u.onerror=onEnd;speechSynthesis.speak(u);
+  },
+  stop(){if(this._a){this._a.pause();this._a=null;}if(typeof window!=='undefined'&&window.speechSynthesis)speechSynthesis.cancel();}
+};
+
+function freshMission(){const ids=['e1','e2','e3'];let o;do{o=[...ids].sort(()=>Math.random()-.5);}while(o.join()===ids.join());
+  return {started:false,completed:false,stage:0,mode:null,section:0,showText:true,q:{picked:[],solved:false},seq:{order:o,slots:[null,null,null],sel:null,checks:0,result:null,solved:false,hint:false},ev:{picked:[],solved:false},ex:{kind:null,text:'',spoken:false,saved:false}};}
+const DEF_SETTINGS={name:'Lacika',textSize:22,rate:1,sound:false,reducedMotion:false};
+function blankHw(){return {text:'',sections:[],question:'',options:['','',''],correct:0};}
+function loadSaved(){try{return JSON.parse(localStorage.getItem(STORE))||{};}catch(e){return {};}}
+function fmt(t){const d=new Date(t);const p=n=>String(n).padStart(2,'0');return `${p(d.getMonth()+1)}.${p(d.getDate())}. ${p(d.getHours())}:${p(d.getMinutes())}`;}
+const ICON_OK='check_circle',ICON_NO='cancel';
+
+class Component extends DCLogic {
+  state=(()=>{const s=loadSaved();return {
+    w:typeof window!=='undefined'?window.innerWidth:390,
+    tab:'home',sheet:null,narr:null,speaking:null,mapSel:null,gearSel:null,rest:null,restFromMission:false,breathPaused:false,
+    parentIn:false,pinInput:'',pinErr:'',pTab:'overview',noteDraft:'',confirmClear:false,hwPreview:null,hwMsg:'',helpHint:false,exMsg:'',sysRm:false,
+    settings:{...DEF_SETTINGS,...(s.settings||{})},mission:s.mission||freshMission(),events:s.events||[],tools:s.tools||[],notes:s.notes||[],pinCode:s.pinCode||null,hw:s.hw||blankHw(),hwSaved:s.hwSaved||[]
+  };})();
+
+  componentDidMount(){
+    this.onResize=()=>this.setState({w:window.innerWidth});window.addEventListener('resize',this.onResize);
+    try{this.mq=window.matchMedia('(prefers-reduced-motion: reduce)');this.setState({sysRm:this.mq.matches});this.mqH=e=>this.setState({sysRm:e.matches});this.mq.addEventListener('change',this.mqH);}catch(e){}
+    Narrator.init(ok=>this.setState({narr:ok}));
+  }
+  componentWillUnmount(){window.removeEventListener('resize',this.onResize);try{this.mq.removeEventListener('change',this.mqH);}catch(e){}Narrator.stop();}
+  componentDidUpdate(){const {settings,mission,events,tools,notes,pinCode,hw,hwSaved}=this.state;try{localStorage.setItem(STORE,JSON.stringify({settings,mission,events,tools,notes,pinCode,hw,hwSaved}));}catch(e){}}
+
+  top(){try{window.scrollTo(0,0);}catch(e){}}
+  log(type,data){this.setState(s=>({events:[...s.events,{t:Date.now(),type,...(data||{})}].slice(-500)}));}
+  mset(patch){this.setState(s=>({mission:{...s.mission,...(typeof patch==='function'?patch(s.mission):patch)}}));}
+  tone(kind){if(!this.state.settings.sound)return;try{const AC=window.AudioContext||window.webkitAudioContext;this.ac=this.ac||new AC();const ac=this.ac;const notes=kind==='done'?[523,659,784]:[660,880];notes.forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;const t=ac.currentTime+i*.13;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.07,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.5);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.55);});}catch(e){}}
+  setSettings(p){this.setState(s=>({settings:{...s.settings,...p}}));}
+  setHw(p){this.setState(s=>({hw:{...s.hw,...p}}));}
+
+  go(tab,extra){Narrator.stop();this.setState({tab,sheet:null,mapSel:null,gearSel:null,rest:null,restFromMission:false,speaking:null,confirmClear:false,...(extra||{})});this.top();}
+  startMission=()=>{this.setState(s=>{let m=s.mission,ev=s.events;if(!m.started||m.completed){m={...freshMission(),started:true};ev=[...ev,{t:Date.now(),type:'start'}];}return {mission:m,events:ev,tab:'mission',sheet:null,helpHint:false,rest:null,restFromMission:false};});this.top();};
+  stageTo(n){Narrator.stop();this.setState({speaking:null,helpHint:false,exMsg:''});this.mset({stage:n});this.top();}
+  speak(id,text){if(this.state.speaking===id){Narrator.stop();this.setState({speaking:null});return;}this.setState({speaking:id});Narrator.speak(id,text,this.state.settings.rate,()=>this.setState(s=>s.speaking===id?{speaking:null}:null));this.log('audio',{id});}
+
+  setMode(m){if(m!=='read'&&!this.state.narr)return;this.mset({mode:m,stage:2,section:0,showText:m!=='listen'});this.log('mode',{mode:m});this.top();}
+  readNext=()=>{Narrator.stop();this.setState({speaking:null});const m=this.state.mission;if(m.section<2){this.mset({section:m.section+1,showText:m.mode!=='listen'});this.top();}else this.stageTo(3);};
+  readBack=()=>{Narrator.stop();this.setState({speaking:null});const m=this.state.mission;if(m.section>0){this.mset({section:m.section-1});this.log('reread',{section:m.section-1});this.top();}else this.stageTo(1);};
+
+  pickQ(id){const m=this.state.mission;if(m.q.solved||m.q.picked.includes(id))return;const picked=[...m.q.picked,id];const opt=MISSION.question.options.find(o=>o.id===id);const ok=!!opt.correct;
+    this.mset({q:{picked,solved:ok}});this.log('answer',{task:'q',attempt:picked.length,ok,choice:opt.text});if(ok)this.tone('ok');}
+
+  seqPlace(id,i){const sq=this.state.mission.seq;const slots=sq.slots.map(x=>x===id?null:x);slots[i]=id;this.mset({seq:{...sq,slots,sel:null,result:null}});}
+  seqRemove(id){const sq=this.state.mission.seq;this.mset({seq:{...sq,slots:sq.slots.map(x=>x===id?null:x),sel:null,result:null}});}
+  seqTapCard(id){const sq=this.state.mission.seq;if(sq.solved)return;this.mset({seq:{...sq,sel:sq.sel===id?null:id}});}
+  seqTapSlot(i){const sq=this.state.mission.seq;if(sq.solved)return;if(sq.sel){this.seqPlace(sq.sel,i);return;}if(sq.slots[i]){if(sq.result&&sq.result[i])return;this.seqRemove(sq.slots[i]);}}
+  seqCheck=()=>{const sq=this.state.mission.seq;if(sq.slots.some(x=>!x))return;const result=sq.slots.map((id,i)=>id===MISSION.sequence.correct[i]);const ok=result.every(Boolean);const checks=sq.checks+1;
+    this.mset({seq:{...sq,result,checks,solved:ok,hint:sq.hint||!ok}});this.log('seq',{attempt:checks,ok,correctCount:result.filter(Boolean).length});if(ok)this.tone('ok');};
+  seqRetry=()=>{const sq=this.state.mission.seq;this.mset({seq:{...sq,slots:sq.slots.map((id,i)=>sq.result&&sq.result[i]?id:null),result:null,sel:null}});};
+
+  pickEv(i){const m=this.state.mission;if(m.ev.solved||m.ev.picked.includes(i))return;const picked=[...m.ev.picked,i];const ok=i===MISSION.evidence.correct;
+    this.mset({ev:{picked,solved:ok}});this.log('answer',{task:'ev',attempt:picked.length,ok,choice:MISSION.sections[1][i]});if(ok)this.tone('ok');}
+
+  finishMission=()=>{this.setState(s=>({tools:s.tools.includes('goggles')?s.tools:[...s.tools,'goggles']}));this.mset({completed:true});this.log('complete');this.stageTo(7);this.tone('done');};
+
+  hwValidate(){const h=this.state.hw;const secs=h.sections.map(x=>x.trim()).filter(Boolean);if(!secs.length)return 'Bontsd szakaszokra a szöveget, vagy adj hozzá egy szakaszt (2. lépés).';if(!h.question.trim())return 'Írj be egy kérdést (3. lépés).';if(h.options.filter(o=>o.trim()).length<2)return 'Adj meg legalább két válaszlehetőséget (4. lépés).';if(!(h.options[h.correct]||'').trim())return 'A pipával jelölt helyes válasz mezője üres.';return null;}
+  hwBuild(h){return {sections:h.sections.map(x=>x.trim()).filter(Boolean),question:h.question.trim(),options:h.options.map((t,i)=>({text:t.trim(),correct:i===h.correct})).filter(o=>o.text),picked:[]};}
+
+  renderVals(){
+    const S=this.state,st=S.settings,m=S.mission;
+    const wide=S.w>=900,narrow=!wide,inMission=S.tab==='mission';
+    const rm=st.reducedMotion||S.sysRm;
+    const name=(st.name||'').trim()||'Hős';
+    const gearCount=S.tools.length;
+    const completedCount=S.events.filter(e=>e.type==='complete').length>0?1:0;
+    const inProgress=m.started&&!m.completed&&m.stage>0;
+    const missionBtnLabel=m.completed?'Újra játszom':inProgress?'Küldetés folytatása':'Küldetés indítása';
+    const listenMode=m.mode==='listen'||m.mode==='both';
+    const nav=[['home','Bázis','home'],['map','Világok','explore'],['gear','Felszerelés','backpack'],['rest','Pihenő','nights_stay']];
+    const navItems=nav.map(([id,label,icon])=>{const on=S.tab===id;return {label,icon,onClick:()=>this.go(id),current:on?'page':'false',bg:on?'rgba(243,197,104,.16)':'transparent',color:on?'#F3C568':'#CFC3A8'};});
+
+    // map
+    const hotspots=HOTSPOTS.map((h,i)=>{const on=S.mapSel===h.id;return {...h,n:i+1,left:h.x+'%',top:h.y+'%',pressed:on?'true':'false',onClick:()=>this.setState({mapSel:on?null:h.id}),
+      showLabel:wide,pad:wide?'6px 16px 6px 8px':'8px',border:on?'#F3C568':'rgba(255,244,223,.85)',bg:on?'#F3C568':'rgba(16,45,53,.88)',color:on?'#18343A':'#FFF4DF',numBg:on?'#18343A':'#F3C568',numColor:on?'#F3C568':'#18343A',
+      listBorder:on?'#F3C568':'rgba(235,213,163,.18)',tag:h.playable?'Küldetés':'Előnézet',tagColor:h.playable?'#F3C568':'#CFC3A8'};});
+    const selH=HOTSPOTS.find(h=>h.id===S.mapSel);
+
+    // gear
+    const toolView=t=>{const u=S.tools.includes(t.id);return {...t,unlocked:u,status:u?'Megszerezve':'Felfedezésre vár',statusIcon:u?'check_circle':'lock',statusColor:u?'#91D7E8':'#CFC3A8',opacity:u?1:.5,filter:u?'none':'saturate(.35)',border:u?'rgba(145,215,232,.5)':'rgba(235,213,163,.14)',
+      note:u?'Az első küldetésben szerezted meg. Az eszköz emlékeztet a stratégiára; a stratégiát te használod.':'Egy későbbi küldetésben szerezheted meg. A stratégiát addig is bármikor kipróbálhatod.',onClick:()=>{this.setState({gearSel:t.id});this.top();}};};
+    const tools=TOOLS.map(toolView);
+    const gd=S.gearSel?toolView(TOOLS.find(t=>t.id===S.gearSel)):null;
+
+    // rest
+    const restInfo=S.rest==='quiet'?{icon:'dark_mode',title:'Csendben pihenek',text:'Nézd a bolygót és a csillagokat. Most nem kell semmit csinálnod. Ha készen állsz, kiléphetsz.'}
+      :S.rest==='move'?{icon:'accessibility_new',title:'Mozdulok egy kicsit',text:'Állj fel, ha kényelmes. Nyújtózz egyet, engedd le a vállad, majd érezd a talpadat a talajon.'}:{icon:'',title:'',text:''};
+    const sphereEl=React.createElement('div',{'aria-hidden':true,style:{width:220,height:220,borderRadius:'50%',background:'radial-gradient(circle at 42% 38%, #FFF4DF 0%, #F3C568 38%, rgba(243,197,104,.25) 66%, rgba(243,197,104,0) 72%)',boxShadow:'0 0 90px rgba(243,197,104,.35)',
+      animation:rm?'none':'novaBreathe 11s ease-in-out infinite',animationPlayState:S.breathPaused?'paused':'running',transform:rm?'scale(.82)':undefined}});
+
+    // mission segments
+    const glossKey=w=>{const l=w.toLowerCase();const g=MISSION.glossary.find(g=>l.startsWith(g.key));return g&&g.key;};
+    const secText=MISSION.sections[m.section].join(' ');
+    const secSegs=secText.split(/((?:foglalat|energiamag|ellenőrzés)\p{L}*)/giu).filter(Boolean).map(t=>{const k=glossKey(t);const isWord=!!k&&/^(foglalat|energiamag|ellenőrzés)/i.test(t);
+      return {text:t,isWord,plain:!isWord,aria:isWord?`${t} – szómagyarázat`:'',onClick:()=>{this.setState({sheet:{kind:'glossary',word:k}});this.log('gloss',{word:k});}};});
+
+    const qsel=m.q.picked;
+    const qOptions=MISSION.question.options.map(o=>{const picked=qsel.includes(o.id);const showOk=picked&&o.correct;const showNo=picked&&!o.correct;
+      return {text:o.text,onClick:()=>this.pickQ(o.id),pressed:picked?'true':'false',showTag:picked,tag:showOk?'Helyes':'Nem ez',icon:showOk?ICON_OK:ICON_NO,tagColor:showOk?'#91D7E8':'#EBD5A3',
+        border:showOk?'#91D7E8':showNo?'rgba(235,213,163,.25)':'rgba(235,213,163,.3)',bg:showOk?'rgba(145,215,232,.14)':'#1C454D',opacity:showNo||(m.q.solved&&!picked)?.6:1};});
+    const qWrongCount=qsel.filter(id=>!MISSION.question.options.find(o=>o.id===id).correct).length;
+
+    const sq=m.seq,EV=MISSION.sequence.events;
+    const seqSlots=sq.slots.map((id,i)=>{const r=sq.result?sq.result[i]:null;const sel=!!sq.sel;return {label:MISSION.sequence.labels[i],filled:!!id,empty:!id,text:id?EV[id].text:'',src:id?EV[id].src:'',
+      emptyText:sel?'Koppints ide a kiválasztott kártyáért':'Ide tedd a kártyát',
+      aria:id?`${MISSION.sequence.labels[i]}: ${EV[id].text}. Koppints a visszavételhez.`:`${MISSION.sequence.labels[i]}: üres hely`,
+      onClick:()=>this.seqTapSlot(i),onDragOver:e=>e.preventDefault(),onDrop:e=>{e.preventDefault();const d=this.dragId;this.dragId=null;if(d)this.seqPlace(d,i);},
+      draggable:id&&!sq.solved?'true':'false',onDragStart:e=>{this.dragId=id;try{e.dataTransfer.setData('text/plain',id);}catch(_){}},
+      borderStyle:id?'solid':'dashed',border:r===true?'#91D7E8':r===false?'#EBD5A3':id?'rgba(255,244,223,.0)':sel?'#F3C568':'rgba(235,213,163,.4)',
+      bg:id?'#FFF4DF':sel?'rgba(243,197,104,.08)':'rgba(11,35,41,.4)',color:id?'#18343A':'#CFC3A8',
+      showStatus:r!==null&&r!==undefined,status:r?'Jó helyen':'Próbáld máshova',statusIcon:r?ICON_OK:'swap_vert',statusColor:r?'#91D7E8':'#EBD5A3'};});
+    const pool=sq.order.filter(id=>!sq.slots.includes(id));
+    const seqPool=pool.map(id=>{const on=sq.sel===id;return {text:EV[id].text,src:EV[id].src,pressed:on,onClick:()=>this.seqTapCard(id),onDragStart:e=>{this.dragId=id;try{e.dataTransfer.setData('text/plain',id);}catch(_){}},
+      border:on?'#F3C568':'transparent',shadow:on?'0 10px 26px rgba(243,197,104,.3)':'0 4px 14px rgba(4,18,22,.3)',lift:on&&!rm?'translateY(-2px)':'none'};});
+    const allFilled=sq.slots.every(Boolean);
+
+    const evs=m.ev;
+    const evSentences=MISSION.sections[1].map((t,i)=>{const picked=evs.picked.includes(i);const ok=picked&&i===MISSION.evidence.correct;return {text:t,onClick:()=>this.pickEv(i),pressed:picked?'true':'false',showTag:picked,tag:ok?'Bizonyíték':'Nem ez',icon:ok?ICON_OK:ICON_NO,tagColor:ok?'#1F6F7E':'#6B5A33',
+      border:ok?'#1F6F7E':picked?'rgba(24,52,58,.18)':'transparent',bg:ok?'rgba(145,215,232,.35)':'transparent',weight:ok?800:500};});
+    const evWrongCount=evs.picked.filter(i=>i!==MISSION.evidence.correct).length;
+
+    const ex=m.ex;
+    const exTabs=[['spoken','Elmondom valakinek','record_voice_over'],['write','Leírom röviden','edit_note']].map(([k,label,icon])=>{const on=ex.kind===k;return {label,icon,selected:on?'true':'false',onClick:()=>this.mset(mm=>({ex:{...mm.ex,kind:k}})),border:on?'#F3C568':'rgba(235,213,163,.25)',bg:on?'rgba(243,197,104,.14)':'#1C454D',color:on?'#F3C568':'#F6EAD2'};});
+
+    const glowEl=React.createElement('div',{'aria-hidden':true,style:{position:'absolute',inset:0,pointerEvents:'none',background:'radial-gradient(55% 60% at 50% 70%, rgba(145,215,232,.38), rgba(243,197,104,.10) 55%, transparent 75%)',animation:rm?'none':'novaGlow 1.8s ease-out both'}});
+
+    // sheets
+    const sh=S.sheet;
+    const storySecs=sh&&sh.kind==='story'?(sh.only!=null?[sh.only]:[0,1,2]).map(si=>({label:`${si+1}. rész`,sentences:MISSION.sections[si].map((t,j)=>({text:t,bg:sh.mark&&sh.mark[0]===si&&sh.mark[1]===j?'rgba(243,197,104,.55)':'transparent'}))})):[];
+    const sheetTitle=!sh?'':sh.kind==='glossary'?'Szómagyarázat':sh.kind==='story'?'A történet':sh.kind==='help'?'Segítség':'Profil';
+    const helpActions=[
+      !S.helpHint&&{icon:'lightbulb',label:'Kérek egy tippet',sub:'Egy kis nyom a mostani feladathoz',onClick:()=>{this.setState({helpHint:true});this.log('hint',{stage:m.stage});}},
+      {icon:'menu_book',label:'Újraolvasom a történetet',sub:'Mindhárom rész egyben',onClick:()=>{this.setState({sheet:{kind:'story',only:null}});this.log('reread',{section:'all'});}},
+      {icon:'diamond',label:'Szómagyarázat',sub:'foglalat, energiamag, ellenőrzés',onClick:()=>{this.setState({sheet:{kind:'glossary'}});this.log('gloss',{word:'lista'});}},
+      {icon:'nights_stay',label:'Szünetet kérek',sub:'Átmegyünk a Pihenőbe, a küldetés megvárja',onClick:()=>{this.log('break');this.go('rest',{restFromMission:true});}}
+    ].filter(Boolean);
+
+    // parent overview from real events
+    const E=S.events,cnt=t=>E.filter(e=>e.type===t).length;
+    const modeTxt=Object.keys(MODES).map(k=>[k,E.filter(e=>e.type==='mode'&&e.mode===k).length]).filter(x=>x[1]).map(([k,n])=>`${MODES[k]} (${n})`).join(', ')||'–';
+    const ans=E.filter(e=>e.type==='answer'&&e.ok);const indep=ans.filter(e=>e.attempt===1).length;
+    const seqE=E.filter(e=>e.type==='seq');const seqFirst=seqE.filter(e=>e.attempt===1);
+    const retells=E.filter(e=>e.type==='retell');
+    const obsRows=[
+      ['Elindított küldetések',cnt('start')],['Befejezett küldetések',cnt('complete')],['Használt gyakorlási módok',modeTxt],
+      ['Önálló helyes válaszok (első próbálkozásra)',indep],['Segítség után helyes válaszok',ans.length-indep],
+      ['Kért tippek',cnt('hint')],['Újraolvasások',cnt('reread')],['Megnyitott szómagyarázatok',cnt('gloss')],['Meghallgatott részek',cnt('audio')],
+      ['Sorrendfeladat',seqE.length?`${seqE.length} ellenőrzés · első ellenőrzésre helyes: ${seqFirst.filter(e=>e.ok).length}/${seqFirst.length}`:'–'],
+      ['Elmesélés',retells.length?retells.map(e=>e.kind==='spoken'?'elmondta (felnőtt jelölte)':'leírta').join(', '):'–'],['Szünetkérések',cnt('break')]
+    ].map(([label,value])=>({label,value:String(value)}));
+    const evText=e=>{switch(e.type){case 'start':return 'Küldetés elindítva: Az eltűnt energiamag';case 'mode':return 'Gyakorlási mód: '+MODES[e.mode];
+      case 'answer':return `${e.task==='q'?'Ok-okozat kérdés':'Bizonyítékkeresés'}, ${e.attempt}. próbálkozás: ${e.ok?(e.attempt===1?'helyes, önállóan':'helyes, segítség után'):'másik válasz – „'+e.choice+'”'}`;
+      case 'hint':return `Tippet kért (${STAGES[e.stage]})`;case 'reread':return e.section==='all'?'Újraolvasta a teljes történetet':`Újraolvasás (${e.section+1}. rész)`;
+      case 'gloss':return e.word==='lista'?'Megnyitotta a szómagyarázatot':'Szómagyarázat: '+e.word;case 'audio':return 'Felolvasás indítva';
+      case 'seq':return `Sorrend ellenőrzése (${e.attempt}.): ${e.correctCount}/3 jó helyen`;case 'retell':return e.kind==='spoken'?'Elmesélés: elmondta valakinek (felnőtt jelölte)':'Elmesélés: leírta';
+      case 'complete':return 'Küldetés befejezve';case 'break':return 'Szünetet kért';default:return e.type;}};
+    const eventRows=E.slice(-20).reverse().map(e=>({time:fmt(e.t),text:evText(e)}));
+    const retellTexts=retells.filter(e=>e.kind==='write'&&e.text).slice(-3).reverse().map(e=>({text:e.text,time:fmt(e.t)}));
+
+    const pTabs=[['overview','Áttekintés'],['settings','Beállítások'],['homework','Saját szöveg']].map(([id,label])=>{const on=S.pTab===id;return {label,selected:on?'true':'false',onClick:()=>this.setState({pTab:id,hwPreview:null,hwMsg:''}),bg:on?'#EBD5A3':'transparent',color:on?'#18343A':'#E4D8BE'};});
+    const rateOpts=[[0.8,'Lassabb'],[1,'Normál'],[1.2,'Gyorsabb']].map(([r,label])=>{const on=st.rate===r;return {label,pressed:on?'true':'false',onClick:()=>this.setSettings({rate:r}),border:on?'#91D7E8':'rgba(235,213,163,.3)',bg:on?'rgba(145,215,232,.16)':'transparent',color:on?'#91D7E8':'#F6EAD2'};});
+    const tg=(label,sub,on,fn)=>({label,sub,on:on?'true':'false',onClick:fn,track:on?'#91D7E8':'rgba(235,213,163,.25)',knob:on?'30px':'4px'});
+    const toggles=[tg('Hangeffektek','Halk jelzőhang helyes válasznál. Alapból kikapcsolva.',st.sound,()=>this.setSettings({sound:!st.sound})),
+      tg('Csökkentett mozgás','Kikapcsolja az átmeneteket és a fényanimációkat.',st.reducedMotion,()=>this.setSettings({reducedMotion:!st.reducedMotion}))];
+    const narrStatusText=S.narr===null?'Felolvasóhang keresése…':S.narr?'Magyar felolvasóhang elérhető ezen az eszközön.':'Ezen az eszközön nem érhető el magyar felolvasóhang, ezért a sebesség most nem számít.';
+
+    const hw=S.hw;
+    const hwSections=hw.sections.map((t,i)=>({n:i+1,text:t,aria:`${i+1}. szakasz`,onChange:e=>{const v=e.target.value;this.setState(s=>{const a=[...s.hw.sections];a[i]=v;return {hw:{...s.hw,sections:a}};});},onRemove:()=>this.setState(s=>({hw:{...s.hw,sections:s.hw.sections.filter((_,j)=>j!==i)}}))}));
+    const hwOptions=hw.options.map((t,i)=>{const on=hw.correct===i;return {text:t,ph:`${i+1}. válaszlehetőség`,isCorrect:on?'true':'false',radioLabel:`${i+1}. lehetőség a helyes válasz`,icon:on?'check':'',border:on?'#91D7E8':'rgba(235,213,163,.3)',bg:on?'#91D7E8':'transparent',color:'#18343A',
+      onCorrect:()=>this.setHw({correct:i}),onChange:e=>{const v=e.target.value;this.setState(s=>{const a=[...s.hw.options];a[i]=v;return {hw:{...s.hw,options:a}};});}};});
+    const pv=S.hwPreview;
+    const pvPicked=pv?pv.picked:[];
+    const pvOptions=pv?pv.options.map((o,i)=>{const picked=pvPicked.includes(i);const ok=picked&&o.correct;return {text:o.text,showTag:picked,tag:ok?'Helyes':'Nem ez',icon:ok?ICON_OK:ICON_NO,tagColor:ok?'#91D7E8':'#EBD5A3',border:ok?'#91D7E8':'rgba(235,213,163,.3)',bg:ok?'rgba(145,215,232,.14)':'#1C454D',
+      onClick:()=>this.setState(s=>s.hwPreview.picked.includes(i)||s.hwPreview.options.some((oo,j)=>oo.correct&&s.hwPreview.picked.includes(j))?null:{hwPreview:{...s.hwPreview,picked:[...s.hwPreview.picked,i]}})};}):[];
+    const pvSolved=pv&&pv.options.some((o,i)=>o.correct&&pvPicked.includes(i));
+    const pvFeedback=!pv||!pvPicked.length?'':pvSolved?'Helyes válasz! Megtaláltad a szövegben.':'Nézd meg újra a szöveget, és próbálkozz egy másik válasszal!';
+
+    const sheetOpen=!!sh;
+    return {
+      rootDir:wide?'row':'column',isWide:wide,showHeroRight:S.w>=1240,showHeroCompact:narrow||S.w<1240,isNarrow:narrow,showRail:wide&&!inMission,showBottomNav:narrow&&!inMission,mainPadBottom:narrow&&!inMission?'92px':'0',
+      navItems,name,initial:name.charAt(0).toUpperCase(),openProfile:()=>this.setState({sheet:{kind:'profile'}}),
+      sHome:S.tab==='home',sMap:S.tab==='map',sGear:S.tab==='gear',sRest:S.tab==='rest',sParent:S.tab==='parent',sMission:inMission,
+      h1Size:wide?'42px':'32px',h2Size:wide?'34px':'27px',pagePad:wide?'44px 52px 56px':'22px 18px 28px',
+      // home
+      homeMinH:wide?'100vh':'auto',homeBgH:wide?'100%':'420px',homePad:wide?'44px 52px 48px':'16px 18px 24px',homeMaxW:wide?'660px':'none',greetMinH:narrow?'210px':'0',ctaFlex:narrow?'1 1 100%':'0 0 auto',
+      homeScrim:wide?'linear-gradient(90deg, rgba(16,45,53,.94) 0%, rgba(16,45,53,.80) 42%, rgba(16,45,53,.15) 75%), linear-gradient(0deg, rgba(16,45,53,.7) 0%, rgba(16,45,53,0) 35%)':'linear-gradient(180deg, rgba(16,45,53,.55) 0%, rgba(16,45,53,.25) 22%, rgba(16,45,53,.55) 48%, #102D35 420px)',
+      missionDone:m.completed,missionInProgress:inProgress,savedStageName:STAGES[m.stage],missionBtnLabel,startMission:this.startMission,destCols:wide?'repeat(3,minmax(0,1fr))':'1fr',
+      destCards:[{icon:'explore',label:'Fedezd fel a világot',sub:'6 sziget a térképen',onClick:()=>this.go('map')},{icon:'backpack',label:'Hősfelszerelésem',sub:`${gearCount} / 5 eszköz megszerezve`,onClick:()=>this.go('gear')},{icon:'air',label:'Egy perc megérkezés',sub:'Nyugodt légzés a Pihenőben',onClick:()=>this.go('rest',{rest:'breath'})}],
+      completedCount,gearCount,
+      // map
+      hotspots,mapHasSel:!!selH,mapSel:selH?{label:selH.label,purpose:selH.purpose,playable:!!selH.playable,soon:!selH.playable}:{label:'',purpose:'',playable:false,soon:false},mapClose:()=>this.setState({mapSel:null}),
+      // gear
+      tools,gearList:!gd,gearDetail:!!gd,gd:gd||{steps:[]},gearBack:()=>this.setState({gearSel:null}),gearCols:wide?'repeat(5,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',detailCols:wide?'minmax(0,1fr) minmax(0,1.2fr)':'1fr',detailPad:wide?'32px':'18px',
+      // rest
+      restMinH:narrow?'calc(100vh - 92px)':'100vh',restMenu:!S.rest,restBreath:S.rest==='breath',restText:S.rest==='quiet'||S.rest==='move',restInfo,sphereEl,rmOn:rm,
+      restChoices:[{icon:'dark_mode',label:'Csendben pihenek',onClick:()=>this.setState({rest:'quiet'})},{icon:'air',label:'Lassan megérkezem',onClick:()=>this.setState({rest:'breath',breathPaused:false})},{icon:'accessibility_new',label:'Mozdulok egy kicsit',onClick:()=>this.setState({rest:'move'})}],
+      toggleBreath:()=>this.setState(s=>({breathPaused:!s.breathPaused})),breathLabel:S.breathPaused?'Folytatás':'Szünet',breathIcon:S.breathPaused?'play_arrow':'pause',restExit:()=>this.setState({rest:null}),
+      restFromMission:S.restFromMission&&m.started&&!m.completed&&!S.rest,
+      // parent
+      pGate:!S.parentIn,pIn:S.parentIn,pinTitle:S.pinCode?'Add meg a PIN-kódot':'Állíts be egy PIN-kódot',pinBtn:S.pinCode?'Belépés':'PIN beállítása és belépés',pinInput:S.pinInput,pinErr:S.pinErr,
+      onPin:e=>this.setState({pinInput:e.target.value.replace(/\D/g,'').slice(0,4),pinErr:''}),pinKey:e=>{if(e.key==='Enter')this.submitPin();},submitPin:()=>this.submitPin(),
+      leaveParent:()=>this.go('home',{parentIn:false,pinInput:''}),goParent:()=>this.go('parent',{parentIn:false,pinInput:'',pinErr:''}),
+      pTabs,pOverview:S.pTab==='overview',pSettings:S.pTab==='settings',pHomework:S.pTab==='homework',hasActivity:E.length>0,noActivity:E.length===0,obsRows,eventRows,retellTexts,hasRetellTexts:retellTexts.length>0,
+      noteDraft:S.noteDraft,onNoteDraft:e=>this.setState({noteDraft:e.target.value}),addNote:()=>{const t=S.noteDraft.trim();if(!t)return;this.setState(s=>({notes:[{t:Date.now(),text:t},...s.notes],noteDraft:''}));},
+      notes:S.notes.map((n,i)=>({text:n.text,time:fmt(n.t),onDelete:()=>this.setState(s=>({notes:s.notes.filter((_,j)=>j!==i)}))})),
+      nameVal:st.name,onName:e=>this.setSettings({name:e.target.value.slice(0,24)}),textSize:st.textSize,textSizeLabel:st.textSize+' px',onTextSize:e=>this.setSettings({textSize:+e.target.value}),readSize:st.textSize+'px',
+      rateOpts,narrStatusText,toggles,confirmClear:S.confirmClear,notConfirmClear:!S.confirmClear,askClear:()=>this.setState({confirmClear:true}),cancelClear:()=>this.setState({confirmClear:false}),
+      doClear:()=>{Narrator.stop();this.setState({mission:freshMission(),events:[],tools:[],notes:[],hw:blankHw(),hwSaved:[],confirmClear:false,hwPreview:null});},
+      hw,hwEditing:!pv,hwPreviewing:!!pv,hwSections,hwNoSections:!hw.sections.length,hwOptions,hwMsg:S.hwMsg,
+      onHwText:e=>this.setHw({text:e.target.value}),onHwQuestion:e=>this.setHw({question:e.target.value}),
+      hwSplit:()=>this.hwSplit(),hwAddSection:()=>this.setHw({sections:[...hw.sections,'']}),
+      hwPreviewOpen:()=>{const err=this.hwValidate();if(err){this.setState({hwMsg:err});return;}this.setState({hwPreview:this.hwBuild(hw),hwMsg:''});this.top();},
+      hwSave:()=>{const err=this.hwValidate();if(err){this.setState({hwMsg:err});return;}const b=this.hwBuild(hw);this.setState(s=>({hwSaved:[{id:Date.now(),t:Date.now(),...b},...s.hwSaved],hwMsg:'Elmentve ezen az eszközön.'}));},
+      hwHasSaved:S.hwSaved.length>0,hwSaved:S.hwSaved.map((x,i)=>({title:x.question,meta:`${x.sections.length} szakasz · ${x.options.length} válasz · ${fmt(x.t)}`,onOpen:()=>{this.setState({hwPreview:{...x,picked:[]}});this.top();},onDelete:()=>this.setState(s=>({hwSaved:s.hwSaved.filter((_,j)=>j!==i)}))})),
+      pv:pv||{question:''},pvSections:pv?pv.sections.map((t,i)=>({label:`${i+1}. rész`,text:t})):[],pvOptions,pvFeedback,pvClose:()=>this.setState({hwPreview:null}),
+      // mission chrome
+      exitMission:()=>this.go('home'),exitLabel:wide?'Kilépés':'Ki',openHelp:()=>this.setState({sheet:{kind:'help'},helpHint:false}),helpLabel:wide?'Segítség':'Súgó',
+      stageNum:`${m.stage+1}/8`,stageName:STAGES[m.stage],stageDots:STAGES.map((_,i)=>({w:i===m.stage?'22px':'8px',bg:i<m.stage?'#F3C568':i===m.stage?'#91D7E8':'rgba(235,213,163,.25)'})),
+      showTopAudio:listenMode&&S.narr&&(m.stage===3||m.stage===5),topAudioIcon:S.speaking?'stop_circle':'volume_up',topAudioLabel:S.speaking?'Felolvasás leállítása':'Kérdés meghallgatása',
+      topAudio:()=>m.stage===3?this.speak('q','Miért aludtak ki a híd lámpái? '+MISSION.question.options.map(o=>o.text).join(' ')):this.speak('ev','Melyik mondatból tudjuk, hogy a szerelő befejezte a munkát? '+MISSION.sections[1].join(' ')),
+      missionPad:wide?'36px 32px 60px':'20px 18px 40px',
+      st0:m.stage===0,st1:m.stage===1,st2:m.stage===2,st3:m.stage===3,st4:m.stage===4,st5:m.stage===5,st6:m.stage===6,st7:m.stage===7,
+      begin:()=>this.stageTo(1),
+      modes:Object.keys(MODES).map(k=>{const dis=k!=='read'&&S.narr!==true;const on=m.mode===k;return {label:MODES[k],icon:k==='read'?'menu_book':k==='listen'?'headphones':'auto_stories',desc:k==='read'?'Saját tempóban olvasod a szöveget.':k==='listen'?'Felolvasva hallod, a szöveget bármikor megnyithatod.':'Látod a szöveget, és közben meg is hallgathatod.',
+        disabled:dis,cursor:dis?'not-allowed':'pointer',opacity:dis?.55:1,border:on?'#F3C568':'rgba(235,213,163,.22)',onClick:()=>this.setMode(k)};}),
+      narrNotice:S.narr!==true,narrNoticeText:S.narr===null?'Felolvasóhang keresése ezen az eszközön…':'Ezen az eszközön most nem érhető el magyar felolvasóhang, ezért a meghallgatás nem indítható. Az Elolvasom mód teljesen működik, és egy felnőtt is felolvashatja a szöveget.',
+      secLabel:`${m.section+1}. rész / 3`,secSegs,textVisible:m.showText,textHidden:!m.showText,toggleText:()=>this.mset({showText:true}),
+      showSecAudio:listenMode&&!!S.narr&&m.showText,playSection:()=>this.speak('s'+m.section,secText),playIcon:S.speaking==='s'+m.section?'stop_circle':'play_arrow',
+      playLabel:S.speaking==='s'+m.section?'Felolvasás leállítása':'Meghallgatom',playBtnLabel:S.speaking==='s'+m.section?'Leállítás':'Meghallgatom',
+      readBack:this.readBack,readNext:this.readNext,readPad:wide?'34px 40px':'22px 22px',evPad:wide?'22px 20px':'16px 10px',
+      openGlossary:()=>{this.setState({sheet:{kind:'glossary'}});this.log('gloss',{word:'lista'});},
+      qOptions,qWrong:qWrongCount>0&&!m.q.solved,qGuided:qWrongCount>=2,qSolved:m.q.solved,
+      openStory2:()=>{this.setState({sheet:{kind:'story',only:1,mark:qWrongCount>=2?[1,0]:null}});this.log('reread',{section:1});},toStage4:()=>this.stageTo(4),
+      seqSlots,seqPool,seqPoolHas:pool.length>0,poolDragOver:e=>e.preventDefault(),poolDrop:e=>{e.preventDefault();const d=this.dragId;this.dragId=null;if(d)this.seqRemove(d);},
+      seqHintShow:sq.hint&&!sq.solved,seqShowHintBtn:!sq.hint&&!sq.solved,seqHint:()=>{this.mset(mm=>({seq:{...mm.seq,hint:true}}));this.log('hint',{stage:4});},
+      seqSolved:sq.solved,seqCanRetry:!!sq.result&&!sq.solved,seqCanCheckShow:!sq.result&&!sq.solved,seqCheck:this.seqCheck,seqRetry:this.seqRetry,seqCheckDisabled:!allFilled,seqCheckOpacity:allFilled?1:.45,toStage5:()=>this.stageTo(5),
+      evSentences,evWrong:evWrongCount>0&&!evs.solved,evWrongText:evWrongCount>=2?MISSION.evidence.wrong2:MISSION.evidence.wrong1,evSolved:evs.solved,toStage6:()=>this.stageTo(6),
+      exGuides:['Mi volt a probléma?','Mit derített ki Mira?','Hogyan oldódott meg a helyzet?'],exTabs,exSpokenOpen:ex.kind==='spoken',exWriteOpen:ex.kind==='write',exSpoken:ex.spoken,exNotSpoken:!ex.spoken,
+      markSpoken:()=>{this.mset(mm=>({ex:{...mm.ex,spoken:true}}));this.log('retell',{kind:'spoken'});this.tone('ok');},
+      exText:ex.text,onExText:e=>{const v=e.target.value;this.setState({exMsg:''});this.mset(mm=>({ex:{...mm.ex,text:v,saved:false}}));},exSaved:ex.saved,exMsg:S.exMsg,
+      saveEx:()=>{if(ex.text.trim().length<3){this.setState({exMsg:'Írj le legalább egy rövid mondatot.'});return;}this.mset(mm=>({ex:{...mm.ex,saved:true}}));this.log('retell',{kind:'write',text:ex.text.trim()});},
+      exCanFinish:ex.spoken||ex.saved,finishMission:this.finishMission,
+      glowEl,resAspect:wide?'16/8':'4/3',goHome:()=>this.go('home'),goGearGoggles:()=>this.go('gear',{gearSel:'goggles'}),
+      // sheets
+      sheetOpen,closeSheet:()=>this.setState({sheet:null}),stop:e=>e.stopPropagation(),sheetTitle,sheetAlign:wide?'center':'flex-end',sheetRadius:wide?'26px':'26px 26px 0 0',sheetOuterPad:wide?'24px':'0',
+      shGlossary:!!sh&&sh.kind==='glossary',shStory:!!sh&&sh.kind==='story',shHelp:!!sh&&sh.kind==='help',shProfile:!!sh&&sh.kind==='profile',
+      glossList:MISSION.glossary.map(g=>({word:g.word,def:g.def,border:sh&&sh.word===g.key?'#F3C568':'transparent'})),storySecs,
+      helpActions,helpHintShown:S.helpHint,helpHintText:MISSION.hints[m.stage]
+    };
+  }
+
+  submitPin(){const p=this.state.pinInput;if(p.length!==4){this.setState({pinErr:'A PIN 4 számjegyből áll.'});return;}
+    if(!this.state.pinCode){this.setState({pinCode:p,parentIn:true,pinInput:'',pinErr:''});return;}
+    if(p===this.state.pinCode)this.setState({parentIn:true,pinInput:'',pinErr:''});else this.setState({pinErr:'Ez a PIN nem egyezik. Próbáld újra.',pinInput:''});}
+
+  hwSplit(){const t=this.state.hw.text.trim();if(!t){this.setState({hwMsg:'Előbb illessz be egy szöveget.'});return;}
+    let parts=t.split(/\n\s*\n/).map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);
+    if(parts.length===1){const sents=parts[0].match(/[^.!?…]+[.!?…]+["”»]?|[^.!?…]+$/g)||[parts[0]];const n=Math.min(3,Math.max(1,Math.ceil(sents.length/2)));const size=Math.ceil(sents.length/n);parts=[];for(let i=0;i<sents.length;i+=size)parts.push(sents.slice(i,i+size).map(x=>x.trim()).join(' '));}
+    this.setHw({sections:parts});this.setState({hwMsg:''});}
+}
+</script>
+</body>
+</html>
