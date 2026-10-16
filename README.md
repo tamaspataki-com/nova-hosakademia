@@ -52,6 +52,8 @@ It also emits `assets/*.png` paths; switch them back to `.webp`.
 
 ## Publishing
 
-Live at **https://tamaspataki-com.github.io/nova-hosakademia/** (GitHub Pages, served from the `gh-pages` branch).
-After changing the app: commit, `git push`, then `npm run deploy` to rebuild and publish.
+Live at **https://nova-hosakademia.pages.dev** (Cloudflare Pages project `nova-hosakademia`, direct upload).
+After changing the app: commit, `git push`, then `npm run deploy` to rebuild and publish (uses `wrangler`; run
+`npx wrangler login` once per machine). The project uses classic Cloudflare Pages, so `wrangler pages` commands
+need no `--force` anymore.
 Installed copies pick up the new version automatically the next time they are opened online.
