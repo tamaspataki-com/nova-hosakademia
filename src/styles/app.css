@@ -1702,3 +1702,7 @@ mark.swap {
 .clip-say blockquote {
   margin: 0;
 }
+.clip-image {
+  max-height: none; /* the closing picture keeps its 16:9 proportions: never cropped like a cover */
+  height: auto;
+}

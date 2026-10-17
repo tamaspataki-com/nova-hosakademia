@@ -63,7 +63,13 @@ export const WORLDS = [
     id: 'connection',
     name: 'Kapcsolatok bolygója',
     description: 'Segíts a barátoknak megtalálni a szavakat, hogy megértsék egymást.',
-    icon: 'forum', // no artwork yet: the icon card is used
+    icon: 'forum',
+    // World art: Mira and Zénó together in the star playground (supplied by the owner, 2026-10-17). Master:
+    // design/source-art/kapcsolatok/kapcsolatok-world.png (2048 × 1143, kept 16:9).
+    art: 'assets/kapcsolatok-world.webp',
+    artSet: 'assets/kapcsolatok-world-768.webp 768w, assets/kapcsolatok-world.webp 1536w',
+    artAlt:
+      'Mira, a türkizkék kis űrlény és Zénó, a narancssárga kis űrlény a csillagjátszótéren, mögöttük egy gyűrűs bolygó.',
     series: [{ id: 'star-playground', name: 'A csillagjátszótér' }]
   }
 ];

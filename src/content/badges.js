@@ -7,6 +7,6 @@ export const BADGES = {
   'pontos-megfigyelo': { id: 'pontos-megfigyelo', name: 'Pontos megfigyelő', icon: 'octopus' },
   'urbeli-utkereso': { id: 'urbeli-utkereso', name: 'Űrbéli útkereső', icon: 'rover' },
   'elso-lepes': { id: 'elso-lepes', name: 'Első lépés', icon: 'directions_walk' },
-  'sajat-hang': { id: 'sajat-hang', name: 'Saját hang', icon: 'forum' },
+  'sajat-hang': { id: 'sajat-hang', name: 'Saját hang', art: 'assets/badge-sajat-hang.webp' },
   'szallitasi-nyomozo': { id: 'szallitasi-nyomozo', name: 'Szállítási nyomozó', icon: 'inventory_2' }
 };

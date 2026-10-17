@@ -54,3 +54,37 @@ try {
 } catch (e) {
   if (e.code !== 'ENOENT') throw e;
 }
+
+// Kapcsolatok bolygója: design/source-art/kapcsolatok/*.png. The three scenes are 2048 × 1143 masters (16:9, kept in proportion)
+// -> a 1536 px and a 768 px WebP (same size limits as above); the badge is 1254 × 1254 with real alpha -> a 512 px WebP with a
+// lossless alpha channel.
+const KAP = 'design/source-art/kapcsolatok';
+try {
+  for (const file of (await readdir(KAP)).filter((f) => f.endsWith('.png')).sort()) {
+    const name = file.replace(/\.png$/, '');
+    const input = path.join(KAP, file);
+    const meta = await sharp(input).metadata();
+    if (name === 'sajat-hang-badge') {
+      if (!meta.hasAlpha || meta.width !== 1254 || meta.height !== 1254) throw new Error(`${file}: expected 1254x1254 with alpha`);
+      const output = path.join(OUT, 'badge-sajat-hang.webp');
+      await sharp(input).resize(512, 512).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(output);
+      console.log(`${'badge-sajat-hang'.padEnd(28)} 512x512  alpha  ${((await stat(output)).size / 1024).toFixed(0)} KB`);
+      continue;
+    }
+    if (meta.width !== 2048 || meta.height !== 1143) throw new Error(`${file} is ${meta.width}x${meta.height}, expected 2048x1143`);
+    for (const width of [1536, 768]) {
+      const height = Math.round((width * 1143) / 2048);
+      const output = path.join(OUT, width === 1536 ? `${name}.webp` : `${name}-768.webp`);
+      let q = 90;
+      let size;
+      do {
+        await sharp(input).resize({ width, height }).webp({ quality: q, effort: 6, smartSubsample: true }).toFile(output);
+        size = (await stat(output)).size;
+        q -= 4;
+      } while (size > LIMITS[width] && q > 60);
+      console.log(`${(name + (width === 768 ? '-768' : '')).padEnd(28)} ${width}x${height}  q${q + 4}  ${(size / 1024).toFixed(0)} KB${size > LIMITS[width] ? '  OVER LIMIT' : ''}`);
+    }
+  }
+} catch (e) {
+  if (e.code !== 'ENOENT') throw e;
+}

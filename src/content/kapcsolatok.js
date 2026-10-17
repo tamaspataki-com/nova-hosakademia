@@ -34,7 +34,13 @@ export const KAPCSOLATOK = {
   modes: ['read'], // the dialogue is in the videos and shown as text; there is no narration to choose
   objectives: [],
   hideObjectives: true,
-  coverIcon: 'forum', // no artwork yet: the icon card is used
+  // Cover: Mira hesitating beside Zénó at the meteor racetrack (nothing of the outcome). Shown only on the card and the
+  // introduction – never inside an activity. Master: design/source-art/kapcsolatok/kapcsolatok-unspoken-no.png.
+  coverAsset: 'assets/kapcsolatok-unspoken-no.webp',
+  coverSet: 'assets/kapcsolatok-unspoken-no-768.webp 768w, assets/kapcsolatok-unspoken-no.webp 1536w',
+  coverPosition: '50% 35%',
+  coverIcon: 'forum', // fallback while the cover loads
+  coverAlt: 'Mira bizonytalanul áll a csillagtérkép asztalánál, mellette Zénó a meteorversenypályát mutatja.',
   badge: 'sajat-hang',
   glossary: [],
   passages: [],
@@ -171,7 +177,15 @@ export const KAPCSOLATOK = {
       speaker: 'Zénó',
       clip: clip(6),
       say: 'Rendben. Én még kipróbálom az új kanyart. Utána megnézem, milyen térképet készítettél. Hagyj rajta helyet a gyűrűs bolygónak!',
-      after: 'Most mást választottak. A barátságuk ettől még megmaradt.'
+      after: 'Most mást választottak. A barátságuk ettől még megmaradt.',
+      // Closing picture (shown only here, after video 6, once both choices are made). Master: design/source-art/kapcsolatok/kapcsolatok-closing.png.
+      image: {
+        src: 'assets/kapcsolatok-closing.webp',
+        srcSet: 'assets/kapcsolatok-closing-768.webp 768w, assets/kapcsolatok-closing.webp 1536w',
+        width: 1536,
+        height: 857,
+        alt: 'Mira a csillagtérkép asztalánál, Zénó a versenyjárgányában a pálya mellett; mindketten mosolyognak.'
+      }
     },
     {
       id: 'say-yours',

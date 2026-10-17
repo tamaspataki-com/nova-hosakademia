@@ -1,0 +1,13 @@
+Add these four artwork files to NOVA's sixth world, Kapcsolatok bolygója, and its adventure A kimondatlan nem.
+
+Read the project root AGENTS.md and follow its existing artwork conventions.
+01-world-cover.png: world card on Explore and world page. Create the usual 1536 px and 768 px versions.
+02-adventure-cover.png: adventure library card and introduction only. Never display inside adventure steps. Create responsive sizes as usual.
+03-closing-scene.png: closing scene after video 6, near the end only. Never use as an opening cover or reveal it before the choices.
+04-sajat-hang-badge.png: Saját hang badge on the completion screen and Jelvényeim list. Preserve true alpha transparency.
+
+The three scene images are 2048 x 1143. The badge is 1254 x 1254 with verified alpha transparency. Keep original proportions; use existing crop rules and check faces on mobile cards.
+
+Preserve approved text, videos, choices, adult-reviewed status and journey settings. Adventure remains open from the start and outside the daily journey.
+Include pending local commits 78a1efb and 06164c5. Update artwork documentation and checklist. Do not mark real-device playback checks completed without doing them.
+Build and test image placement and responsive cropping, run the required update-bar proof, then push and deploy all pending changes using the project's correct repository and branch. Verify the correct live address https://nova-hosakademia.pages.dev and the deployed artwork. Report exactly what passed and what remains unverified.
