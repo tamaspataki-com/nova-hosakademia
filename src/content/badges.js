@@ -3,5 +3,6 @@
 export const BADGES = {
   goggles: { id: 'goggles', name: 'Nyomkereső szemüveg', art: 'assets/tool-goggles.webp' },
   nyomkutato: { id: 'nyomkutato', name: 'Nyomkutató', icon: 'dino' },
+  'figyelmes-megfigyelo': { id: 'figyelmes-megfigyelo', name: 'Figyelmes megfigyelő', icon: 'visibility' },
   'szallitasi-nyomozo': { id: 'szallitasi-nyomozo', name: 'Szállítási nyomozó', icon: 'inventory_2' }
 };

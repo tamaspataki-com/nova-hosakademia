@@ -64,5 +64,8 @@ export const OBJECTIVE_NAMES = {
   delayedRecall: 'Későbbi felidézés',
   connect: 'Információk összekapcsolása',
   instruction: 'Utasítás követése',
-  check: 'Ellenőrzés'
+  check: 'Ellenőrzés',
+  relevant: 'Releváns információ',
+  prediction: 'Alátámasztott feltételezés',
+  verify: 'Következtetés ellenőrzése'
 };

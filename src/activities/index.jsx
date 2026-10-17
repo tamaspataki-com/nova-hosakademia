@@ -8,6 +8,8 @@ import Reflection from './Reflection.jsx';
 import Sort from './Sort.jsx';
 import Instruction from './Instruction.jsx';
 import CorrectPlacement from './CorrectPlacement.jsx';
+import SelectClues from './SelectClues.jsx';
+import Prediction from './Prediction.jsx';
 
 // One component per activity type. Content decides which steps an adventure has; nothing in these components
 // knows about any particular story.
@@ -22,7 +24,9 @@ export const ACTIVITIES = {
   reflection: Reflection,
   sort: Sort,
   instruction: Instruction,
-  correctPlacement: CorrectPlacement
+  correctPlacement: CorrectPlacement,
+  selectClues: SelectClues,
+  prediction: Prediction
 };
 
 // Which step types score answers (and therefore take hints, guided help and a solution reveal).
@@ -34,5 +38,6 @@ export const SCORED = new Set([
   'delayedRecall',
   'sort',
   'instruction',
-  'correctPlacement'
+  'correctPlacement',
+  'selectClues'
 ]);

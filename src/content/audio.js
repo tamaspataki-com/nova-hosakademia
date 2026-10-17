@@ -30,3 +30,13 @@ export const RECORDINGS = {
   [`${CRATES}:p3:c0`]: file('dino2-p3-c0'),
   [`${CRATES}:p3:c1`]: file('dino2-p3-c1')
 };
+
+// Recording keys prepared for adventure 3 (A Triceratops a kapunál). No files exist yet, so none is listed in
+// RECORDINGS: until they are supplied the adventure uses the device's Hungarian voice, with the usual honest fallback.
+// Only the displayed passage text belongs in a recording (never questions or extras).
+const GATE = 'dino-gate-clues-03:story';
+export const PREPARED_GATE_KEYS = ['p1', 'p2', 'p3'].flatMap((p) => [
+  `${GATE}:${p}`,
+  `${GATE}:${p}:c0`,
+  `${GATE}:${p}:c1`
+]);

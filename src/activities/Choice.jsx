@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { shuffle, Btn, Icon } from '../app/ui.jsx';
-import { Feedback, Guided, Hints, useScored } from './shared.jsx';
+import { Feedback, Guided, Hints, StepWords, useScored } from './shared.jsx';
 import { ReflectionCard } from './Reflection.jsx';
 
 // Multiple choice (also used for delayed recall and vocabulary questions).
 // Selecting only highlights; the answer is submitted with "Ellenőrzöm". Options are shuffled once per attempt
 // and keep their stable ids.
 export default function Choice({ api, variant = 'choice' }) {
-  const { adv, step, st, patch, next } = api;
+  const { adv, step, st, run, patch, next } = api;
   const rules = useScored(api);
   const [order] = useState(() => st.order || shuffle(step.options.map((o) => o.id)));
   useEffect(() => {
@@ -26,11 +26,24 @@ export default function Choice({ api, variant = 'choice' }) {
     rules.submit(ok, { choice: selected });
   };
 
+  // A check against the child's own earlier prediction (saved in another step): shown above the question.
+  const prior = step.recallFrom ? run.steps[step.recallFrom.step]?.[step.recallFrom.field] : null;
+  const priorText = prior
+    ? adv.steps.find((x) => x.id === step.recallFrom.step)?.options.find((o) => o.id === prior)?.text
+    : null;
+  const correctText = (step.feedback?.correctBy && step.feedback.correctBy[prior]) ?? step.feedback?.correct;
+
   const showGuided = !done && rules.misses >= 2;
   const lastHint = !done && st.fallback && rules.misses > 0 && !showGuided;
 
   return (
     <div className="stack">
+      {priorText ? (
+        <section className="card stack tight" aria-label={step.recallFrom.label}>
+          <span className="eyebrow">{step.recallFrom.label}</span>
+          <p className="read-text">{priorText}</p>
+        </section>
+      ) : null}
       <h2 className="h2">{step.prompt}</h2>
 
       <div className="stack tight" role="group" aria-label="Válaszlehetőségek">
@@ -56,15 +69,14 @@ export default function Choice({ api, variant = 'choice' }) {
         })}
       </div>
 
+      {adv.stepWords ? <StepWords api={api} /> : null}
       <Hints shown={st.shown} />
       {lastHint ? <Feedback>Nézd meg újra a szöveget, és próbáld újra.</Feedback> : null}
       {showGuided || rules.guided ? <Guided adv={adv} step={step} /> : null}
 
       {done ? (
         <>
-          <Feedback ok>
-            {rules.guided ? 'Ez a helyes válasz.' : (step.feedback?.correct ?? 'Jól válaszoltál.')}
-          </Feedback>
+          <Feedback ok>{rules.guided ? 'Ez a helyes válasz.' : (correctText ?? 'Jól válaszoltál.')}</Feedback>
           {rules.guided ? <ReflectionCard api={api} /> : null}
           <Btn iconAfter="arrow_forward" onClick={next}>
             Tovább

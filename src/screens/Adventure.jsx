@@ -222,7 +222,7 @@ function Runner({ adv, run, go }) {
   const api = { adv, step, st, run, act, settings, voiceReady, speaker, patch, log, next, setMode, openWord, events };
 
   // ----- help -----
-  const canHelp = scored || step.type === 'retell';
+  const canHelp = scored || step.type === 'retell' || step.type === 'prediction';
   const srcSecs = sourceSections(adv, step);
   // Replay plays the step's source section(s) in order – the recording of each one when it exists.
   const secClip = (sec) => `${adv.id}:${step.source?.passageId ?? adv.passages[0].id}:${sec.id}`;

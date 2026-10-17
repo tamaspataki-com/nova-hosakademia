@@ -4,6 +4,8 @@ import { tone } from '../app/tone.js';
 
 // Sections a step refers to: its authored source, else (e.g. parent-made text) the whole first passage.
 export function sourceSections(adv, step) {
+  // `sources`: several authored sections (e.g. only the parts told so far); never the whole passage
+  if (step.sources) return step.sources.map((s) => sectionOf(adv, s.passageId, s.sectionId)).filter(Boolean);
   if (step.source) {
     const sec = sectionOf(adv, step.source.passageId, step.source.sectionId);
     return sec ? [sec] : [];
@@ -215,6 +217,10 @@ export function useScored(api) {
       definitions: evs.filter((e) => e.type === 'word_opened' && e.t >= since).length,
       guidedPlacement: !!st.guidedPlacement,
       quoteShown: sup.quote,
+      // a check against the child's own earlier prediction records that prediction next to the outcome answer
+      ...(step.recallFrom
+        ? { priorPrediction: run.steps[step.recallFrom.step]?.[step.recallFrom.field] ?? null }
+        : null),
       ...step.record, // e.g. a checking task with a visible reference is recorded as such
       attempts: extra.attempts,
       firstCorrect: extra.first,
