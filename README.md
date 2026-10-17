@@ -69,6 +69,15 @@ stopped („Folytatom"). Browser speech cannot be relied on to resume, so a paus
 from the beginning („Újra az elejéről"); the event log records `audio_paused` with `positionKept` and the replay as
 `restartedFromStart`.
 
+### Recorded narration
+
+`src/content/audio.js` maps clip ids to the MP3 files in `public/audio/`; they are preferred over the device voice and make
+listening available even on devices with no Hungarian voice. Clip ids: `<adventureId>:<passageId>:<sectionId>` for a whole
+section (e.g. `dino-muddy-footprints-01:story:p1` = `dino-p1.mp3`) and `…:c0`, `…:c1` for the authored shorter parts
+(`dino-p1-c0.mp3`, …). Pause and resume keep the exact position for recordings. The service worker caches the files whole
+and answers range requests (iPhones need them); `warmRecordings()` in `src/app/audio.js` fetches them once when online.
+Replacing a recording: copy the new file over the old one and raise `V` in `src/content/audio.js`.
+
 ### Links
 
 Screens can be opened from a link. The dinosaur adventure: **https://nova-hosakademia.pages.dev/#/dino** (long form

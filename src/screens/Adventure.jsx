@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useStore, statusOf } from '../app/store.jsx';
 import { Btn, Icon, Chip, Sheet, Glyph } from '../app/ui.jsx';
 import { tone } from '../app/tone.js';
-import { canPlay, NO_AUDIO_TEXT, useSpeaker, useVoiceReady } from '../app/audio.js';
+import { canPlay, canPlayAdventure, NO_AUDIO_TEXT, useSpeaker, useVoiceReady } from '../app/audio.js';
 import { ACTIVITIES, SCORED } from '../activities/index.jsx';
 import { Reference, sourceSections } from '../activities/shared.jsx';
 import { FORMATS, LEVELS, classLabel, MODE_NAMES, OBJECTIVE_NAMES, ROUTINE, sectionText } from '../content/index.js';
@@ -92,9 +92,7 @@ function Intro({ adv, go }) {
 function ModePicker({ adv, run, go }) {
   const { act } = useStore();
   const voiceReady = useVoiceReady();
-  const first = adv.steps.find((s) => s.type === 'passage');
-  const clip = first ? `${adv.id}:${first.passageId}:${first.sectionId}` : null;
-  const audioOk = canPlay(voiceReady, clip);
+  const audioOk = canPlayAdventure(voiceReady, adv);
   const choose = (mode) => {
     act.run(adv.id, { mode });
     act.log('mode_chosen', adv, { mode });
@@ -181,7 +179,12 @@ function Runner({ adv, run, go }) {
   // ----- help -----
   const canHelp = scored || step.type === 'retell';
   const srcSecs = sourceSections(adv, step);
-  const srcClip = step.source ? `${adv.id}:${step.source.passageId}:${step.source.sectionId}` : `${adv.id}:src`;
+  // Replay plays the step's source section(s) in order – the recording of each one when it exists.
+  const secClip = (sec) => `${adv.id}:${step.source?.passageId ?? adv.passages[0].id}:${sec.id}`;
+  const playSections = (secs, i = 0) =>
+    speaker.play(secClip(secs[i]), secs[i].narration ?? sectionText(secs[i]), (status) => {
+      if (status === 'completed' && i + 1 < secs.length) playSections(secs, i + 1);
+    });
   const unseen = (step.hints || []).filter((h) => !(st.shown || []).includes(h));
   const first = srcSecs[0];
   const passageSecs = step.type === 'passage' ? adv.passages.find((p) => p.id === step.passageId)?.sections : null;
@@ -210,7 +213,7 @@ function Runner({ adv, run, go }) {
         setRef({});
       }
     });
-  if (canHelp && !st.solved && listening && srcSecs.length && canPlay(voiceReady, srcClip))
+  if (canHelp && !st.solved && listening && srcSecs.length && srcSecs.every((sec) => canPlay(voiceReady, secClip(sec))))
     options.push({
       key: 'replay',
       icon: 'headphones',
@@ -218,7 +221,7 @@ function Runner({ adv, run, go }) {
       run() {
         patch({ replays: (st.replays || 0) + 1 });
         log('audio_replayed', { activity: step.id });
-        speaker.play(srcClip, srcSecs.map(sectionText).join(' '));
+        playSections(srcSecs);
       }
     });
   if (step.type === 'passage' && !st.chunked && thisSec && thisSec.sentences.length >= 2) {

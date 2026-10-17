@@ -32,6 +32,13 @@ opens online (iOS checks at launch); copies installed before the prompt version 
   the device did not say so. Recorded audio resumes; speech restarts („Újra az elejéről") and is recorded as such.
 - No diagnosis, no claims about attention or the brain, no speed scoring, no improvement claims from repeated texts.
 
+- **Artwork never gives an answer away.** Adventure and world covers appear only in the library and on the
+  introduction – never inside an activity (questions, sequencing, evidence, recall, retelling, reflection, completion).
+  The dinosaur cover shows the footprints the questions ask about, so it must stay out of the steps.
+- **Recorded narration** is mapped in `src/content/audio.js` (clip id → file in `public/audio/`). A recording must
+  contain exactly the displayed text of its passage or authored shorter part – no questions, no extras. Raise `V`
+  there whenever a recording is replaced (it is part of the cache key). Recordings are preferred over browser speech.
+
 ## 3. Data and safety
 
 - **Preserve saved progress.** localStorage key `nova.hosakademia.v2`; any change to its shape needs a migration

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TOOLS } from '../content/index.js';
 import { Btn, Icon } from '../app/ui.jsx';
-import { canPlay } from '../app/audio.js';
+import { canPlayAdventure } from '../app/audio.js';
 
 // "Which strategy helped?" – offered after a guided solution and usable as a step of its own.
 // Nothing is scored: the choice is only recorded for the parent.
@@ -68,7 +68,7 @@ export default function Reflection({ api }) {
   const available = {
     chunks: adv.passages.some((p) => p.sections.some((sec) => sec.chunks?.length)),
     reread: true, // the story can always be opened again (as a transcript in listening mode)
-    replay: listening && canPlay(voiceReady, `${adv.id}:story`)
+    replay: listening && canPlayAdventure(voiceReady, adv)
   };
   const options = step.options.filter((o) => !o.requires || available[o.requires]);
 

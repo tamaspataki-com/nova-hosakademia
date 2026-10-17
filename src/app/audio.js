@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Narrator } from './narrator.js';
+import { RECORDINGS } from '../content/audio.js';
 
 // Audio provider order: supplied recordings (Narrator.recorded[id]) → a verified Hungarian browser voice →
 // none. When neither exists the UI says so and offers reading; it never shows playback that makes no sound.
@@ -7,9 +8,27 @@ let started = false;
 let state = null; // null = still checking, true = a Hungarian voice exists, false = none
 const listeners = new Set();
 
+// Keep the recordings for offline use. They are cached whole by the service worker's audio route (which also answers
+// range requests, as iPhones need); precaching them would break playback on iOS.
+function warmRecordings() {
+  if (!('caches' in window) || navigator.onLine === false) return;
+  const urls = [...new Set(Object.values(RECORDINGS))];
+  const run = async () => {
+    try {
+      const cache = await caches.open('nova-audio');
+      for (const u of urls) if (!(await cache.match(u))) await cache.add(u);
+    } catch (e) {
+      /* offline or blocked: the clips simply stream when played */
+    }
+  };
+  (window.requestIdleCallback || ((f) => setTimeout(f, 2000)))(run);
+}
+
 export function initAudio() {
   if (started) return;
   started = true;
+  Object.assign(Narrator.recorded, RECORDINGS); // recordings win over browser speech
+  warmRecordings();
   // ?noaudio simulates a device without a Hungarian voice (for checking the fallback behaviour).
   if (new URLSearchParams(window.location.search).has('noaudio')) {
     state = false;
@@ -34,6 +53,11 @@ export function useVoiceReady() {
 
 // Can this clip be played? A recording needs no voice; speech needs a Hungarian voice.
 export const canPlay = (voiceReady, clipId) => !!(clipId && Narrator.recorded[clipId]) || voiceReady === true;
+
+// Clip ids of an adventure's passages, and whether every one can be played (recorded, or a Hungarian voice exists).
+export const passageClips = (adv) =>
+  adv.steps.filter((s) => s.type === 'passage').map((s) => `${adv.id}:${s.passageId}:${s.sectionId}`);
+export const canPlayAdventure = (voiceReady, adv) => passageClips(adv).every((c) => canPlay(voiceReady, c));
 
 export const NO_AUDIO_TEXT =
   'Ezen az eszközön most nincs elérhető magyar felolvasás. Olvasással folytathatod a kalandot.';

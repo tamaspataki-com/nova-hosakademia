@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useStore, statusOf, STATUS_LABEL } from '../app/store.jsx';
 import { Icon, Chip, Glyph } from '../app/ui.jsx';
-import { canPlay, useVoiceReady } from '../app/audio.js';
+import { canPlayAdventure, useVoiceReady } from '../app/audio.js';
 import { FORMATS, MODE_NAMES, UPCOMING_TEXT, WORLDS, availableIn, worldById } from '../content/index.js';
 
 export function AdventureCard({ adv, go }) {
@@ -10,17 +10,23 @@ export function AdventureCard({ adv, go }) {
   const status = statusOf(state, adv.id);
   const fav = state.favourites.includes(adv.id);
   const fmt = FORMATS.find((f) => f.id === adv.format)?.label;
-  const audio = canPlay(voiceReady, `${adv.id}:x`);
+  const audio = canPlayAdventure(voiceReady, adv);
   return (
     <article className="card adv-card">
       <button type="button" className="adv-main" onClick={() => go({ name: 'adventure', id: adv.id })}>
-        {adv.coverIcon ? (
-          <span className="adv-icon" aria-hidden="true">
-            <Glyph name={adv.coverIcon} size={48} />
+        <span className="adv-head">
+          {adv.coverAsset ? (
+            <img className="adv-thumb" src={adv.coverAsset} alt="" />
+          ) : adv.coverIcon ? (
+            <span className="adv-icon" aria-hidden="true">
+              <Glyph name={adv.coverIcon} size={48} />
+            </span>
+          ) : null}
+          <span className="stack tight adv-text">
+            <span className="adv-title">{adv.title}</span>
+            <span className="muted">{adv.description}</span>
           </span>
-        ) : null}
-        <span className="adv-title">{adv.title}</span>
-        <span className="muted">{adv.description}</span>
+        </span>
         <span className="chips">
           <Chip>{fmt}</Chip>
           {adv.modes.map((m) => {

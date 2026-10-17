@@ -22,6 +22,8 @@ export const WORLDS = [
     name: 'Dinoszaurusz-expedíció',
     description: 'Ősi nyomok, különös felfedezések és kutatókalandok.',
     icon: 'dino',
+    art: 'assets/dino-world.webp',
+    artAlt: 'A dinoszauruszpark kutatóállomása, előtte egy háromszarvú és egy hosszú nyakú dinoszaurusz',
     series: [{ id: 'research-station', name: 'A kutatóállomás rejtélyei' }]
   },
   {

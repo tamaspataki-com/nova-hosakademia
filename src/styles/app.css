@@ -1410,3 +1410,28 @@ details summary {
 .update-text .muted {
   font-size: 15px;
 }
+
+/* ---------- library cards with a cover picture ---------- */
+.adv-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  width: 100%;
+}
+.adv-text {
+  min-width: 0;
+}
+.adv-thumb {
+  flex: none;
+  width: 108px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #153a43;
+}
+@media (max-width: 420px) {
+  .adv-thumb {
+    width: 84px;
+    height: 64px;
+  }
+}

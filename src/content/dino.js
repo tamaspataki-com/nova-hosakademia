@@ -30,7 +30,11 @@ export const DINO = {
   level: 1,
   modes: ['read', 'listen', 'combined'],
   objectives: ['detail', 'cause', 'sequence', 'evidence', 'retell'],
-  coverIcon: 'dino', // restrained icon until illustrations are supplied
+  // Cover: Bence examining footprints. It is shown only in the library and on the introduction – never inside an
+  // activity – because it shows the footprints that the questions ask about. It does not show the animal.
+  coverAsset: 'assets/dino-footprints.webp',
+  coverAlt: 'Bence a kutatóállomás kapuja előtt guggolva nézi a sáros lábnyomokat',
+  coverIcon: 'dino', // fallback while the picture loads or is missing
   badge: 'nyomkutato',
   glossary: [
     { key: 'kutatóállomás', word: 'kutatóállomás', def: 'Olyan hely, ahol megfigyeléseket és vizsgálatokat végeznek.' },

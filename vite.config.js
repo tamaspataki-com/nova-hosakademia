@@ -39,6 +39,13 @@ export default defineConfig({
         navigateFallback: 'index.html',
         runtimeCaching: [
           {
+            // Recorded narration: cached whole, answered with range support (iPhones request audio in ranges).
+            // Filled by warmRecordings() in src/app/audio.js; cache key includes ?v= from src/content/audio.js.
+            urlPattern: ({ url }) => url.pathname.endsWith('.mp3'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'nova-audio', rangeRequests: true, cacheableResponse: { statuses: [200] } }
+          },
+          {
             urlPattern: ({ url }) => url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com',
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'google-fonts', expiration: { maxEntries: 30 } }
