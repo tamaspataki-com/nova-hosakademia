@@ -1550,3 +1550,80 @@ mark.swap {
   display: grid;
   gap: 6px;
 }
+
+/* Fill-in-the-blank message. */
+.blank {
+  display: inline-block;
+  min-width: 6ch;
+  padding: 0 8px;
+  border-bottom: 3px solid var(--primary);
+}
+.blank.filled {
+  background: rgba(243, 197, 104, 0.18);
+  border-radius: 8px 8px 0 0;
+  font-weight: 700;
+}
+
+/* Route map: a fixed drawing; its left/right orientation never changes with the screen size. */
+.route-map {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 12px;
+  color: var(--sand);
+}
+.route-map svg {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  height: auto;
+}
+.route-map .route-path {
+  stroke: var(--muted);
+  stroke-width: 5;
+  stroke-dasharray: 2 9;
+  stroke-linecap: round;
+}
+.route-map .route-path.done {
+  stroke: var(--primary);
+  stroke-dasharray: none;
+  stroke-width: 6;
+}
+.route-map .route-node {
+  fill: none;
+  stroke-width: 2;
+}
+.route-map .fill-flag {
+  fill: #e0564e;
+}
+.route-map .fill-rock {
+  fill: #8a8f95;
+}
+.route-map .fill-research {
+  fill: #3f7fb0;
+}
+.route-map .fill-solar {
+  fill: #d9b640;
+}
+.route-map .fill-rover {
+  fill: var(--primary);
+  stroke: var(--bg);
+  stroke-width: 1.5;
+}
+.route-map .fill-wheel {
+  fill: var(--bg);
+  stroke: var(--sand);
+  stroke-width: 1.5;
+}
+.route-map .route-label {
+  fill: var(--sand);
+  stroke: none;
+  font-size: 17px;
+  font-weight: 700;
+}
+.route-caption {
+  text-align: center;
+  margin-top: 6px;
+}

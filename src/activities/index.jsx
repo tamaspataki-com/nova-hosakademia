@@ -11,6 +11,9 @@ import CorrectPlacement from './CorrectPlacement.jsx';
 import SelectClues from './SelectClues.jsx';
 import Prediction from './Prediction.jsx';
 import InformationCheck from './InformationCheck.jsx';
+import FillBlank from './FillBlank.jsx';
+import Route from './Route.jsx';
+import Outcome from './Outcome.jsx';
 
 // One component per activity type. Content decides which steps an adventure has; nothing in these components
 // knows about any particular story.
@@ -28,7 +31,10 @@ export const ACTIVITIES = {
   correctPlacement: CorrectPlacement,
   selectClues: SelectClues,
   prediction: Prediction,
-  informationCheck: InformationCheck
+  informationCheck: InformationCheck,
+  fillBlank: FillBlank,
+  route: Route,
+  outcome: Outcome
 };
 
 // Which step types score answers (and therefore take hints, guided help and a solution reveal).
@@ -42,5 +48,7 @@ export const SCORED = new Set([
   'instruction',
   'correctPlacement',
   'selectClues',
-  'informationCheck'
+  'informationCheck',
+  'fillBlank',
+  'route'
 ]);

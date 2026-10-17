@@ -40,8 +40,8 @@ export const WORLDS = [
     id: 'space',
     name: 'Űrfelfedezők',
     description: 'Bolygók, űreszközök és távoli kutatóküldetések.',
-    icon: 'rocket_launch',
-    series: []
+    icon: 'rover',
+    series: [{ id: 'red-planet-messages', name: 'Üzenetek a vörös bolygóról' }]
   }
 ];
 

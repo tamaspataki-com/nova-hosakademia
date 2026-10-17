@@ -7,7 +7,9 @@ export const ATYPE = {
   vocabulary: 'Szómagyarázat',
   delayedRecall: 'Későbbi felidézés',
   retell: 'Elmesélés',
-  informationCheck: 'Információ ellenőrzése'
+  informationCheck: 'Információ ellenőrzése',
+  fillBlank: 'Üzenet kiegészítése',
+  route: 'Útvonal követése'
 };
 export const COMPLETION = {
   independent: 'Önállóan',

@@ -265,9 +265,10 @@ function Runner({ adv, run, go }) {
   // This run's events so far (supports and definitions between steps are read from them).
   const events = state.events.filter((e) => e.adv === adv.id && e.t >= run.startedAt);
 
-  // Information check: the current statement and its own state (hints, story opened, replay), kept per statement.
-  const stmt =
-    step.type === 'informationCheck' ? step.statements[Math.min(st.index || 0, step.statements.length - 1)] : null;
+  // Information check / route: the current statement or decision and its own state (hints, story opened, replay), kept per statement.
+  // The route task works the same way, one decision at a time.
+  const items = step.statements || step.decisions;
+  const stmt = items ? items[Math.min(st.index || 0, items.length - 1)] : null;
   const patchItem = (p) =>
     patch((cur) => ({ ...cur, items: { ...(cur.items || {}), [stmt.id]: { ...(cur.items?.[stmt.id] || {}), ...p } } }));
   // Opening the story again (a reread, or the transcript while listening) counts as support.

@@ -228,7 +228,7 @@ export function useScored(api) {
       ...(step.recallFrom
         ? { priorPrediction: run.steps[step.recallFrom.step]?.[step.recallFrom.field] ?? null }
         : null),
-      ...step.record, // e.g. a checking task with a visible reference is recorded as such
+      ...(typeof step.record === 'function' ? step.record(run) : step.record), // e.g. a checking task with a visible reference is recorded as such
       attempts: extra.attempts,
       firstCorrect: extra.first,
       completion: guided ? 'guided' : extra.first && !sup.used ? 'independent' : 'supported'

@@ -5,5 +5,6 @@ export const BADGES = {
   nyomkutato: { id: 'nyomkutato', name: 'Nyomkutató', icon: 'dino' },
   'figyelmes-megfigyelo': { id: 'figyelmes-megfigyelo', name: 'Figyelmes megfigyelő', icon: 'visibility' },
   'pontos-megfigyelo': { id: 'pontos-megfigyelo', name: 'Pontos megfigyelő', icon: 'octopus' },
+  'urbeli-utkereso': { id: 'urbeli-utkereso', name: 'Űrbéli útkereső', icon: 'rover' },
   'szallitasi-nyomozo': { id: 'szallitasi-nyomozo', name: 'Szállítási nyomozó', icon: 'inventory_2' }
 };

@@ -48,7 +48,27 @@ export const OctopusIcon = ({ size = 48 }) => (
   </svg>
 );
 
-// Material icon by name, or a custom silhouette for the names 'dino' and 'octopus'.
+// A neutral Mars rover silhouette used until illustrations are supplied.
+export const RoverIcon = ({ size = 48 }) => (
+  <svg
+    viewBox="0 0 120 80"
+    width={size}
+    height={(size * 80) / 120}
+    aria-hidden="true"
+    fill="currentColor"
+    stroke="currentColor"
+  >
+    <rect x="22" y="38" width="76" height="18" rx="6" stroke="none" />
+    <rect x="52" y="22" width="24" height="16" rx="4" stroke="none" />
+    <path d="M30 38 L 14 14" fill="none" strokeWidth="5" strokeLinecap="round" />
+    <circle cx="12" cy="12" r="6" stroke="none" />
+    {[34, 60, 86].map((x) => (
+      <circle key={x} cx={x} cy="64" r="9" stroke="none" />
+    ))}
+  </svg>
+);
+
+// Material icon by name, or a custom silhouette for the names 'dino', 'octopus' and 'rover'.
 export const Glyph = ({ name, size = 24 }) =>
   name === 'dino' ? (
     <DinoIcon size={size} />
