@@ -146,4 +146,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Adventure 2: recordings and cover checked on a real iPhone and a real Android device
 - [ ] Adventure 3 (A Triceratops a kapunál): content review finished (until then it stays „unreviewed")
 - [ ] Adventure 3: instructions clear to Lacika (clue selection, prediction, check) and spoken narration checked once recordings exist; real-device keyboard/touch use tested
+- [ ] Focus handling (step heading focus, feedback announcements, help panel focus) tested with a real screen reader (VoiceOver/TalkBack) and on real devices
 

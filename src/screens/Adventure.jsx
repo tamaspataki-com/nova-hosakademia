@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStore, statusOf } from '../app/store.jsx';
-import { Btn, Icon, Chip, Sheet, Glyph } from '../app/ui.jsx';
+import { Btn, Icon, Chip, Sheet, Glyph, useHeadingFocus } from '../app/ui.jsx';
+import { AnnounceContext } from '../activities/live.jsx';
 import { tone } from '../app/tone.js';
 import OfflineNote from '../app/OfflineNote.jsx';
 import { OFFLINE_UNAVAILABLE_TEXT, useOfflineStatus } from '../app/offline.js';
@@ -39,6 +40,7 @@ function Intro({ adv, go }) {
   const status = statusOf(state, adv.id);
   const fav = state.favourites.includes(adv.id);
   const level = LEVELS.find((l) => l.id === adv.level);
+  const headRef = useHeadingFocus();
   const [word, setWord] = useState(null);
   const introWords = adv.introGlossary ? wordsIn(adv.glossary, [{ text: adv.intro || '' }]) : [];
   const start = () => {
@@ -62,7 +64,9 @@ function Intro({ adv, go }) {
         {adv.custom ? <Chip tone="gold">Szülő készítette</Chip> : null}
         {level ? <Chip>{level.label}</Chip> : null}
       </div>
-      <h1 className="h1">{adv.title}</h1>
+      <h1 className="h1" tabIndex={-1} ref={headRef}>
+        {adv.title}
+      </h1>
       <p className="lead">{adv.intro || adv.description}</p>
       {introWords.length ? (
         <div className="stack tight" aria-label="Szómagyarázat">
@@ -124,6 +128,7 @@ function Intro({ adv, go }) {
 // ---------- presentation mode ----------
 function ModePicker({ adv, run, go }) {
   const { act } = useStore();
+  const headRef = useHeadingFocus();
   const voiceReady = useVoiceReady();
   const audioOk = canPlayAdventure(voiceReady, adv);
   const offlineState = useOfflineStatus(adv); // 'unavailable': offline and the recordings are not on this device
@@ -138,7 +143,9 @@ function ModePicker({ adv, run, go }) {
       <button type="button" className="back" onClick={() => go({ name: 'back' })}>
         <Icon name="close" /> Ki
       </button>
-      <h1 className="h1">{adv.modePrompt?.heading || 'Hogyan ismerkednél meg a történettel?'}</h1>
+      <h1 className="h1" tabIndex={-1} ref={headRef}>
+        {adv.modePrompt?.heading || 'Hogyan ismerkednél meg a történettel?'}
+      </h1>
       {adv.modePrompt?.text ? <p className="lead">{adv.modePrompt.text}</p> : null}
       <div className="stack tight">
         {MODE_INFO.filter(([id]) => adv.modes.includes(id)).map(([id, label, icon, text]) => {
@@ -188,9 +195,48 @@ function Runner({ adv, run, go }) {
   const listening = run.mode === 'listen' || run.mode === 'combined';
   const scored = SCORED.has(step.type);
 
+  // ----- focus and announcements -----
+  // Entering a step: the page starts at the top and focus goes to the step heading (tabindex -1), so the next Tab
+  // reaches the first control of the step. Feedback is announced through one live region; nothing is read twice.
+  const headRef = useRef(null);
+  const [live, setLive] = useState('');
+  const enteredAt = useRef(0);
+  const lastIdx = useRef(-1);
+  if (lastIdx.current !== idx) {
+    lastIdx.current = idx;
+    enteredAt.current = Date.now(); // set during render, before the step's children run their effects
+  }
+  const announce = useCallback((text) => {
+    if (Date.now() - enteredAt.current < 700) return; // already on screen when the step opened: not news
+    setLive('');
+    setTimeout(() => setLive(text), 60);
+  }, []);
   useEffect(() => {
     window.scrollTo(0, 0);
+    headRef.current?.focus({ preventScroll: true });
+    setLive('');
   }, [idx]);
+
+  // After an answer: when the step becomes solved, focus moves on to "Tovább"; after a wrong submission, if the
+  // button that was pressed went away or became disabled, focus goes to the first available answer control.
+  const solvedNow = !!(st.solved || st.prediction || st.reflected || st.done);
+  const seen = useRef({ id: step.id, solved: solvedNow, attempts: st.attempts || 0 });
+  useEffect(() => {
+    const prev = seen.current;
+    const attempts = st.attempts || 0;
+    if (prev.id === step.id) {
+      const page = document.querySelector('.runner .page');
+      if (solvedNow && !prev.solved) {
+        [...(page?.querySelectorAll('button') || [])].find((b) => b.textContent.includes('Tovább'))?.focus();
+      } else if (attempts > prev.attempts && !solvedNow) {
+        const a = document.activeElement;
+        if (!a || a === document.body || a.disabled || !document.contains(a)) {
+          (page?.querySelector('.option:not(:disabled), .card-opt, button:not(:disabled)') || headRef.current)?.focus();
+        }
+      }
+    }
+    seen.current = { id: step.id, solved: solvedNow, attempts };
+  }, [step.id, solvedNow, st.attempts]);
 
   const patch = (p) => act.step(adv.id, step.id, p);
   const log = (type, data) => act.log(type, adv, data);
@@ -312,123 +358,138 @@ function Runner({ adv, run, go }) {
   const showGuide = scored && settings.guideSeen < 1;
 
   return (
-    <div className="runner">
-      <header className="runner-bar">
-        <button type="button" className="btn btn-ghost small" onClick={() => go({ name: 'back' })}>
-          <Icon name="close" /> Ki
-        </button>
-        <div className="runner-mid">
-          <span className="runner-title">
-            {idx + 1}/{adv.steps.length} · {step.title}
-          </span>
-          <div className="dots" aria-hidden="true">
-            {adv.steps.map((s, i) => (
-              <i key={s.id} className={i < idx ? 'done' : i === idx ? 'cur' : ''} />
-            ))}
-          </div>
+    <AnnounceContext.Provider value={announce}>
+      <div className="runner">
+        <div className="sr-only" role="status" aria-live="polite">
+          {live}
         </div>
-        <button type="button" className="btn btn-ghost small" onClick={() => setHelp(true)}>
-          <Icon name="help" /> Segítséget kérek
-        </button>
-      </header>
-
-      <div className="page narrow stack">
-        {showGuide ? (
-          <section className="card guide" aria-label="A hősök módszere">
-            <div className="row between">
-              <strong>Megállok → Átgondolom → Elmondom → Ellenőrzöm</strong>
-              <button type="button" className="btn btn-ghost small" onClick={() => act.settings({ guideSeen: 1 })}>
-                Értem
-              </button>
-            </div>
-            <ul className="routine">
-              {ROUTINE.map((r) => (
-                <li key={r.label}>
-                  <Icon name={r.icon} />
-                  <span>
-                    <strong>{r.label}:</strong> {r.text}
-                  </span>
-                </li>
+        <header className="runner-bar">
+          <button type="button" className="btn btn-ghost small" onClick={() => go({ name: 'back' })}>
+            <Icon name="close" /> Ki
+          </button>
+          <div className="runner-mid">
+            <span className="runner-title">
+              {idx + 1}/{adv.steps.length} · {step.title}
+            </span>
+            <div className="dots" aria-hidden="true">
+              {adv.steps.map((s, i) => (
+                <i key={s.id} className={i < idx ? 'done' : i === idx ? 'cur' : ''} />
               ))}
-            </ul>
-          </section>
+            </div>
+          </div>
+          <button type="button" className="btn btn-ghost small" onClick={() => setHelp(true)}>
+            <Icon name="help" /> Segítséget kérek
+          </button>
+        </header>
+
+        <div className="page narrow stack">
+          <h1 className="sr-only" tabIndex={-1} ref={headRef} data-focus-fallback="">
+            {idx + 1}/{adv.steps.length} · {step.title}
+          </h1>
+          {showGuide ? (
+            <section className="card guide" aria-label="A hősök módszere">
+              <div className="row between">
+                <strong>Megállok → Átgondolom → Elmondom → Ellenőrzöm</strong>
+                <button type="button" className="btn btn-ghost small" onClick={() => act.settings({ guideSeen: 1 })}>
+                  Értem
+                </button>
+              </div>
+              <ul className="routine">
+                {ROUTINE.map((r) => (
+                  <li key={r.label}>
+                    <Icon name={r.icon} />
+                    <span>
+                      <strong>{r.label}:</strong> {r.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          <Activity key={step.id} api={api} />
+        </div>
+
+        {help ? (
+          <Sheet title="Segítséget kérek" onClose={() => setHelp(false)}>
+            <div className="stack tight">
+              {options.map((o) => (
+                <button
+                  key={o.key}
+                  type="button"
+                  className="help-item"
+                  onClick={() => {
+                    setHelp(false);
+                    o.run();
+                  }}
+                >
+                  <Icon name={o.icon} size={28} /> {o.label}
+                </button>
+              ))}
+            </div>
+          </Sheet>
         ) : null}
 
-        <Activity key={step.id} api={api} />
-      </div>
+        {ref ? (
+          <Sheet title={ref.only ? 'Az üzenet' : 'A történet'} wide onClose={() => setRef(null)}>
+            <Reference
+              adv={adv}
+              step={step}
+              mark={ref.mark}
+              only={ref.only}
+              glossary={adv.glossary}
+              onWord={openWord}
+            />
+            <Btn kind="ghost" onClick={() => setRef(null)}>
+              Vissza a feladathoz
+            </Btn>
+          </Sheet>
+        ) : null}
 
-      {help ? (
-        <Sheet title="Segítséget kérek" onClose={() => setHelp(false)}>
-          <div className="stack tight">
-            {options.map((o) => (
-              <button
-                key={o.key}
-                type="button"
-                className="help-item"
-                onClick={() => {
-                  setHelp(false);
-                  o.run();
-                }}
-              >
-                <Icon name={o.icon} size={28} /> {o.label}
-              </button>
-            ))}
-          </div>
-        </Sheet>
-      ) : null}
-
-      {ref ? (
-        <Sheet title={ref.only ? 'Az üzenet' : 'A történet'} wide onClose={() => setRef(null)}>
-          <Reference adv={adv} step={step} mark={ref.mark} only={ref.only} glossary={adv.glossary} onWord={openWord} />
-          <Btn kind="ghost" onClick={() => setRef(null)}>
-            Vissza a feladathoz
-          </Btn>
-        </Sheet>
-      ) : null}
-
-      {fail ? (
-        <Sheet title="Lejátszási hiba" onClose={() => setFail(null)}>
-          <div className="stack">
-            <strong>{FAIL_TITLE}</strong>
-            <p className="lead">{failureText(fail.reason)}</p>
-            <div className="row">
-              <Btn
-                icon="refresh"
-                onClick={() => {
-                  const secs = fail.secs;
-                  setFail(null);
-                  log('audio_retry', { activity: step.id, reason: fail.reason });
-                  playSections(secs);
-                }}
-              >
-                Újrapróbálom
-              </Btn>
-              <Btn
-                kind="ghost"
-                icon="menu_book"
-                onClick={() => {
-                  setFail(null);
-                  setMode('read', 'audio_failed');
-                  patch({ rereads: (st.rereads || 0) + 1 });
-                  log('passage_reread', { activity: step.id, transcript: false });
-                  setRef({});
-                }}
-              >
-                Olvasással folytatom
-              </Btn>
+        {fail ? (
+          <Sheet title="Lejátszási hiba" onClose={() => setFail(null)}>
+            <div className="stack">
+              <strong>{FAIL_TITLE}</strong>
+              <p className="lead">{failureText(fail.reason)}</p>
+              <div className="row">
+                <Btn
+                  icon="refresh"
+                  onClick={() => {
+                    const secs = fail.secs;
+                    setFail(null);
+                    log('audio_retry', { activity: step.id, reason: fail.reason });
+                    playSections(secs);
+                  }}
+                >
+                  Újrapróbálom
+                </Btn>
+                <Btn
+                  kind="ghost"
+                  icon="menu_book"
+                  onClick={() => {
+                    setFail(null);
+                    setMode('read', 'audio_failed');
+                    patch({ rereads: (st.rereads || 0) + 1 });
+                    log('passage_reread', { activity: step.id, transcript: false });
+                    setRef({});
+                  }}
+                >
+                  Olvasással folytatom
+                </Btn>
+              </div>
             </div>
-          </div>
-        </Sheet>
-      ) : null}
+          </Sheet>
+        ) : null}
 
-      {word ? (
-        <Sheet title="Szómagyarázat" onClose={() => setWord(null)}>
-          <div className="stack tight">
-            <strong className="h3">{word.word}</strong>
-            <p className="lead">{word.def}</p>
-          </div>
-        </Sheet>
-      ) : null}
-    </div>
+        {word ? (
+          <Sheet title="Szómagyarázat" onClose={() => setWord(null)}>
+            <div className="stack tight">
+              <strong className="h3">{word.word}</strong>
+              <p className="lead">{word.def}</p>
+            </div>
+          </Sheet>
+        ) : null}
+      </div>
+    </AnnounceContext.Provider>
   );
 }

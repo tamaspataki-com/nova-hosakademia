@@ -56,13 +56,32 @@ export function Sheet({ title, onClose, children, wide }) {
   useEffect(() => {
     const prev = document.activeElement;
     ref.current?.focus();
+    const tabbables = () =>
+      [...(ref.current?.querySelectorAll('button,a[href],input,select,textarea,[tabindex]') || [])].filter(
+        (e) => !e.disabled && e.tabIndex >= 0 && e.getClientRects().length
+      );
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
+      // Keep Tab inside the panel while it is open.
+      if (e.key === 'Tab' && ref.current) {
+        const list = tabbables();
+        if (!list.length) return e.preventDefault();
+        const at = list.indexOf(document.activeElement);
+        if (e.shiftKey && at <= 0) {
+          e.preventDefault();
+          list[list.length - 1].focus();
+        } else if (!e.shiftKey && (at === list.length - 1 || !ref.current.contains(document.activeElement))) {
+          e.preventDefault();
+          list[0].focus();
+        }
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => {
       document.removeEventListener('keydown', onKey);
-      prev?.focus?.();
+      // Back to whatever opened the panel; if that is gone, to the step heading.
+      const target = prev && document.contains(prev) ? prev : document.querySelector('[data-focus-fallback]');
+      target?.focus?.();
     };
   }, [onClose]);
   return (
@@ -102,3 +121,12 @@ export const fmtTime = (t) => {
   const p = (n) => String(n).padStart(2, '0');
   return `${p(d.getMonth() + 1)}.${p(d.getDate())}. ${p(d.getHours())}:${p(d.getMinutes())}`;
 };
+
+// A heading that receives focus when its screen opens (tabindex -1), so the next Tab reaches the first control.
+export function useHeadingFocus() {
+  const ref = useRef(null);
+  useEffect(() => {
+    ref.current?.focus({ preventScroll: true });
+  }, []);
+  return ref;
+}

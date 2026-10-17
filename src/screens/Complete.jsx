@@ -1,5 +1,5 @@
 import { useStore } from '../app/store.jsx';
-import { Btn, Icon, Glyph } from '../app/ui.jsx';
+import { Btn, Icon, Glyph, useHeadingFocus } from '../app/ui.jsx';
 import { BADGES } from '../content/index.js';
 
 // Shown after the last step. Opening it again changes nothing: completion was recorded once, by the run ending.
@@ -11,6 +11,7 @@ const DEFAULT_ACTIONS = [
 
 export default function Complete({ adv, go }) {
   const { state, act } = useStore();
+  const headRef = useHeadingFocus();
   const badge = BADGES[adv.badge];
   const c = adv.completion || { title: 'Kész!', text: 'Befejezted ezt a kalandot.' };
   const repeat = (state.history[adv.id]?.completions || 0) > 1;
@@ -26,7 +27,9 @@ export default function Complete({ adv, go }) {
   return (
     <div className="page narrow stack center-text">
       <Icon name="verified" size={56} className="gold" />
-      <h1 className="h1">{c.title}</h1>
+      <h1 className="h1" tabIndex={-1} ref={headRef}>
+        {c.title}
+      </h1>
       <p className="lead">{c.text}</p>
       {repeat ? <p className="muted">Ez gyakorlás volt – a jelvényt egyszer kapod meg.</p> : null}
 

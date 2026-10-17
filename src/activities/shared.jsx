@@ -1,6 +1,8 @@
 import { sectionOf } from '../content/index.js';
 import { Icon } from '../app/ui.jsx';
 import { tone } from '../app/tone.js';
+import { useRef } from 'react';
+import { useAnnounceChange, useAnnounceOnMount } from './live.jsx';
 
 // Sections a step refers to: its authored source, else (e.g. parent-made text) the whole first passage.
 export function sourceSections(adv, step) {
@@ -117,9 +119,10 @@ export function StepWords({ api }) {
 }
 
 export function Hints({ shown }) {
+  useAnnounceChange(shown?.length ? shown[shown.length - 1] : ''); // the newest hint, once
   if (!shown?.length) return null;
   return (
-    <div className="stack tight" aria-live="polite">
+    <div className="stack tight">
       {shown.map((h, i) => (
         <div key={i} className="note hint">
           <Icon name="lightbulb" />
@@ -133,12 +136,14 @@ export function Hints({ shown }) {
 // Guided explanation after repeated misses: the authored quote from the story, highlighted, plus an authored
 // leading question when there is one.
 export function Guided({ adv, step }) {
+  const ref = useRef(null);
+  useAnnounceOnMount(ref);
   const g = step.guided;
   if (!g) return null;
   const sec = g.quote ? sectionOf(adv, g.quote.passageId, g.quote.sectionId) : null;
   const sent = sec?.sentences.find((s) => s.id === g.quote.sentenceId);
   return (
-    <div className="note guided" aria-live="polite">
+    <div className="note guided" ref={ref}>
       <Icon name="menu_book" />
       <div className="stack tight">
         {sent ? <span>Nézd meg ezt a mondatot: „{sent.text}”</span> : null}
@@ -268,8 +273,10 @@ export function useScored(api) {
 }
 
 export function Feedback({ ok, children }) {
+  const ref = useRef(null);
+  useAnnounceOnMount(ref);
   return (
-    <div className={`note ${ok ? 'good' : 'soft'}`} role="status">
+    <div className={`note ${ok ? 'good' : 'soft'}`} ref={ref}>
       <Icon name={ok ? 'check_circle' : 'info'} />
       <span>{children}</span>
     </div>
