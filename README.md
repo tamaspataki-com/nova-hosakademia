@@ -243,7 +243,7 @@ barátoknak megtalálni a szavakat, hogy megértsék egymást.”), series name 
 („Segítettél Mirának!”; text revised 2026-10-17), the online note, and the „Mira mondja / Zénó mondja” label. The sentence options are shown without quotation marks.
 Not built: the „zárókép” of scene 5 (no still exists; the text „Most mást választottak…” sits under video 6), the badge picture (two speech
 bubbles with a star; the `forum` icon is used), cover and world artwork (icon cards). The production note „Ez a történet egyik lényeges pontja…”
-is not shown to the child. Review status is „unreviewed”.
+is not shown to the child. Review status: **adult-reviewed** on the owner's instruction (2026-10-17: videos, storyboard and final interface text approved; the wording edits of step 11 and the completion text included). **Open, separate from the review:** the four artwork files (world cover, adventure cover, closing picture, badge picture) and real-device playback checks. Nothing is deployed until the artwork is in (commit `78a1efb` and this one stay local).
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -357,6 +357,6 @@ video is online-only (not part of any offline claim); usage rights of the video,
 - [ ] Intro video: usage rights confirmed with evidence (generator terms/licence); plays on a real iPhone and Android; its look and length approved
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone
 - [ ] Kapcsolatok bolygója, adventure 1: listened to / watched all seven clips in the app: wording equals the displayed text, pronunciation, lip sync, pace
-- [ ] Kapcsolatok bolygója, adventure 1: content review finished (until then it stays „unreviewed”); interface wording listed in its README section approved
+- [x] Kapcsolatok bolygója, adventure 1: marked „adult-reviewed” on the owner's instruction (videos, storyboard, final interface text; 2026-10-17)
 - [ ] Kapcsolatok bolygója, adventure 1: plays on a real iPhone and a real Android device (clips are fetched whole; 0.7–1.6 MB each); keyboard/touch and screen-reader use tested
 - [ ] Kapcsolatok bolygója: usage rights of the Hedra clips and characters confirmed; decision whether the adventure joins the daily journey; artwork, scene-5 still and badge picture

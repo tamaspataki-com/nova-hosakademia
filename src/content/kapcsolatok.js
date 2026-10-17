@@ -24,8 +24,8 @@ export const KAPCSOLATOK = {
   classification: 'fiction',
   sources: [],
   review: {
-    status: 'unreviewed',
-    note: 'A hét videót és a forgatókönyvet a szülő jóváhagyta (2026-10-17), de a kész kalandot még nem nézte át az alkalmazásban. Valódi eszközön még nem tesztelték.'
+    status: 'adult-reviewed',
+    note: 'A szülő 2026-10-17-én jóváhagyta a hét videót, a forgatókönyvet és a végleges felületi szövegeket. Még nincs kész: a borítók, a záró kép és a jelvénykép. Valódi eszközön még nem tesztelték.'
   },
   format: 'story',
   status: 'available',
