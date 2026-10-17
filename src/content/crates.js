@@ -25,7 +25,8 @@ export const CRATES = {
   context: 'practice',
   level: 1,
   modes: ['read', 'listen', 'combined'],
-  objectives: ['detail', 'connect', 'instruction', 'check'],
+  objectives: ['detail', 'connect', 'instruction', 'check'], // technical labels: parent area only
+  hideObjectives: true,
   // No cover yet: a neutral crate icon is shown on the library card and the introduction.
   coverIcon: 'inventory_2',
   badge: 'szallitasi-nyomozo',
@@ -161,6 +162,10 @@ export const CRATES = {
       // Further support: show only the quoted instruction (see Adventure.jsx, `quote`).
       quote: { ...src('p3'), sentenceId: 'p3-s2' },
       hints: ['Az üzenet egy színt és egy helyet nevezett meg.'],
+      guided: {
+        text: 'Az üzenet a kék ládát és a megfigyelőtornyot nevezte meg. Ezért a kék ládát a megfigyelőtoronyhoz kell vinni.'
+      },
+      revealLabel: 'Megmutatod a megoldást?',
       feedback: { correct: 'Követted az üzenetet: a kék ládát a megfigyelőtoronyhoz küldted.' },
       after: 'Bence ezután a sárga ládát is az üvegházhoz vitte. Mindkét szállítmány megérkezett a helyére.'
     },

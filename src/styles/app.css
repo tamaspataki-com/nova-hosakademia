@@ -1520,3 +1520,12 @@ mark.swap {
   font-weight: 900;
   text-decoration: underline wavy;
 }
+.place-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 2px solid var(--primary);
+  background: rgba(243, 197, 104, 0.08);
+}

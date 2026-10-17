@@ -85,7 +85,7 @@ function Intro({ adv, go }) {
         </div>
       ) : null}
 
-      {adv.objectives?.length ? (
+      {adv.objectives?.length && !adv.hideObjectives ? (
         <div className="stack tight">
           <span className="eyebrow">Ezt gyakorlod</span>
           <div className="chips">

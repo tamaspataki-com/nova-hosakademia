@@ -18,6 +18,11 @@ export default function Instruction({ api }) {
     rules.submit(whatOk && whereOk, { what, where, whatOk, whereOk });
   };
 
+  const reveal = () => {
+    patch({ what: step.correct.what, where: step.correct.where });
+    rules.reveal();
+  };
+
   const group = (key, title, options, chosen) => (
     <div className="stack tight" role="group" aria-label={title}>
       <span className="eyebrow">{title}</span>
@@ -55,7 +60,7 @@ export default function Instruction({ api }) {
 
       {done ? (
         <>
-          <Feedback ok>{step.feedback.correct}</Feedback>
+          <Feedback ok>{rules.guided ? step.guided.text : step.feedback.correct}</Feedback>
           <p className="lead">{step.after}</p>
           <Btn iconAfter="arrow_forward" onClick={next}>
             Tovább
@@ -66,6 +71,11 @@ export default function Instruction({ api }) {
           <Btn disabled={!what || !where} onClick={check}>
             {step.submitLabel}
           </Btn>
+          {rules.misses >= 2 ? (
+            <Btn kind="ghost" icon="visibility" onClick={reveal}>
+              {step.revealLabel}
+            </Btn>
+          ) : null}
         </div>
       )}
     </div>

@@ -6,7 +6,7 @@ import { Feedback, Hints, StepWords, useScored } from './shared.jsx';
 // Sort cards into labelled destinations (boxes or places). Works by mouse drag, finger drag (hold, then drag) and by
 // tapping a card and then a destination. Cards can be moved or taken back until the work is solved.
 //   · A check never moves the child's work: cards stay where they were put and are marked "Jó helyen" or
-//     "Gondold át". Moving a card removes only that card's mark.
+//     "Nézd meg újra". Moving a card removes only that card's mark.
 //   · Step content: destinations[{id,label,swatch?,icon?}], items[{id,text,to,swatch?}], optional capacity (cards per
 //     destination), submitLabel, partialText, revealAt (misses before the solution is offered), revealLabel.
 //   · Colour is only ever a small swatch next to a written label.
@@ -27,6 +27,14 @@ export default function Sort({ api }) {
   const done = rules.solved;
   const pool = pool0.filter((id) => !placement[id]);
   const dragId = useRef(null);
+  const root = useRef(null);
+  const focusNext = useRef(null); // selector to focus after the next render (cards move between lists)
+  const [said, setSaid] = useState(''); // spoken status for screen readers
+  useEffect(() => {
+    if (!focusNext.current) return;
+    root.current?.querySelector(focusNext.current)?.focus();
+    focusNext.current = null;
+  });
   const revealAt = step.revealAt ?? 2;
   const n = step.items.length;
   const full = Object.keys(placement).length === n;
@@ -47,11 +55,15 @@ export default function Sort({ api }) {
       }
     }
     moved[id] = to;
+    focusNext.current = `[data-card="${id}"]`;
+    setSaid(`${items[id].text}: ${label(to)}.`);
     patch({ placement: moved, sel: null, result: clearMarks(result, touched) });
   };
   const take = (id) => {
     if (done || !placement[id]) return patch({ sel: null });
     const { [id]: _gone, ...rest } = placement;
+    focusNext.current = `[data-card="${id}"]`;
+    setSaid(`${items[id].text}: visszatéve a kártyák közé.`);
     patch({ placement: rest, sel: null, result: clearMarks(result, [id]) });
   };
   const drop = (id, to) => (to === 'pool' ? take(id) : place(id, to));
@@ -59,7 +71,21 @@ export default function Sort({ api }) {
     if (sel) place(sel, d);
   };
   const tapCard = (id) => {
-    if (!done) patch({ sel: sel === id ? null : id });
+    if (done) return;
+    const on = sel !== id;
+    // Selecting moves the focus to the first destination button; cancelling returns it to the card.
+    focusNext.current = on ? '[data-dest-btn]' : `[data-card="${id}"]`;
+    setSaid(
+      on ? `${items[id].text} kiválasztva. Válaszd ki, hová tegyük.` : `${items[id].text} kiválasztása megszűnt.`
+    );
+    patch({ sel: on ? id : null });
+  };
+  const onKeyDown = (e) => {
+    if (e.key === 'Escape' && sel && !done) {
+      e.stopPropagation();
+      focusNext.current = `[data-card="${sel}"]`;
+      patch({ sel: null });
+    }
   };
 
   const check = () => {
@@ -74,7 +100,10 @@ export default function Sort({ api }) {
       correctCount: Object.values(res).filter(Boolean).length
     });
   };
-  const reset = () => patch({ placement: {}, result: null, sel: null });
+  const reset = () => {
+    focusNext.current = '[data-card]';
+    patch({ placement: {}, result: null, sel: null });
+  };
   const reveal = () => {
     patch({
       placement: Object.fromEntries(step.items.map((i) => [i.id, i.to])),
@@ -101,7 +130,7 @@ export default function Sort({ api }) {
           </span>
         ) : r === false ? (
           <span className="slot-status no">
-            <Icon name="swap_vert" /> Gondold át
+            <Icon name="swap_vert" /> Nézd meg újra
           </span>
         ) : sel === id ? (
           <span className="option-tag on">Kiválasztva</span>
@@ -115,11 +144,12 @@ export default function Sort({ api }) {
       key={id}
       type="button"
       data-drag=""
+      data-card={id}
       className={`card-opt ${sel === id ? 'on' : ''} ${result?.[id] === true ? 'ok' : ''} ${result?.[id] === false ? 'no' : ''}`}
       aria-pressed={sel === id}
       aria-label={
         placement[id]
-          ? `${items[id].text}, itt: ${label(placement[id])}${result ? (result[id] ? ', jó helyen' : ', gondold át') : ''}`
+          ? `${items[id].text}, itt: ${label(placement[id])}${result ? (result[id] ? ', jó helyen' : ', nézd meg újra') : ''}`
           : undefined
       }
       draggable={!done}
@@ -132,12 +162,30 @@ export default function Sort({ api }) {
   );
 
   return (
-    <div className="stack">
+    <div className="stack" ref={root} onKeyDown={onKeyDown}>
+      <div className="sr-only" role="status" aria-live="polite">
+        {said}
+      </div>
       <h2 className="h2">{step.prompt}</h2>
       <p className="lead">
         Koppints egy kártyára, majd arra a helyre, ahová tartozik, vagy húzd oda. Ha meggondolod magad, a kártyát
         átteheted máshová.
       </p>
+
+      {sel && !done ? (
+        <div className="place-bar" role="group" aria-label="Hová tegyük a kiválasztott kártyát?">
+          <span className="eyebrow">{items[sel].text} – hová tegyük?</span>
+          <div className="row">
+            {dests
+              .filter((d) => placement[sel] !== d.id)
+              .map((d, k) => (
+                <Btn key={d.id} kind="ghost" icon="move_to_inbox" data-dest-btn="" onClick={() => tapDest(d.id)}>
+                  Ide teszem: {d.label}
+                </Btn>
+              ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="sort-dests">
         {dests.map((d) => {
@@ -161,11 +209,6 @@ export default function Sort({ api }) {
               </div>
               {inside.map(cardBtn)}
               {!inside.length ? <span className="slot-empty">Ide tedd a kártyát</span> : null}
-              {sel && !done && placement[sel] !== d.id ? (
-                <Btn kind="ghost" icon="move_to_inbox" onClick={() => tapDest(d.id)}>
-                  Ide teszem: {d.label}
-                </Btn>
-              ) : null}
             </div>
           );
         })}
