@@ -75,7 +75,7 @@ until the owner has tested on real devices:**
   presses, but full **Tab-only navigation through activities 1–4** is **pending** (some focus transitions were skipped in
   the test); touch and mouse dragging are also untested;
 - **accessibility, pending**: no announcement yet when the solution button appears after the second miss – to add „Most már kérheted a megoldás megmutatását.” (not implemented); the focus and live-region handling is untested with a real screen reader;
-- **Bátorság bolygója, adventure 1** (browser-tested only): the 15 recordings are integrated but **nobody has listened to them** (wording and pronunciation of Léna/Csipp/pittyentett unconfirmed), the intro video is a placeholder, and the world art/cover usage rights are unverified; `storyChoice` has not been used with a screen reader or on real devices;
+- **Bátorság bolygója, adventure 1** (browser-tested only): the 15 recordings (narrator Adam – Articulate Engineering Professor, Eleven v4) are integrated but **nobody has listened to them; no push or deploy until the owner's listening review is done** (wording and pronunciation of Léna/Csipp/pittyentett unconfirmed), the intro video is a placeholder, and the world art/cover usage rights are unverified; `storyChoice` has not been used with a screen reader or on real devices;
 - behaviour with a real **Hungarian device voice**, and Lacika's experience of the instructions.
 
 Owner checklist (the owner ticks these, nobody else): see the end of README.md.

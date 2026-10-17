@@ -163,12 +163,20 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   card, the introduction and the Mai kaland card, never inside an activity; `coverPosition` keeps Léna's hair and flower inside
   the 360 px band on wide screens.
 - **Recordings:** 15 clips (`courage1-*.mp3`: three passages with their shorter parts, and the six consequence clips
-  `courage1-x1a…x2c`), exported from ElevenLabs on 2026-10-17 (C2PA credential: Eleven Labs Inc.; **the voice name is not
-  recorded in the files or the export** – the export had no README or manifest). The export named the files by generation time;
-  they were mapped to clip ids by order and checked against the script by duration and by where the sentence pauses fall
-  (consistent for all 15). **Nobody has listened to them yet to confirm the words and the pronunciation of „Léna”, „Csipp”,
-  „pittyentett”.** `courage1-p1-c1.mp3` was shortened by 6 MP3 frames (0.157 s of trailing silence); that edit invalidates
-  the file's embedded content credential.
+  `courage1-x1a…x2c`). **Production provenance, confirmed by the owner from ElevenLabs' generation history (not from the file
+  metadata):** narrator **Adam – Articulate Engineering Professor**; model **Eleven v4**; language Hungarian; stability 50 %,
+  similarity 75 %; thoughtful/warm tags; generated 2026-10-17. The files themselves only carry the C2PA credential „Eleven Labs
+  Inc.” (no voice or settings). Usage rights/licence: not verified here.
+- **Archive discrepancy (recorded accurately):** the owner's package (prepared with ChatGPT) held the clips **renamed to
+  `courage1-*`, plus `manifest.json` and `CLAUDE-READ-ME.txt`**. The archive that reached this session
+  (`ElevenLabs_Export_2026-10-17T17_10_52.zip`) held only **15 MP3s named by generation time and neither text file**, so
+  they were mapped to clip ids by order. The owner confirms this timestamp mapping matches the generation order; the same
+  check by duration and sentence-pause positions was consistent. **The spoken content has not been verified by anyone yet:**
+  exact words and the pronunciation of „Léna”, „Csipp”, „pittyentett” await the owner's listening review.
+- **Trim:** `courage1-p1-c1.mp3` was shortened by 6 MP3 frames (0.157 s of trailing silence), which invalidates that file's embedded
+  content credential. The untouched source is kept at `design/source-audio/courage/courage1-p1-c1.untrimmed-source.mp3`.
+  `courage1-p3.mp3` is left as generated (its trailing silence meets the 0.3 s limit).
+- **Release hold:** nothing is pushed or deployed until the listening review is complete.
 - **Placeholder (still to be made):** the intro video (`introVideo: null`).
 
 ### Eszközeim: worked examples are locked until the story is completed
@@ -258,7 +266,7 @@ machine). Installed copies update the next time they are opened online.
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
 - [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
-- [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping, and the narrator voice named
+- [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping (voice: Adam – Articulate Engineering Professor, Eleven v4); only then push/deploy
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
 - [ ] Intro video (if ever used): re-encoded (≤3 MB), rights confirmed, its audio checked, plays on real iPhone and Android
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone

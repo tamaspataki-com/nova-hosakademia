@@ -22,7 +22,7 @@ text below only becomes a package once the owner says "approved" (or sends corre
 15 ElevenLabs clips (`public/audio/courage1-*.mp3`, mono 44.1 kHz 128 kbps) are registered in `src/content/audio.js`. The export contained
 no CLAUDE-READ-ME.txt and no manifest.json and named files by generation time; mapping to clip ids is by order, supported by duration and
 sentence-pause positions. **Not confirmed by listening:** the exact words and the pronunciation of Léna, Csipp, pittyentett; the
-narrator voice is not named in the files. `courage1-p1-c1.mp3` trimmed by 6 frames (0.157 s). Tested in read, listening and combined modes.
+narrator is **Adam – Articulate Engineering Professor** (Eleven v4, Hungarian, stability 50 %, similarity 75 %, thoughtful/warm tags), confirmed by the owner from ElevenLabs' history, not from file metadata. The owner's own package held renamed `courage1-*` files with `manifest.json` and `CLAUDE-READ-ME.txt`; the archive received here did not (timestamp names only); the owner confirms the order mapping. `courage1-p1-c1.mp3` trimmed by 6 frames (0.157 s). Tested in read, listening and combined modes.
 
 ## 0b. Covers delivered (2026-10-17)
 
