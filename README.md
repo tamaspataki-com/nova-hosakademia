@@ -171,13 +171,18 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   `courage1-*`, plus `manifest.json` and `CLAUDE-READ-ME.txt`**. The archive that reached this session
   (`ElevenLabs_Export_2026-10-17T17_10_52.zip`) held only **15 MP3s named by generation time and neither text file**, so
   they were mapped to clip ids by order. The owner confirms this timestamp mapping matches the generation order; the same
-  check by duration and sentence-pause positions was consistent. **The spoken content has not been verified by anyone yet:**
-  exact words and the pronunciation of „Léna”, „Csipp”, „pittyentett” await the owner's listening review.
+  check by duration and sentence-pause positions was consistent. **Spoken content (approved by the owner's listening review; was unverified until then):**
+  exact words and the pronunciation of „Léna”, „Csipp”, „pittyentett” — **listening review done by the owner on 2026-10-17: wording, pronunciation and sound approved for all 15 clips.**
 - **Trim:** `courage1-p1-c1.mp3` was shortened by 6 MP3 frames (0.157 s of trailing silence), which invalidates that file's embedded
   content credential. The untouched source is kept at `design/source-audio/courage/courage1-p1-c1.untrimmed-source.mp3`.
   `courage1-p3.mp3` is left as generated (its trailing silence meets the 0.3 s limit).
-- **Release hold:** nothing is pushed or deployed until the listening review is complete.
-- **Placeholder (still to be made):** the intro video (`introVideo: null`).
+- **Release hold:** the listening review is complete (above); nothing is pushed or deployed until the owner says so.
+- **Intro video (optional, not yet integrated):** the player is built (`IntroVideo` in `Adventure.jsx`): introduction screen only,
+  started by a tap (no autoplay, no loop), with the browser's playback controls and „Kihagyom a videót”, never inside an activity or
+  a recall question, and it states that it does not replace reading or hearing the story. The file is read only when opened.
+  `scripts/encode-intro-video.swift` prepares a file (original proportions, ≤ 15 s, no audio, H.264 Main, yuv420p, fast start, < 3 MB;
+  the original is never touched). Tested on the old Nori prototype copy only (960 × 548, 15.00 s, 2.82 MB, no audio, Main, moov first);
+  **the Hedra video was not available on the machine, so `introVideo` stays `null`.** Its usage rights are not verified.
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -268,5 +273,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
 - [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping (voice: Adam – Articulate Engineering Professor, Eleven v4); only then push/deploy
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
-- [ ] Intro video (if ever used): re-encoded (≤3 MB), rights confirmed, its audio checked, plays on real iPhone and Android
+- [ ] Intro video (Hedra, not yet supplied): encoded with the script, rights confirmed with evidence, plays on real iPhone and Android
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone

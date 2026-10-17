@@ -39,8 +39,9 @@ export const COURAGE = {
   coverPosition: '50% 22%',
   coverIcon: 'flag',
   coverAlt: 'Léna és Csipp, a kis robot a csillagtérkép asztalánál az űrállomáson',
-  // OPTIONAL intro video: not set, because no final file exists (the prototype is 14.8 MB and not a final asset). When it
-  // arrives: { src, poster, captions } – shown on the introduction only, started by the child, never beside narration.
+  // OPTIONAL intro video: not set, because the final (Hedra) file has not been supplied and checked. When it arrives, encode it
+  // with scripts/encode-intro-video.swift, put it in public/video/ and set { src: 'video/<file>.mp4', width, height } (the final
+  // size; keep captions out unless someone speaks). Shown only on the introduction, started by the child, skippable, no loop.
   introVideo: null,
   badge: 'elso-lepes',
   glossary: [

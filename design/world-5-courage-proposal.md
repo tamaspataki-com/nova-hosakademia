@@ -17,6 +17,10 @@ text below only becomes a package once the owner says "approved" (or sends corre
 
 ---
 
+## 0d. Listening review and video (2026-10-17)
+
+The owner's listening review approved all 15 clips (wording, pronunciation, sound). The temporary review page was removed. The optional intro-video player is built; the Hedra video file was not on this machine, so it is not integrated (`introVideo: null`); rights unverified.
+
 ## 0c. Recordings integrated (2026-10-17)
 
 15 ElevenLabs clips (`public/audio/courage1-*.mp3`, mono 44.1 kHz 128 kbps) are registered in `src/content/audio.js`. The export contained

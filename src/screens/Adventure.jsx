@@ -104,11 +104,8 @@ function Intro({ adv, go }) {
     act.start(adv, { restart: true });
     act.log('adventure_started', adv, { repeat: status === 'done', level: adv.level });
   };
-  return (
-    <div className="page narrow stack">
-      <button type="button" className="back" onClick={() => go({ name: 'back' })}>
-        <Icon name="arrow_back" /> Vissza
-      </button>
+  const coverEl = (
+    <>
       {adv.coverAsset ? (
         <img
           className="cover"
@@ -124,7 +121,14 @@ function Intro({ adv, go }) {
           <Glyph name={adv.coverIcon} size={96} />
         </div>
       ) : null}
-      {adv.introVideo ? <IntroVideo video={adv.introVideo} poster={adv.coverAsset} /> : null}
+    </>
+  );
+  return (
+    <div className="page narrow stack">
+      <button type="button" className="back" onClick={() => go({ name: 'back' })}>
+        <Icon name="arrow_back" /> Vissza
+      </button>
+      {adv.introVideo ? <IntroVideo video={adv.introVideo} cover={coverEl} /> : coverEl}
       <div className="chips">
         <Chip>{formatLabel(adv.format)}</Chip>
         {classLabel(adv) ? <Chip>{classLabel(adv)}</Chip> : null}
@@ -195,26 +199,51 @@ function Intro({ adv, go }) {
 // Optional introduction video. Only on the introduction (never inside an activity), only after a tap, never autoplaying,
 // never beside narration (the introduction has none), and the page says it does not replace the story. The video file
 // is loaded only when asked for (preload none) and no offline claim covers it.
-function IntroVideo({ video, poster }) {
+function IntroVideo({ video, cover }) {
   const [open, setOpen] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const ref = useRef(null);
+  const close = () => {
+    ref.current?.pause();
+    setOpen(false);
+  };
   return (
     <section className="stack tight" aria-label="Bevezető videó">
       {open ? (
-        <video
-          className="cover"
-          src={video.src}
-          poster={video.poster || poster}
-          controls
-          playsInline
-          preload="none"
-          aria-label="Bevezető videó"
-        >
-          {video.captions ? <track kind="captions" srcLang="hu" label="Magyar" src={video.captions} default /> : null}
-        </video>
+        <>
+          <video
+            ref={ref}
+            className="intro-video"
+            src={video.src}
+            poster={video.poster}
+            style={video.width && video.height ? { aspectRatio: `${video.width} / ${video.height}` } : undefined}
+            controls
+            playsInline
+            preload="metadata"
+            aria-label={video.label || 'Bevezető videó'}
+            onError={() => setFailed(true)}
+          >
+            {video.captions ? <track kind="captions" srcLang="hu" label="Magyar" src={video.captions} default /> : null}
+          </video>
+          {failed ? (
+            <div className="note soft" role="alert">
+              <Icon name="error" />
+              <span>A videót most nem sikerült lejátszani. A kaland nélküle is elindítható.</span>
+            </div>
+          ) : null}
+          <div className="row">
+            <Btn kind="ghost" icon="skip_next" onClick={close}>
+              Kihagyom a videót
+            </Btn>
+          </div>
+        </>
       ) : (
-        <Btn kind="ghost" icon="play_circle" onClick={() => setOpen(true)}>
-          Megnézem a bevezető videót
-        </Btn>
+        <>
+          {cover}
+          <Btn kind="ghost" icon="play_circle" onClick={() => setOpen(true)}>
+            Megnézem a bevezető videót
+          </Btn>
+        </>
       )}
       <span className="muted">
         A videó nem kötelező, és nem helyettesíti a történet elolvasását vagy meghallgatását.
