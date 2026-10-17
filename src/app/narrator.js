@@ -1,3 +1,15 @@
+// Recordings are loaded whole and played from memory (a blob URL). The static host answers range requests with the
+// full file, and iPhones may refuse to play audio that is not served in ranges; a blob supports seeking everywhere.
+const blobUrls = new Map();
+async function loadRecording(url) {
+  if (blobUrls.has(url)) return blobUrls.get(url);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`recording ${res.status}`);
+  const src = URL.createObjectURL(await res.blob());
+  blobUrls.set(url, src);
+  return src;
+}
+
 // Narration service: recorded files (by clip id) take priority over browser speech.
 //
 // Every playback ends with exactly one status, reported to the callback passed to speak():
@@ -46,12 +58,18 @@ export const Narrator = {
     this._cur = cur;
 
     if (this.recorded[id]) {
-      const a = new Audio(this.recorded[id]);
-      this._a = a;
-      a.playbackRate = rate;
-      a.onended = () => cur.finish('completed');
-      a.onerror = () => cur.finish('error');
-      a.play().catch(() => cur.finish('error'));
+      this.lastUrl = this.recorded[id];
+      loadRecording(this.recorded[id])
+        .then((src) => {
+          if (cur.finished || cur.interrupted) return; // stopped while it was loading
+          const a = new Audio(src);
+          this._a = a;
+          a.playbackRate = rate;
+          a.onended = () => cur.finish('completed');
+          a.onerror = () => cur.finish('error');
+          return a.play();
+        })
+        .catch(() => cur.finish('error'));
       return;
     }
     const u = new SpeechSynthesisUtterance(text);
