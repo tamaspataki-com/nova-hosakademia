@@ -152,3 +152,4 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Accessibility (pending, not implemented): announce when the solution becomes available – „Most már kérheted a megoldás megmutatását.” – so a screen-reader user learns that „Megmutatom a megoldást” has appeared after the second miss
 - [ ] Adventure 4 (A polip búvóhelye, animal world): content review finished (until then it stays „unreviewed")
 - [ ] Adventure 4: no recordings yet (browser Hungarian voice only); animal-world cover and adventure cover not yet supplied (neutral octopus icon in use). Instructions of the true / false / not stated activity clear to Lacika; real-device keyboard/touch use tested
+- [ ] Adventure 4, pending verification: the update-bar proof for the deploy a53cadf (skipped by the owner's decision: no service worker in the built-in browser, Chrome not connected); listening and combined modes; the guided path (solution reveal) by keyboard only
