@@ -100,6 +100,18 @@ or generation settings are recorded, so the provenance beyond "tagged as ElevenL
 adventure (`heroes.energymag`) and the 18 practice texts have **no recordings**; they use the Hungarian browser voice,
 or no audio on a device without one. The outcome panel of adventure 5 is text only by design.
 
+### The journey (unlocking)
+
+`src/content/journey.js` lists the ordered full adventures: A sáros lábnyomok rejtélye → A polip búvóhelye → A marsjáró
+elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál. Only the next unfinished one opens. A journey
+adventure is also open when it was completed before (replay) or already has a saved unfinished run (resume). Guided
+completion counts as completion. Not locked: the 18 short practice texts (the optional „Gyakorlás (nem kötelező)" series of
+Hősök városa), the older heroes adventure `heroes.energymag`, and parent-made texts. One rule, `canOpen`, is used by Today,
+the world cards, favourites, direct links (a locked adventure shows only its title and what unlocks it) and the store (a
+locked adventure never gets a run). Locked cards show the title and a Hungarian explanation. When the whole journey is
+done, Today offers replay and the optional practice, and suggests nothing "next". Extend `JOURNEY` when more animal, space
+and heroes adventures arrive.
+
 ### Links
 
 Screens can be opened from a link. The dinosaur adventure: **https://nova-hosakademia.pages.dev/#/dino** (long form
@@ -163,6 +175,11 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Adventure 4: recordings, covers and offline readiness checked on a real iPhone and a real Android device (offline readiness needs a service worker, which the test browser could not register)
 - [ ] Adventure 5 (A marsjáró elveszett üzenete, space world): content review finished (until then it stays „unreviewed")
 - [ ] Adventure 5: instructions of the message-restoring and route activities clear to Lacika; real-device touch and keyboard use tested; the route map checked on real phone screens
-- [ ] Adventure 5, pending verification: the update-bar proof for this deploy (no service worker in the test browser); full Tab-only walk through every step in listening mode; screen-reader announcements of the rover position and the blank
+- [ ] Adventure 5, pending verification: full Tab-only walk through every step in listening mode; screen-reader announcements of the rover position and the blank
 - [ ] Adventure 5: listened to all nine recordings (rover1-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping (only file durations and successful playback in a desktop browser were checked)
 - [ ] Adventure 5: recordings, covers (central 16:9 crop checked on screen only) and offline readiness checked on a real iPhone and a real Android device (offline readiness needs a service worker, which the test browser could not register)
+- [ ] Update-bar proof: passed in a desktop browser on the journey build (bar hidden in an adventure, its help panel and a break; shown in the main app; „Frissítés" loaded the new bundle and the adventure resumed at its step). Still to do on real phones/tablets.
+- [ ] Journey unlocking checked on real devices; the lock explanations read clearly to Lacika
+- [ ] Needed from the owner: authored guided explanations for the practice main-idea texts `m1`, `m2`, `m3` (none exist; nothing was invented)
+- [ ] Needed from the owner: recordings for `heroes.energymag` – its three sections have **no** authored shorter parts (`chunks`), so three whole-section clips (`s1`, `s2`, `s3`); "Kisebb részekben haladok" then splits by sentence and, without sentence clips, falls back to the browser voice – decide whether sentence-level clips (3 + 4 + 4) are wanted. The 18 practice texts have no recordings either (one section each).
+- [ ] Needed from the owner: artwork for the heroes practice texts (a neutral book icon is shown meanwhile)

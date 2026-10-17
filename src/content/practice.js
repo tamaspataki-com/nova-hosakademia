@@ -22,6 +22,8 @@ function convert(actId, a) {
     correct: LETTERS[t.correct],
     source: src,
     hints: [t.hint],
+    // The main-idea tasks (m1–m3) carry no authored evidence sentence, hence no guided explanation: after two misses
+    // only the solution button appears. NEEDS an authored guided explanation from the owner (not invented here).
     guided: t.ev != null ? { quote: { ...src, sentenceId: sid(t.ev) } } : undefined
   });
 

@@ -12,8 +12,8 @@ export const WORLDS = [
       { id: 'academy', name: 'Akadémiai küldetések' },
       {
         id: 'practice',
-        name: 'Gyakorló szövegek',
-        note: 'Az előző változatból átvett rövid gyakorló szövegek. Külön sorozatot alkotnak az új, szerzői kalandoktól.'
+        name: 'Gyakorlás (nem kötelező)',
+        note: 'Rövid gyakorló szövegek az előző változatból. Nem tartoznak a kalandok sorrendjéhez: bármikor elérhetők, és nem kell őket befejezned ahhoz, hogy a következő kaland megnyíljon.'
       }
     ]
   },

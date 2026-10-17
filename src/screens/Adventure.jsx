@@ -4,6 +4,8 @@ import { Btn, Icon, Chip, Sheet, Glyph, useHeadingFocus } from '../app/ui.jsx';
 import { AnnounceContext } from '../activities/live.jsx';
 import { tone } from '../app/tone.js';
 import OfflineNote from '../app/OfflineNote.jsx';
+import { canOpen } from '../content/journey.js';
+import { journeyCurrent, lockText } from '../app/access.js';
 import { OFFLINE_UNAVAILABLE_TEXT, useOfflineStatus } from '../app/offline.js';
 import {
   canPlay,
@@ -16,7 +18,16 @@ import {
 } from '../app/audio.js';
 import { ACTIVITIES, SCORED } from '../activities/index.jsx';
 import { Reference, sourceSections, wordsIn } from '../activities/shared.jsx';
-import { FORMATS, LEVELS, classLabel, MODE_NAMES, OBJECTIVE_NAMES, ROUTINE, sectionText } from '../content/index.js';
+import {
+  FORMATS,
+  LEVELS,
+  classLabel,
+  findAdventure,
+  MODE_NAMES,
+  OBJECTIVE_NAMES,
+  ROUTINE,
+  sectionText
+} from '../content/index.js';
 
 const MODE_INFO = [
   ['read', 'Olvasok', 'menu_book', 'A saját tempómban olvasom a szöveget.'],
@@ -29,9 +40,45 @@ const formatLabel = (f) => FORMATS.find((x) => x.id === f)?.label || f;
 export default function Adventure({ adv, go }) {
   const { state, act } = useStore();
   const run = state.progress[adv.id];
+  // A locked journey adventure (reached by a link, a bookmark or anything else) shows only what unlocks it.
+  if (!run && !canOpen(state, adv.id)) return <Locked adv={adv} go={go} />;
   if (!run) return <Intro adv={adv} go={go} />;
   if (!run.mode) return <ModePicker adv={adv} run={run} go={go} />;
   return <Runner key={adv.id} adv={adv} run={run} go={go} />;
+}
+
+// ---------- locked ----------
+function Locked({ adv, go }) {
+  const { state } = useStore();
+  const headRef = useHeadingFocus();
+  const currentId = journeyCurrent(state);
+  const current = currentId ? findAdventure(currentId, []) : null;
+  return (
+    <div className="page narrow stack">
+      <button type="button" className="back" onClick={() => go({ name: 'back' })}>
+        <Icon name="arrow_back" /> Vissza
+      </button>
+      <div className="cover cover-icon" aria-hidden="true">
+        <Icon name="lock" size={72} />
+      </div>
+      <h1 className="h1" tabIndex={-1} ref={headRef}>
+        {adv.title}
+      </h1>
+      <div className="note soft" role="status">
+        <Icon name="lock" />
+        <span>
+          <strong>Ez a kaland még zárolva van.</strong> {lockText(state, adv.id)}
+        </span>
+      </div>
+      {current ? (
+        <div className="row">
+          <Btn iconAfter="arrow_forward" onClick={() => go({ name: 'adventure', id: current.id, replace: true })}>
+            Ugrás ide: {current.title}
+          </Btn>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 // ---------- intro ----------

@@ -41,11 +41,6 @@ export const OCTOPUS = {
       key: 'szabálytalan',
       word: 'szabálytalan',
       def: 'Olyan alakú, amelynek a részei eltérnek egymástól.'
-    },
-    {
-      key: 'megfigyelési jegyzet',
-      word: 'megfigyelési jegyzet',
-      def: 'Rövid feljegyzés arról, amit valaki megfigyelt.'
     }
   ],
   passages: [

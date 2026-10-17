@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
+import { canOpen } from '../content/journey.js';
 
 // All app state lives here and is persisted to localStorage. Screens read it with useStore() and change it only
 // through the actions returned there, so progress, events and completion rules stay in one place.
@@ -111,6 +112,7 @@ function reducer(s, a) {
       return { ...s, settings: { ...s.settings, ...a.patch } };
 
     case 'start': {
+      if (!canOpen(s, a.id)) return s; // a locked journey adventure never gets a run, whatever opened the screen
       const old = s.progress[a.id];
       if (old && !a.restart) return s;
       const run = {

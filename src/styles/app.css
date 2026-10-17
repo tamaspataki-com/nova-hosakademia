@@ -1627,3 +1627,12 @@ mark.swap {
   text-align: center;
   margin-top: 6px;
 }
+
+/* A locked journey adventure: title and the reason, no way in. */
+.adv-card.locked {
+  border-style: dashed;
+  opacity: 0.9;
+}
+.adv-card.locked .adv-main {
+  cursor: default;
+}

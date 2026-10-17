@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useStore, statusOf, STATUS_LABEL } from '../app/store.jsx';
 import { Icon, Chip, Glyph } from '../app/ui.jsx';
+import { canOpen } from '../content/journey.js';
+import { lockText } from '../app/access.js';
 import { canPlayAdventure, useVoiceReady } from '../app/audio.js';
 import { useOfflineStatus } from '../app/offline.js';
 import { FORMATS, MODE_NAMES, UPCOMING_TEXT, WORLDS, availableIn, worldById } from '../content/index.js';
@@ -13,6 +15,37 @@ export function AdventureCard({ adv, go }) {
   const fmt = FORMATS.find((f) => f.id === adv.format)?.label;
   const audio = canPlayAdventure(voiceReady, adv);
   const offline = useOfflineStatus(adv); // only 'ready' is ever claimed
+  if (!canOpen(state, adv.id)) {
+    // A locked journey adventure: its title and what unlocks it, nothing else, and no way in.
+    return (
+      <article className="card adv-card locked">
+        <div className="adv-main">
+          <span className="adv-head">
+            <span className="adv-icon" aria-hidden="true">
+              <Icon name="lock" size={36} />
+            </span>
+            <span className="stack tight adv-text">
+              <span className="adv-title">{adv.title}</span>
+              <span className="muted">
+                <span className="sr-only">Zárolt kaland. </span>
+                {lockText(state, adv.id)}
+              </span>
+            </span>
+          </span>
+        </div>
+        <button
+          type="button"
+          className="icon-btn fav"
+          aria-pressed={fav}
+          aria-label={fav ? 'Kedvencekből kiveszem' : 'Kedvencekhez adom'}
+          title={fav ? 'Kedvencekből kiveszem' : 'Kedvencekhez adom'}
+          onClick={() => act.fav(adv.id)}
+        >
+          <Icon name={fav ? 'favorite' : 'favorite_border'} fill={fav} />
+        </button>
+      </article>
+    );
+  }
   return (
     <article className="card adv-card">
       <button type="button" className="adv-main" onClick={() => go({ name: 'adventure', id: adv.id })}>
@@ -78,7 +111,7 @@ export default function Explore({ go, custom }) {
               <span className="stack tight">
                 <strong className="h3">{w.name}</strong>
                 <span className="muted">{w.description}</span>
-                <span className={n ? 'eyebrow gold' : 'muted'}>{n ? `${n} elérhető kaland` : UPCOMING_TEXT}</span>
+                <span className={n ? 'eyebrow gold' : 'muted'}>{n ? `${n} kaland` : UPCOMING_TEXT}</span>
               </span>
             </button>
           );
