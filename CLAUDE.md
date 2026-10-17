@@ -82,7 +82,7 @@ Owner checklist (the owner ticks these, nobody else): see the end of README.md.
 
 ## 3c. Release gate (World 5, adventure 1)
 
-Scope frozen 2026-10-17. No production deployment yet; the §1 update-bar proof is mandatory before any deployment is reported done. See „Release checklist – World 5” in README.md. Private phone preview: `nova-preview-lan` (LAN only, no service worker over http).
+Scope frozen 2026-10-17. **Deployed to production 2026-10-17** (update-bar proof passed first; see README); the §1 update-bar proof is mandatory before any deployment is reported done. See „Release checklist – World 5” in README.md. Private phone preview: `nova-preview-lan` (LAN only, no service worker over http).
 
 ## 4. Working conventions
 
