@@ -27,7 +27,10 @@ export const CRATES = {
   modes: ['read', 'listen', 'combined'],
   objectives: ['detail', 'connect', 'instruction', 'check'], // technical labels: parent area only
   hideObjectives: true,
-  // No cover yet: a neutral crate icon is shown on the library card and the introduction.
+  // Cover: Bence, the robot and the two crates. Shown only in the library and on the introduction – never inside an
+  // activity. The crate icon is the fallback while the picture loads.
+  coverAsset: 'assets/dino-crates.webp',
+  coverAlt: 'Bence és a kis szállítórobot a kutatóállomás előtt egy kék és egy sárga láda mellett',
   coverIcon: 'inventory_2',
   badge: 'szallitasi-nyomozo',
   glossary: [
