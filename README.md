@@ -129,6 +129,11 @@ opens, and **one new adventure opens per calendar day**:
 - **The device clock decides.** Changing the clock (or the date) on the device changes what opens, so this is a pacing
   feature, not a tamper-proof parental control.
 
+**Utazás újrakezdése** (Szülői tér → Napi ütemezés, asks for the PIN again and a confirmation): resets only the six journey
+adventures – their completions, unfinished runs, pacing dates and journey badges – so the child starts again from the first
+adventure. PIN, name, settings, notes, own texts, practice progress, favourites, observations and retellings are kept; a
+`journey_reset` event is logged. It cannot be undone.
+
 Not locked: the 18 short practice texts (the optional „Gyakorlás (nem kötelező)" series of Hősök városa) and
 parent-made texts. One rule, `access`/`canOpen` (with the day), is used by Today, the world cards, favourites, direct links
 (a locked adventure shows only its title and what unlocks it, and when) and the store (a locked adventure never gets a
@@ -210,3 +215,4 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Splash screen fits the first screen without scrolling: checked in a desktop browser at 320×568, 375×667, 390×844, 667×375 (landscape) and 768×1024; still to check on real phones
 - [ ] Update-bar proof on the six-step journey build: passed in a desktop browser (same checks as above); still to do on real phones; independently unverified by the owner
 - [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used
+- [ ] „Utazás újrakezdése" tried by the owner on a real device
