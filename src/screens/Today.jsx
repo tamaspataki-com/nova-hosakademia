@@ -95,7 +95,11 @@ export default function Today({ go, adventures }) {
         ) : (
           <article className="card feature">
             <div className="feature-art">
-              <img src={adv.coverAsset || 'assets/map.webp'} alt="" />
+              <img
+                src={adv.coverAsset || 'assets/map.webp'}
+                alt=""
+                style={adv.coverPosition ? { objectPosition: adv.coverPosition } : undefined}
+              />
             </div>
             <div className="stack">
               <span className="eyebrow gold">{eyebrow}</span>

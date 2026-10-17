@@ -116,6 +116,7 @@ function Intro({ adv, go }) {
           srcSet={adv.coverSet}
           sizes="(min-width: 700px) 700px, 100vw"
           alt={adv.coverAlt || ''}
+          style={adv.coverPosition ? { objectPosition: adv.coverPosition } : undefined}
         />
       ) : null}
       {!adv.coverAsset && adv.coverIcon ? (

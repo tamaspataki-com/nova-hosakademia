@@ -17,6 +17,19 @@ text below only becomes a package once the owner says "approved" (or sends corre
 
 ---
 
+## 0b. Covers delivered (2026-10-17)
+
+World art `courage-world` (wide station, table, Léna and Csipp small) and adventure cover `courage-first-step` (close-up, Léna's face
+about 36 % of the image height). **The owner's note labelled them the other way round** (first image "world", second
+"adventure"); the first image is the close-up and the second the wide room, and the owner's suggested world alt text describes
+the wide room, so I used them by content. Both are 1536 × 1024. Provenance: generated with OpenAI's image-generation tool from the locked
+reference sheet; **usage rights not independently verified**. Masters: `design/source-art/courage/*.png` (conversions of
+the delivered WebP files, not the generator's originals). Output: 1536 × 1024 (308 KB / 177 KB) and 768 × 512 (97 KB / 74 KB).
+Character check against the sheet: hair, fringe, freckles, teal headband and flower, white suit with teal shoulders and collar,
+orange stripe, round badge, teal glove cuffs, wrist device; Csipp's black faceplate with blue eyes, blue ear discs, antenna, floating glow – all match. The
+cover's emotion (uncertain, looking aside) fits "before the presentation"; no audience, stage or result. Small differences: the badge emblem repeats on a
+banner in the cover's background; the 3D rendering is slightly softer than the sheet. No mismatch needed artwork changes.
+
 ## 0a. Owner's answers (recorded 2026-10-17)
 
 **Update (later the same day):** the owner fixed the names. The girl is **Léna**, a new character introduced in

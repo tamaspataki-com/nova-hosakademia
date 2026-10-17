@@ -3,9 +3,8 @@
 // corrections). Interface wording that is not in the package (button labels of the shared system) lives in the
 // activity components. A fictional story about the character Léna: nothing here is a claim about the child.
 //
-// PLACEHOLDERS (final assets do not exist yet): world art, adventure cover, the 15 recordings and the intro video.
-// Until they arrive the app shows its designed icon cards, speaks the text with the device's Hungarian voice and shows
-// no video. See COURAGE_RECORDINGS_PENDING in audio.js and `introVideo` below.
+// PLACEHOLDERS (final assets do not exist yet): the 15 recordings and the intro video. Until they arrive the app speaks
+// the text with the device's Hungarian voice and shows no video. See COURAGE_RECORDINGS_PENDING in audio.js and `introVideo` below.
 const src = (sectionId) => ({ passageId: 'story', sectionId });
 
 export const COURAGE = {
@@ -32,8 +31,13 @@ export const COURAGE = {
   modes: ['read', 'listen', 'combined'],
   objectives: ['detail', 'mainIdea'], // technical labels: parent area only
   hideObjectives: true,
-  // PLACEHOLDER cover: the designed icon card. The real cover (Léna and Csipp at the star-map table, drawn after the
-  // generated video, shown only in the library and on the introduction) is still to be made.
+  // Cover: Léna and Csipp at the star-map table before the presentation (nothing of the outcome), generated from the
+  // locked character reference sheet. Shown only on the card and the introduction – never inside an activity.
+  // Master: design/source-art/courage/courage-first-step.png. The icon is the fallback while it loads.
+  coverAsset: 'assets/courage-first-step.webp',
+  coverSet: 'assets/courage-first-step-768.webp 768w, assets/courage-first-step.webp 1536w',
+  // On wide screens the cover is cut to a 360 px band; centred, it would clip the top of Léna's hair and graze the flower.
+  coverPosition: '50% 22%',
   coverIcon: 'flag',
   coverAlt: 'Léna és Csipp, a kis robot a csillagtérkép asztalánál az űrállomáson',
   // OPTIONAL intro video: not set, because no final file exists (the prototype is 14.8 MB and not a final asset). When it

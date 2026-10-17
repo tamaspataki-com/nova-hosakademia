@@ -155,9 +155,16 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
 - **Optional intro video** (`introVideo` in the adventure, shown by `IntroVideo` in `Adventure.jsx`): introduction screen
   only, started by a tap, never autoplaying, never beside narration, and it says it does not replace the story. **No
   video is set**: the prototype is not a final asset (14.8 MB, 7:4 format, unknown audio, unclear rights).
-- **Placeholders (final assets still to be made):** world art and cover (the designed icon cards are shown), the **15
-  recordings** (`COURAGE_RECORDINGS_PENDING` in `audio.js`, deliberately *not* in `RECORDINGS`; until then the device's
-  Hungarian voice reads it and the adventure makes no offline claim), and the intro video.
+- **Artwork:** world art (`courage-world`) and the adventure cover (`courage-first-step`), each 1536 × 1024 and 768 × 512
+  WebP in `public/assets/`, made by `scripts/optimize-art.mjs` from the masters in `design/source-art/courage/`. **Provenance:**
+  generated with OpenAI's image-generation tool from the locked Léna and Csipp reference sheet; **usage rights have not been
+  independently verified** (kept separate from the technical integration). The masters are PNG conversions of the WebP files
+  delivered in the working session; the generator's original files were not available. The cover appears only on the
+  card, the introduction and the Mai kaland card, never inside an activity; `coverPosition` keeps Léna's hair and flower inside
+  the 360 px band on wide screens.
+- **Placeholders (still to be made):** the **15 recordings** (`COURAGE_RECORDINGS_PENDING` in `audio.js`, deliberately *not* in
+  `RECORDINGS`; until then the device's Hungarian voice reads it and the adventure makes no offline claim; the narrator
+  voice is not yet identified) and the intro video (`introVideo: null`).
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -246,7 +253,7 @@ machine). Installed copies update the next time they are opened online.
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
 - [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
-- [ ] Adventure 1: Léna and Csipp illustrations, world art and cover made after the video reference; the 15 recordings produced and listened to (`courage1-*.mp3`), then merged into `RECORDINGS`
+- [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings produced and listened to (`courage1-*.mp3`), then merged into `RECORDINGS`
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
 - [ ] Intro video (if ever used): re-encoded (≤3 MB), rights confirmed, its audio checked, plays on real iPhone and Android
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone

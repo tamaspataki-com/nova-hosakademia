@@ -51,9 +51,12 @@ export const WORLDS = [
     name: 'Bátorság bolygója',
     description:
       'Segíts Lénának elindulni akkor is, amikor bizonytalan! Próbáljátok ki, hogyan segíthet egy kis lépés, egy újabb próbálkozás vagy egy jókor kért segítség.',
-    // PLACEHOLDER: no world art yet, so the designed icon card is shown. The real art (a star-map station, drawn after
-    // Léna's video look, clearly different from the space world) is still to be made.
+    // World art: a star-map table in a bright, arched station with Léna and Csipp (generated from the locked character
+    // reference sheet, see design/world-5-courage-proposal.md). Master: design/source-art/courage/courage-world.png.
     icon: 'flag',
+    art: 'assets/courage-world.webp',
+    artSet: 'assets/courage-world-768.webp 768w, assets/courage-world.webp 1536w',
+    artAlt: 'Csillagtérképasztal egy világos, boltíves állomáson, mellette Léna és Csipp.',
     series: [{ id: 'star-map-station', name: 'A csillagtérkép-állomás' }]
   }
 ];
