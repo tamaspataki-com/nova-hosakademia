@@ -365,7 +365,7 @@ function Extra({ adventures }) {
 
       {privateDone ? (
         <p className="muted">
-          Személyes visszatekintés (a gyerek saját életéről): {privateDone}× kitöltve. A válasz szándékosan nem látható.
+          Saját élethez kapcsolódó visszatekintés: {privateDone} alkalommal. A kiválasztott válasz itt nem jelenik meg.
         </p>
       ) : null}
 

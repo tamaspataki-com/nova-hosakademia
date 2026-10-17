@@ -45,7 +45,7 @@ export default function StoryChoice({ api }) {
   useEffect(() => {
     if (chosen && st.choice && !st.announced) {
       patch({ announced: true });
-      announce(showText ? text : 'Megvan a következmény. Meghallgathatod.');
+      announce(showText ? text : 'Meghallgathatod, mi történt a választásod után.');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosen]);
