@@ -146,6 +146,11 @@ function Favourites({ go, adventures }) {
 }
 
 // ---------- strategy demonstration ----------
+// A worked example shows the answers of one story, so it stays locked until the child has completed that adventure:
+// it must not give anything away before the first attempt. The tools and their steps are open from the start. Examples
+// that are not tied to a story (the help list) are always shown.
+const EXAMPLE_FROM = { goggles: 'heroes.energymag', glove: 'heroes.energymag', crystal: 'heroes.energymag' };
+
 // Each tool shows its three authored steps one at a time. Where the energy-core story has matching material
 // (the evidence sentence, the event order, the glossary) it is shown as a worked example.
 export function ToolDemo({ id, go }) {
@@ -201,12 +206,26 @@ export function ToolDemo({ id, go }) {
         </div>
       </section>
 
-      <Example tool={tool} adv={adv} />
+      <Example tool={tool} adv={adv} done={(state.history[EXAMPLE_FROM[tool.id]]?.completions || 0) > 0} />
     </div>
   );
 }
 
-function Example({ tool, adv }) {
+function Example({ tool, adv, done }) {
+  if (EXAMPLE_FROM[tool.id] && !done)
+    return (
+      <section className="stack" aria-label="Példa">
+        <h2 className="h2">Példa</h2>
+        <div className="note soft" role="status">
+          <Icon name="lock" />
+          <span>
+            <strong>Ez a példa még zárolva van.</strong> A példa „{adv.title}” című történet megoldását mutatná. Ezért
+            addig zárolva van, amíg ezt a kalandot be nem fejezed: így nem árulja el a választ az első próbálkozás
+            előtt. A módszer lépései már most használhatók.
+          </span>
+        </div>
+      </section>
+    );
   const ev = adv.steps.find((s) => s.id === 'ev1');
   const sq = adv.steps.find((s) => s.id === 'sq1');
   const sec = sectionOf(adv, ev.passageId, ev.sectionId);

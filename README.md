@@ -140,6 +140,14 @@ parent-made texts. One rule, `access`/`canOpen` (with the day), is used by Today
 run). Pihenő is no longer in the main navigation or on the home page; „Szünetet tartok" in an adventure's help panel opens
 it with a return button and keeps the run. Extend `JOURNEY` when more animal, space and heroes adventures arrive.
 
+### Eszközeim: worked examples are locked until the story is completed
+
+All five strategy tools and their steps are open from the start. A worked example that shows the answers of one story
+(goggles, glove and crystal use *Az eltűnt energiamag*) stays locked until that adventure is completed, so it cannot give
+anything away before the first attempt; the screen explains this (`EXAMPLE_FROM` in `src/screens/MyWorld.jsx`). The compass
+list is not tied to a story and is always shown. The shield tool has no worked example yet. Examples for the other five
+adventures are still to be authored (see the owner checklist).
+
 ### Links
 
 Screens can be opened from a link. The dinosaur adventure: **https://nova-hosakademia.pages.dev/#/dino** (long form
@@ -216,3 +224,4 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Update-bar proof on the six-step journey build: passed in a desktop browser (same checks as above); still to do on real phones; independently unverified by the owner
 - [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
+- [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
