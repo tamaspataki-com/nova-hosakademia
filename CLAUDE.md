@@ -69,7 +69,7 @@ until the owner has tested on real devices:**
 
 - playback of the recordings on **iPhone/Safari** and on **Android/Chrome**. Loading a recording whole and playing it from
   memory is an implementation choice, not proof that it works in every browser;
-- the **spoken content** of the nine recordings: wording, pronunciation, pace, clipping, and that each clip says exactly
+- the **spoken content** of the recordings (adventure 1: nine; adventure 2: nine `dino2-*.mp3`): wording, pronunciation, pace, clipping, and that each clip says exactly
   its displayed text (only clip lengths versus text lengths were compared);
 - **adventure 2, keyboard**: select/place/move/cancel/submit/reset in the first sorting activity were tested with real key
   presses, but full **Tab-only navigation through activities 1–4** is **pending** (some focus transitions were skipped in

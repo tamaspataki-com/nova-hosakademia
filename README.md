@@ -142,3 +142,6 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Dinosaur adventure content review finished (until then it stays „unreviewed")
 - [ ] Adventure 2 (Az összecserélt ládák): full Tab-only navigation through activities 1–4 tested and working (pending; the automated test skipped some focus transitions)
 - [ ] Adventure 2 content review finished (until then it stays „unreviewed")
+- [ ] Adventure 2: listened to all nine recordings (dino2-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping
+- [ ] Adventure 2: recordings and cover checked on a real iPhone and a real Android device
+
