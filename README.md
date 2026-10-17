@@ -198,14 +198,15 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   five corrections, the approved world description, choice note and interface strings): a script compared 61 text items directly and the six consequence
   texts (stored sentence by sentence) through the 15 narration texts, with `courage.js` and `audio.js`: **no deviation** (every narration text equals the sentences/parts the app derives;
   all 15 clip ids point to the right `courage1-*` file; every scored question has a source, hint, guided text and feedback; both
-  choices point to existing consequence sections). The owner approved the 15 recordings by listening. **Unresolved, not decided by me:**
-  (1) ~~review status~~ **resolved: the owner reviewed text, recordings and interface strings on 2026-10-17 and asked for `review.status: 'adult-reviewed'`, now set** (the label „Felnőtt ellenőrizte” means that review only – not real-device testing and not usage rights); (2) the shared system's wrong-answer wording („Nem ez”, „Nézd meg újra a szöveget, és próbáld újra.”, „Ez a helyes válasz.”
-  after a revealed solution) is unchanged: it is fine for scored questions in general, but in a world about mistakes the owner may want
-  warmer wording (a change to the shared system for every adventure); (3) the level label shows „Rövid szövegek” (level 1: 2–3
-  sentences) while two parts have 4 sentences – the same as the space adventure; (4) the three glossary definitions are my
-  wording inside the approved package and have had no separate adult check; (5) accessibility items still open: the pending „Most már
-  kérheted a megoldás megmutatását.” announcement, and `storyChoice` with a real screen reader. Offline: the recordings are covered by
-  the app's offline check, the video is **not** (online only, on tap); real-device playback of recordings and video is **untested**.
+  choices point to existing consequence sections). The owner approved the 15 recordings by listening.
+  **All wording reviews are closed (owner, 2026-10-17):** review status set to „adult-reviewed” (the label means that review only –
+  not real-device testing and not usage rights); the shared wrong-answer wording („Nem ez”, „Nézd meg újra a szöveget, és próbáld újra.”,
+  „Ez a helyes válasz.”) and the „Rövid szövegek” label stay unchanged; the three glossary definitions are approved as written; the
+  announcement text „Most már kérheted a megoldás megmutatását.” is approved – **but it is still not implemented** (a shared change
+  across the scored activities; today only the guided explanation is announced). **Tested with a real screen reader: no – untested**
+  (focus handling, announcements, `storyChoice` consequence, the video player); this is separate from the completed content review.
+  Offline: the recordings are covered by the app's offline check, the video is **not** (online only, on tap); real-device playback of
+  recordings and video is **untested**.
 
 ### Eszközeim: worked examples are locked until the story is completed
 
