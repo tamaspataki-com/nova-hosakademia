@@ -275,6 +275,22 @@ reloads until someone taps it, the bar cannot be dismissed, and progress lives i
 hourly, so a device that stays offline or closed keeps the old version until it next opens online (iOS may only check at
 launch). Copies installed before the prompt version need one full close and reopen.
 
+## Csillaghidak bolygója – „A csillaghíd” (world 7, adventure 1) – in progress, NOT deployed
+
+Added 2026-10-17 on the owner's approval of the plan (`design/episode-sirius-arcturus-proposal.md` §4b). Content: `src/content/csillaghid.js`;
+world `bridges` in `src/content/worlds.js`. Art: the owner's own images (Arki: GPT, world art; Siri: Midjourney, cover), masters in
+`design/source-art/csillag/` (owner states they may be used).
+
+- **Three new shared exercise types** (all unscored, untimed, tap-only, logged by ids only): `constellation` (light the stars in story order),
+  `matchPairs` (join what one character says with the answer), `stepTogether` (the bridge star lights only when both characters stepped).
+- **Browser-tested only** (desktop browser): all 8 steps clicked through, wrong and right taps in each new exercise, completion. Not tested: real
+  devices, keyboard-only (Tab) navigation, screen reader, touch.
+- **Videos:** the four Hedra clips `public/video/csillaghid1-v1…v4.mp4` were made on 2026-10-17 in the owner's signed-in Hedra (Hedra Avatar, 16:9, 720p; start frames cropped from the owner's two images; voices: the owner's own „Arcturian Male Test” for Arki, ElevenLabs V3 „Liam” for Siri – an English-labelled voice speaking Hungarian), re-encoded to 960 × 540 H.264 + AAC with `scripts/encode-clip-video.swift`. Originals: `design/source-video/csillag/` (not committed). Checked in the browser only: all four load, play and decode audio. **Not checked by anyone: the spoken Hungarian (wording, pronunciation, accent – Siri's voice is probably wrong), lip sync, real devices.** Clip 1 shows Arki with closed eyes at the end of its first frame – owner to judge.
+- **Still missing:** badge image (`badge: null`), a cover `srcSet` (single 816 × 1456 image), `introVideo`, update-bar proof and deploy. **Not deployed.**
+- **Wording that needs the owner's approval** (adapted from the approved story for the screen): the five clip texts, the step titles, the
+  instruction lines of the three new exercises, the three consequence texts, the completion text. Review status: `unreviewed`.
+- Rights: the owner states both images are their own; recorded here, not independently verified.
+
 ## PWA notes
 
 - The app shell, icons and all artwork (`public/assets/*.webp`, currently about 5.7 MB including the recordings' covers) are precached; recordings are cached separately when first fetched (see Offline readiness). Whether the whole app really works offline has **not** been verified on a real device.

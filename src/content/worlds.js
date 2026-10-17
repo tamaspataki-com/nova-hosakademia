@@ -71,6 +71,17 @@ export const WORLDS = [
     artAlt:
       'Mira, a türkizkék kis űrlény és Zénó, a narancssárga kis űrlény a csillagjátszótéren, mögöttük egy gyűrűs bolygó.',
     series: [{ id: 'star-playground', name: 'A csillagjátszótér' }]
+  },
+  {
+    id: 'bridges',
+    name: 'Csillaghidak bolygója',
+    description: 'Segíts Sirinek és Arkinak átjutni a Csillagszakadékon, és találjátok meg, hogyan lehet együtt bátornak lenni.',
+    icon: 'star',
+    // World art: Arki in the Crystal Hall (owner's own image, made with GPT, 2026-10-17). Master:
+    // design/source-art/csillag/arki-world-gpt.webp. Usage rights: the owner's own images (owner's statement).
+    art: 'assets/stars-world.webp',
+    artAlt: 'Arki, a halványkék kis lény fehér-arany köntösben fénygömböt tart a Kristálycsarnokban, mögötte csillagos égbolt és egy bolygó.',
+    series: [{ id: 'crystal-hall', name: 'A Kristálycsarnok' }]
   }
 ];
 
