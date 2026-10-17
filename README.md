@@ -183,3 +183,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Needed from the owner: authored guided explanations for the practice main-idea texts `m1`, `m2`, `m3` (none exist; nothing was invented)
 - [ ] Needed from the owner: recordings for `heroes.energymag` – its three sections have **no** authored shorter parts (`chunks`), so three whole-section clips (`s1`, `s2`, `s3`); "Kisebb részekben haladok" then splits by sentence and, without sentence clips, falls back to the browser voice – decide whether sentence-level clips (3 + 4 + 4) are wanted. The 18 practice texts have no recordings either (one section each).
 - [ ] Needed from the owner: artwork for the heroes practice texts (a neutral book icon is shown meanwhile)
+- [ ] Splash screen fits the first screen without scrolling: checked in a desktop browser at 320×568, 375×667, 390×844, 667×375 (landscape) and 768×1024; still to check on real phones
+- [ ] Update-bar proof on the six-step journey build: passed in a desktop browser (same checks as above); still to do on real phones; independently unverified by the owner
