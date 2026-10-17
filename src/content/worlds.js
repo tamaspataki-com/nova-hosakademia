@@ -49,7 +49,8 @@ export const WORLDS = [
   {
     id: 'courage',
     name: 'Bátorság bolygója',
-    description: 'Kis lépések, próbák és közös küldetések egy csillagtérkép-állomáson.',
+    description:
+      'Segíts Lénának elindulni akkor is, amikor bizonytalan! Próbáljátok ki, hogyan segíthet egy kis lépés, egy újabb próbálkozás vagy egy jókor kért segítség.',
     // PLACEHOLDER: no world art yet, so the designed icon card is shown. The real art (a star-map station, drawn after
     // Léna's video look, clearly different from the space world) is still to be made.
     icon: 'flag',

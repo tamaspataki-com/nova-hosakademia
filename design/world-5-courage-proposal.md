@@ -1,5 +1,13 @@
 # World 5 – „Bátorság bolygója” – proposal and implementation record
 
+**Production order (owner, 2026-10-17):** 1. character reference sheet (Léna and Csipp locked from the actual video); 2. world art and
+adventure cover from that approved reference; 3. the 15 recordings (narrator must be identified first); 4. video, adapted or replaced
+after the artwork is consistent. `introVideo` stays `null` until a final video meets the export spec and its rights are checked.
+**Correction to §9:** the face-size requirement (≥ ~15 % of the image height) applies to the **adventure cover**; the world art may show
+smaller characters. **Narrator:** not identifiable from the repository (see the README); the owner must name the voice before any
+recording is made. **Approved:** world description „Segíts Lénának elindulni akkor is, amikor bizonytalan! …”, the choice note above,
+and „Mi történt?” as the consequence heading.
+
 **Update:** the Hungarian text was approved with five corrections (applied below in §7.2 and §7.3). Adventure 1 is implemented in the app (not deployed, not published); see the README section „Bátorság bolygója”. Still placeholders: world art, cover, the 15 recordings, the intro video.
 
 Status of this file: **a proposal for the owner to approve or correct.** No code, content or asset has been added to the
@@ -278,7 +286,7 @@ Visszajelzés (helyes): Jól felidézted, mi volt Léna feladata.
 
 **3. lépés – Az első lépés** (storyChoice)
 Cím a képernyőn: Mit tanácsolsz Lénának: mi legyen az első kis lépése?
-Segítő sor: Itt nincs rossz válasz. Mindegyik választásnak más a következménye.
+Segítő sor: Válassz egy lehetőséget, és nézd meg, mi történik utána!
 Gomb: Ezt választom
 
 | Válasz | Következmény (felolvasható szöveg) |

@@ -183,7 +183,7 @@ export const COURAGE = {
       type: 'storyChoice',
       title: 'Az első lépés',
       prompt: 'Mit tanácsolsz Lénának: mi legyen az első kis lépése?',
-      note: 'Itt nincs rossz válasz. Mindegyik választásnak más a következménye.',
+      note: 'Válassz egy lehetőséget, és nézd meg, mi történik utána!',
       submitLabel: 'Ezt választom',
       options: [
         { id: 'first-sentence', text: 'Csak az első mondatot mondja el halkan Csippnek.', section: 'x1a' },
@@ -214,7 +214,7 @@ export const COURAGE = {
       type: 'storyChoice',
       title: 'Elakadás',
       prompt: 'Léna elakadt. Mit tanácsolsz neki?',
-      note: 'Itt nincs rossz válasz. Mindegyik választásnak más a következménye.',
+      note: 'Válassz egy lehetőséget, és nézd meg, mi történik utána!',
       submitLabel: 'Ezt választom',
       options: [
         { id: 'breathe', text: 'Mély levegőt vesz, és újrakezdi az utolsó mondatot.', section: 'x2a' },
