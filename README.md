@@ -208,6 +208,43 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   Offline: the recordings are covered by the app's offline check, the video is **not** (online only, on tap); real-device playback of
   recordings and video is **untested**.
 
+### Kapcsolatok bolygója (world 6) – adventure 1 „A kimondatlan nem”
+
+Source: the owner's pilot storyboard (2026-10-17) and seven Hedra talking clips approved by the owner. Content: `src/content/kapcsolatok.js`.
+Two characters (Mira, Zénó), 11 steps: 7 clips, 3 decisions, 1 „Most te következel” step. Outside the daily journey (open from the start; add
+`kapcsolatok-unspoken-no-01` to `JOURNEY` in `src/content/journey.js` only if the owner wants it paced).
+
+**New shared activity types** (flagged: the existing system had no video steps, no decision with retry and per-answer feedback, no
+„say it aloud” step): `clip` (`Clip.jsx`, player in `src/app/ClipPlayer.jsx`), `talkChoice` (`TalkChoice.jsx`: authored order, per-option
+feedback, retry after a miss, unscored – logs `talk_choice_made` with ids only, never `activity_completed`), `sayIt` (`SayIt.jsx`: optional
+sentence starter, nothing typed or recorded, `private`). Also shared: an adventure with a single mode skips the mode question; the card
+hides the mode chip then; `onlineNote` on the introduction.
+
+**Clips:** `public/video/kapcsolatok1-v1..v7.mp4`, 960 × 540, 25 fps, H.264 + AAC, 5.6–12.7 s, 0.7–1.6 MB each (8.4 MB in all), made with
+`scripts/encode-clip-video.swift` from the 1280 × 720 originals (62 MB, kept in `design/source-video/kapcsolatok/`, not committed). Mapping:
+v1 Mira Speaks to the Viewer · v2 Zeno Explains Meteor Race Track · v3 Mira Expresses Her Preference · v4 Zeno Mild Disappointment ·
+v5 Mira Calm Reassurance · v6 Zeno Accepts Friend Choice · v7 Mira Expresses Relief And Gratitude. The child starts each clip (no autoplay);
+the spoken words are always shown as text under it, so a clip that cannot play never blocks the adventure. Clips are **online-only** (no
+service-worker cache, no offline claim). Each clip is fetched whole and played from memory, like the recordings.
+
+**Tested in a desktop browser (2026-10-17):** whole adventure start to completion (11/11, badge, completion screen); every wrong answer shows its
+authored feedback and the choice can be retried; the correct answer opens „Tovább” and moves focus to it; feedback goes through the live region;
+resume after a reload mid-step (earlier misses stay marked); help panel offers only „Szünetet tartok”; 375 px wide layout; all targets ≥ 48 px;
+all seven clips load with the right duration and decoded audio.
+
+**Not verified:** the *spoken content* of the clips (Hungarian wording, pronunciation, lip sync) was not checked against the text by anyone but
+the owner's approval; playback on real iPhone/Safari and Android/Chrome; screen reader; keyboard-only walk; usage rights of the Hedra output
+and the characters; offline.
+
+**Wording that is not in the storyboard (written for the interface, needs the owner's approval):** world name's description („Segíts a
+barátoknak megtalálni a szavakat, hogy megértsék egymást.”), series name „A csillagjátszótér”, the step titles in the progress bar
+(„Mira üzenete”, „Zénó története”, „Mit tudunk biztosan?”, „Melyik mondat segítene?”, „Mira kimondja”, „Zénó válasza”, „Mit mondhat Mira?”,
+„Mira döntése”, „Zénó döntése”, „Most te következel”, „Mira köszöni”), the button „Segítek Mirának”, „Ezt választom”, the completion title/text
+(„Segítettél Mirának!” …), the online note, and the „Mira mondja / Zénó mondja” label. The sentence options are shown without quotation marks.
+Not built: the „zárókép” of scene 5 (no still exists; the text „Most mást választottak…” sits under video 6), the badge picture (two speech
+bubbles with a star; the `forum` icon is used), cover and world artwork (icon cards). The production note „Ez a történet egyik lényeges pontja…”
+is not shown to the child. Review status is „unreviewed”.
+
 ### Eszközeim: worked examples are locked until the story is completed
 
 All five strategy tools and their steps are open from the start. A worked example that shows the answers of one story
@@ -319,3 +356,7 @@ video is online-only (not part of any offline claim); usage rights of the video,
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
 - [ ] Intro video: usage rights confirmed with evidence (generator terms/licence); plays on a real iPhone and Android; its look and length approved
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone
+- [ ] Kapcsolatok bolygója, adventure 1: listened to / watched all seven clips in the app: wording equals the displayed text, pronunciation, lip sync, pace
+- [ ] Kapcsolatok bolygója, adventure 1: content review finished (until then it stays „unreviewed”); interface wording listed in its README section approved
+- [ ] Kapcsolatok bolygója, adventure 1: plays on a real iPhone and a real Android device (clips are fetched whole; 0.7–1.6 MB each); keyboard/touch and screen-reader use tested
+- [ ] Kapcsolatok bolygója: usage rights of the Hedra clips and characters confirmed; decision whether the adventure joins the daily journey; artwork, scene-5 still and badge picture

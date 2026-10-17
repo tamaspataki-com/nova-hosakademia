@@ -1,4 +1,4 @@
-// The five worlds. Adventures reference a world by id; a world with no available adventure shows an honest
+// The six worlds. Adventures reference a world by id; a world with no available adventure shows an honest
 // "upcoming" state. Only the heroes world has artwork (its six-island map); the others use designed icon cards.
 export const WORLDS = [
   {
@@ -58,6 +58,13 @@ export const WORLDS = [
     artSet: 'assets/courage-world-768.webp 768w, assets/courage-world.webp 1536w',
     artAlt: 'Csillagtérképasztal egy világos, boltíves állomáson, mellette Léna és Csipp.',
     series: [{ id: 'star-map-station', name: 'A csillagtérkép-állomás' }]
+  },
+  {
+    id: 'connection',
+    name: 'Kapcsolatok bolygója',
+    description: 'Segíts a barátoknak megtalálni a szavakat, hogy megértsék egymást.',
+    icon: 'forum', // no artwork yet: the icon card is used
+    series: [{ id: 'star-playground', name: 'A csillagjátszótér' }]
   }
 ];
 

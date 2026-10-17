@@ -66,7 +66,7 @@ export function AdventureCard({ adv, go }) {
         </span>
         <span className="chips">
           <Chip>{fmt}</Chip>
-          {adv.modes.map((m) => {
+          {(adv.modes.length > 1 ? adv.modes : []).map((m) => {
             const off = m !== 'read' && !audio;
             return (
               <Chip key={m} tone={off ? 'dim' : ''} title={off ? 'Ezen az eszközön most nem elérhető' : undefined}>

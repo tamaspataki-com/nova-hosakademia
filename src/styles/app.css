@@ -1694,3 +1694,11 @@ mark.swap {
 .help-explain dd {
   margin: 0;
 }
+
+/* talking-character clips: the spoken words as a quote under the video */
+.clip-say {
+  margin: 0;
+}
+.clip-say blockquote {
+  margin: 0;
+}

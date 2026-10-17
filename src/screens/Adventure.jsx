@@ -152,6 +152,11 @@ function Intro({ adv, go }) {
         </div>
       ) : null}
       <OfflineNote adv={adv} />
+      {adv.onlineNote ? (
+        <p className="muted">
+          <Icon name="wifi" /> {adv.onlineNote}
+        </p>
+      ) : null}
 
       {status === 'done' ? (
         <div className="note soft">
@@ -293,6 +298,13 @@ function ModePicker({ adv, run, go }) {
     act.log('mode_chosen', adv, { mode });
     window.scrollTo(0, 0);
   };
+  // An adventure with a single way to follow it (no narration to choose) skips the question.
+  const only = adv.modes.length === 1 ? adv.modes[0] : null;
+  useEffect(() => {
+    if (only) choose(only);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [only]);
+  if (only) return null;
   return (
     <div className="page narrow stack">
       <button type="button" className="back" onClick={() => go({ name: 'back' })}>
