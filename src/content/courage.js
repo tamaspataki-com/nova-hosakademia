@@ -20,8 +20,8 @@ export const COURAGE = {
   classification: 'fiction',
   sources: [],
   review: {
-    status: 'unreviewed',
-    note: 'A szöveget, a felvételeket és a felületi szövegeket a szülő jóváhagyta (content package 06); az egyezést a kóddal ellenőriztük, de a „felnőtt ellenőrizte” jelölést a szülő még nem adta meg.'
+    status: 'adult-reviewed',
+    note: 'A szülő 2026-10-17-én átnézte a szöveget, a 15 felvételt (meghallgatva) és a felületi szövegeket. Valódi eszközön még nem tesztelték.'
   },
   format: 'story',
   status: 'available',

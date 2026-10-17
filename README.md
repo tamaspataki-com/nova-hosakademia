@@ -199,8 +199,7 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   texts (stored sentence by sentence) through the 15 narration texts, with `courage.js` and `audio.js`: **no deviation** (every narration text equals the sentences/parts the app derives;
   all 15 clip ids point to the right `courage1-*` file; every scored question has a source, hint, guided text and feedback; both
   choices point to existing consequence sections). The owner approved the 15 recordings by listening. **Unresolved, not decided by me:**
-  (1) the adventure keeps `review.status: 'unreviewed'`: marking it „adult-reviewed” is the owner's decision, not made on their
-  behalf; (2) the shared system's wrong-answer wording („Nem ez”, „Nézd meg újra a szöveget, és próbáld újra.”, „Ez a helyes válasz.”
+  (1) ~~review status~~ **resolved: the owner reviewed text, recordings and interface strings on 2026-10-17 and asked for `review.status: 'adult-reviewed'`, now set** (the label „Felnőtt ellenőrizte” means that review only – not real-device testing and not usage rights); (2) the shared system's wrong-answer wording („Nem ez”, „Nézd meg újra a szöveget, és próbáld újra.”, „Ez a helyes válasz.”
   after a revealed solution) is unchanged: it is fine for scored questions in general, but in a world about mistakes the owner may want
   warmer wording (a change to the shared system for every adventure); (3) the level label shows „Rövid szövegek” (level 1: 2–3
   sentences) while two parts have 4 sentences – the same as the space adventure; (4) the three glossary definitions are my
@@ -294,7 +293,7 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
-- [ ] Bátorság bolygója, adventure 1: owner decides whether to mark it „adult-reviewed” (text, recordings and interface strings are approved; see the content-review list in the README for the five open points)
+- [x] Bátorság bolygója, adventure 1: marked „adult-reviewed” on the owner's instruction (text, recordings, interface strings; 2026-10-17). Open points 2–5 of the content-review list remain
 - [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping (voice: Adam – Articulate Engineering Professor, Eleven v4); only then push/deploy
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
 - [ ] Intro video: usage rights confirmed with evidence (generator terms/licence); plays on a real iPhone and Android; its look and length approved
