@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '../app/store.jsx';
 import { Btn, Icon } from '../app/ui.jsx';
-import { BADGES, ROUTINE, TOOLS, findAdventure, sectionOf } from '../content/index.js';
+import { BADGES, HELP_EXPLAIN, HELP_INTRO, ROUTINE, TOOLS, findAdventure, sectionOf } from '../content/index.js';
 import { Glyph } from '../app/ui.jsx';
 import { AdventureCard } from './Explore.jsx';
 
@@ -149,7 +149,12 @@ function Favourites({ go, adventures }) {
 // A worked example shows the answers of one story, so it stays locked until the child has completed that adventure:
 // it must not give anything away before the first attempt. The tools and their steps are open from the start. Examples
 // that are not tied to a story (the help list) are always shown.
-const EXAMPLE_FROM = { goggles: 'heroes.energymag', glove: 'heroes.energymag', crystal: 'heroes.energymag' };
+const EXAMPLE_FROM = {
+  goggles: 'heroes.energymag',
+  glove: 'heroes.energymag',
+  shield: 'heroes.energymag',
+  crystal: 'heroes.energymag'
+};
 
 // Each tool shows its three authored steps one at a time. Where the energy-core story has matching material
 // (the evidence sentence, the event order, the glossary) it is shown as a worked example.
@@ -205,6 +210,8 @@ export function ToolDemo({ id, go }) {
           ) : null}
         </div>
       </section>
+
+      {tool.why ? <p className="lead">{tool.why}</p> : null}
 
       <Example tool={tool} adv={adv} done={(state.history[EXAMPLE_FROM[tool.id]]?.completions || 0) > 0} />
     </div>
@@ -272,31 +279,42 @@ function Example({ tool, adv, done }) {
         ))}
       </div>
     );
+  else if (tool.id === 'shield')
+    body = (
+      <>
+        <p className="lead">{tool.example.text}</p>
+        <section className="card stack tight" aria-label={tool.example.whyHeading}>
+          <strong className="h3">{tool.example.whyHeading}</strong>
+          <p>{tool.example.whyText}</p>
+        </section>
+      </>
+    );
   else if (tool.id === 'compass')
     body = (
-      <ul className="routine">
-        {[
-          'Kapok egy támpontot',
-          'Újra elolvasom',
-          'Újra meghallgatom',
-          'Kisebb részekben haladok',
-          'Tartok egy kis szünetet'
-        ].map((t) => (
-          <li key={t}>
-            <Icon name="chevron_right" /> {t}
-          </li>
-        ))}
-      </ul>
+      <>
+        <p className="lead">{HELP_INTRO}</p>
+        <dl className="help-explain">
+          {HELP_EXPLAIN.map(([label, text]) => (
+            <div key={label} className="card stack tight">
+              <dt>
+                <strong>{label}</strong>
+              </dt>
+              <dd>{text}</dd>
+            </div>
+          ))}
+        </dl>
+      </>
     );
   if (!body) return null;
   return (
     <section className="stack" aria-label="Példa">
       <h2 className="h2">
-        {tool.id === 'compass' ? 'Így kérhetsz segítséget' : `Példa „${adv.title}” című történetből`}
+        {tool.id === 'compass'
+          ? 'Így kérhetsz segítséget'
+          : tool.id === 'shield'
+            ? tool.example.heading
+            : `Példa „${adv.title}” című történetből`}
       </h2>
-      {tool.id === 'compass' ? (
-        <p className="lead">Ha elakadsz, minden feladatban ezek közül választhatsz a Segítséget kérek gombbal:</p>
-      ) : null}
       {body}
     </section>
   );

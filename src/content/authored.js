@@ -100,9 +100,13 @@ export const TOOLS = [
   {
     id: 'shield',
     name: 'Lényeglátó pajzs',
-    strategy: 'Megfogalmazom, miről szól a történet.',
+    strategy: 'Kiválasztom, mi a szöveg legfontosabb mondanivalója.',
     src: 'assets/tool-shield.webp',
-    steps: ['Ki a főszereplő?', 'Mi volt a probléma?', 'Hogyan oldódott meg? Mondd el két-három mondatban.']
+    steps: [
+      'Gondold át, miről szól az egész szöveg.',
+      'Mi az, amit mindenképpen elmondanál róla?',
+      'Fogalmazd meg röviden. Az apró részleteket most elhagyhatod.'
+    ]
   },
   {
     id: 'crystal',
@@ -122,8 +126,8 @@ export const TOOLS = [
     src: 'assets/tool-compass.webp',
     steps: [
       'Ha elakadsz, állj meg egy pillanatra.',
-      'Próbáld meghallgatni a szöveget, vagy kérj egy tippet.',
-      'Választhatsz egy másik eszközt is.'
+      'Gondold át, mi segítene: egy támpont, újraolvasás, meghallgatás vagy rövidebb rész.',
+      'Nyisd meg a Segítséget kérek menüt, és válassz. Szünetet is tarthatsz.'
     ]
   }
 ];

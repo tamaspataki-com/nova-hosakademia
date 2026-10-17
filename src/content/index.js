@@ -37,7 +37,7 @@ export const REVIEW_LABEL = { 'adult-reviewed': 'Felnőtt ellenőrizte', unrevie
 export { BADGES } from './badges.js';
 
 export { WORLDS };
-export { TOOLS, ROUTINE } from './tools.js';
+export { TOOLS, ROUTINE, HELP_INTRO, HELP_EXPLAIN } from './tools.js';
 export { UPCOMING_TEXT, FORMATS, MODE_NAMES, OBJECTIVE_NAMES } from './worlds.js';
 
 export const LEVELS = [

@@ -144,8 +144,9 @@ it with a return button and keeps the run. Extend `JOURNEY` when more animal, sp
 
 All five strategy tools and their steps are open from the start. A worked example that shows the answers of one story
 (goggles, glove and crystal use *Az eltűnt energiamag*) stays locked until that adventure is completed, so it cannot give
-anything away before the first attempt; the screen explains this (`EXAMPLE_FROM` in `src/screens/MyWorld.jsx`). The compass
-list is not tied to a story and is always shown. The shield tool has no worked example yet. Examples for the other five
+anything away before the first attempt; the screen explains this (`EXAMPLE_FROM` in `src/screens/MyWorld.jsx`). The shield (Lényeglátó pajzs) now has an approved explanation and a worked example from that story, locked the same
+way. The compass (Újratervező iránytű) explains the existing help controls (`HELP_INTRO`, `HELP_EXPLAIN` in
+`src/content/tools.js`; they are explanations, not new buttons) and is always shown. Examples for the other five
 adventures are still to be authored (see the owner checklist).
 
 ### Links
@@ -225,3 +226,4 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
+- [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone
