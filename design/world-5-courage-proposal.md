@@ -36,7 +36,7 @@ Still not done: no code, art, recordings or video work has started, and nothing 
 | # | Decision | My recommendation |
 |---|---|---|
 | 1 | **Who is the girl in the video?** She is not Nóri (see §3). Redraw her as Nóri, or make her a new character? | **Answered:** new character **Léna** (name given by the owner, "Léna" is not used anywhere else in the app); robot **Csipp** is still my placeholder. |
-| 2 | **The video.** Use as final, as concept only, or re-render? | Concept only for now. It is not final (§3): faces too small, nearly static, 14.8 MB, unknown audio, different look from Nova. |
+| 2 | **The video.** Use as final, as concept only, or re-render? | Not final (§3): 14.8 MB, 7:4 format, unknown audio, rights not established. Its *content* (design, camera arc, palette) is a good character and mood reference. |
 | 3 | **A small new activity type, `storyChoice`** (unscored choice, different consequence per option). The shared system cannot express this today (§4). | Approve it. ~100 lines, modelled on `Prediction.jsx`. Without it "meaningful choices and consequences" cannot be done honestly. |
 | 4 | **Journey placement.** Outside the daily-pacing journey, or the 7th step at its end? | Append as the 7th journey step (no migration needed, §5.3). |
 | 5 | **Record the consequence texts?** (6 extra short clips; 15 clips in total instead of 9.) | Yes, otherwise a child in listening mode hears nothing after their own choice. |
@@ -104,15 +104,26 @@ No existing text is reused or contradicted by the proposed text.
 signed by *fal.ai*, created 2026-10-17 16:01 UTC. The generator model, licence and usage rights are **not** recorded, so
 whether it may be shipped commercially is **not established** (same situation as the ElevenLabs note in the README).
 
-**What I saw (9 sampled frames + a close-up, not every frame):**
-- A bright cream/orange control room with a large ringed planet in the window. A young girl (child proportions, brown bob,
-  blue headband/headset, white and pale-teal suit) stands behind a round table whose top shows tiny star dots; a small round
-  white robot with blue eyes and an antenna floats/stands to her left. Her expression is worried or sad.
-- The camera is static and the figures barely move in the sampled frames. Characters fill only about the lower-middle third
-  of the frame; a face is roughly 7 % of the frame height, i.e. about 20 px on a 375 px phone. The emotion would not be
-  readable.
-- No map is recognisable; "star map" is only the dotted table top. (Low-resolution viewing – small details such as badges
-  are not verified.)
+**CORRECTION (2026-10-17):** an earlier version of this section described the video as static, with tiny faces and no
+recognisable map. That was **wrong**: those frames were taken in a hidden browser pane that does not update video frames, so
+every sample was the same first frame. The description below comes from 11 frames decoded with the macOS video decoder
+(AVFoundation, at 0.1 s … 14.9 s; all 11 differ).
+
+**What the video shows (11 decoded frames, 0.1–14.9 s):**
+- **Camera:** a steady dolly-in. At the start the whole room is visible (a cream/orange control room, an oval window with a large
+  ringed planet, orange chairs, a round table); by the end the camera is close on Léna's face and shoulders. Faces are large and
+  readable from about 7 s onwards (roughly 25–35 % of the frame height in the last third).
+- **Léna:** a young girl with child proportions, a brown bob with a fringe, freckles, big brown eyes and a **teal headband
+  with a small flower bow**. Her suit is **white with turquoise/teal panels and trim, an orange stripe at the chest and a small
+  round badge**; white gloves. Her expression follows a clear arc: worried/uncertain (closed or lowered eyes, small frown) →
+  hand on a glowing button on the table → a gold constellation of linked light points lights up around her head → a calm,
+  pleased smile.
+- **Csipp:** a round, white, glossy robot head/body with turquoise accents, a **dark glass faceplate with glowing blue eyes**
+  (heart-shaped eyes in the last frames), a small antenna with a ball on top, and a small body that floats beside her.
+- **The star map:** the round table top is a dark-blue star map with constellation lines, orbits and a glowing pad in the
+  middle. At the end a gold constellation appears in the air. So the "star map" **is** recognisable, and the motion matches
+  the story (nervous first step → something lights up → relief).
+- Not seen: gold trim or the NOVA star emblem on Léna.
 
 **Audio:** the first ~10 s sit at a very low steady level (ambient hum); the last ~5 s are 3–6× louder. I cannot tell
 whether that is speech or music. **If it is speech, its language and wording are unknown**, and a spoken line that is not
@@ -123,8 +134,8 @@ the displayed text would break the narration rule. The owner needs to listen to 
 | | Nóri (space cover) | Hero / avatar (`hero.webp`) | Video girl („Nori”) |
 |---|---|---|---|
 | Age | adult | about 10–12, boy | young child, girl |
-| Look | cinematic, realistic painterly | stylised 3D animation | stylised 3D animation, rounder, more cartoon |
-| Palette | dark teal, cream, gold trim, gold badge | dark teal, cream, gold, gold star emblem | white and pale teal, orange/cream room; **no gold trim or emblem seen** |
+| Look | cinematic, realistic painterly | stylised 3D animation | stylised 3D animation, rounder, more cartoon (same family as the hero, different palette) |
+| Palette | dark teal, cream, gold trim, gold badge | dark teal, cream, gold, gold star emblem | white with turquoise trim and an orange stripe, teal headband; orange/cream room; **no gold trim or star emblem** |
 | Verdict | – | – | **Not Nóri. Related to the hero only loosely (same animation family, different palette).** |
 
 **Technical fit:**
@@ -137,15 +148,16 @@ the displayed text would break the narration rule. The owner needs to listen to 
 ### 3a. Léna and Csipp – canon (owner's decision)
 
 - **Léna** is a new character, first seen in „Bátorság bolygója”. Her look in the generated video is the reference for every
-  illustration and future video: child proportions, brown bob, blue headband/headset, white and pale-teal spacesuit,
-  stylised 3D-animation rendering. **Nóri is untouched** (adult, realistic cover style, teal/gold uniform); the two must be
+  illustration and future video: child proportions, brown bob with fringe, freckles, big brown eyes, teal headband with a small
+  flower bow, white spacesuit with turquoise trim, an orange chest stripe and a small round badge, white gloves, stylised
+  3D-animation rendering. **Nóri is untouched** (adult, realistic cover style, teal/gold uniform); the two must be
   clearly different people and are never drawn as the same person.
-- **Csipp** (placeholder name) is Léna's companion robot: small, round, white, blue eyes, antenna, as in the video.
+- **Csipp** (placeholder name) is Léna's companion robot: round, white and glossy with turquoise accents, a dark glass faceplate with glowing blue eyes, a small antenna with a ball, floating beside her, as in the video.
 - **Lacika helps Léna decide.** Lacika is the child using the app; his name is a setting (default „Hős”) and the recordings
   are fixed files, so **no narrated sentence can contain his name**. The role lives in the *unnarrated* prompts („Mit
   tanácsolsz Lénának…”, „Két döntésben segítettél Lénának”) and in the two choices, which are his. Léna and Csipp never
   decide those two things themselves.
-- Open issues the reference brings along: the look has to be re-rendered with bigger, readable faces (§3); the video's rights
+- Open issues the reference brings along: the video's rights
   are not established (fal.ai credentials only), which now matters more because it becomes the basis for a whole character;
   the room's bright orange/cream palette differs from Nova's dark teal/gold, so the station needs a deliberate look of its
   own (this is also what keeps it apart from the space world).
@@ -415,10 +427,10 @@ touch use, and the instructions' clarity to Lacika.
 |---|---|---|---|
 | 1 | **World art** `courage-world.webp` + `courage-world-768.webp` | 1536 × 1024 (3:2) and 768 × 512, lossy WebP q90 via `scripts/optimize-art.mjs`; ≤ ~450 KB / ≤ ~100 KB; master PNG in `design/source-art/courage/`. | Shows the star-map station as a place. **Keep everything important inside the central 16:9 band** (the world card crops to 16:8 on wide screens). No text or letters in the picture. Must not look like the space-world picture. |
 | 2 | **Adventure cover** `courage-first-step.webp` + `-768.webp` | Same specs. Subjects inside the central 16:9 band; the library thumbnail (108 × 72) shows the centre. | Léna and Csipp at the star-map table, drawn after the video (§3a), **before** the presentation: no stage, audience, applause or finished result. Appears only in library and introduction. |
-| 3 | **Character reference sheet** (not shipped) | Léna and Csipp: front, ¾, side; three expressions (nervous, thinking, relieved); **drawn from the video** (§3a: Léna's face, brown bob, blue headband/headset, white and pale-teal suit; Csipp's round white body, blue eyes, antenna); flat background. | Needed before adventures 2 and 3 so the characters stay the same. Léna must not borrow Nóri's teal/gold uniform, bun or realistic style. |
+| 3 | **Character reference sheet** (not shipped) | Léna and Csipp: front, ¾, side; three expressions (nervous, thinking, relieved); **drawn from the video** (§3: Léna's face, brown bob and fringe, freckles, teal headband with bow, white suit with turquoise trim and orange chest stripe; Csipp's glossy white body, dark faceplate with glowing blue eyes, antenna); flat background. | Needed before adventures 2 and 3 so the characters stay the same. Léna must not borrow Nóri's teal/gold uniform, bun or realistic style. |
 | 4 | **Narration**, 15 MP3 | §7.3; mono, 44.1 kHz, 128 kbps CBR, no silence > 0.3 s at either end, exactly the text. | `V` in `audio.js` only needs raising when a file is *replaced*. |
 | 5 | **Badge** | None (Material icon `directions_walk`). | Decorative only. |
-| 6 | **Intro video** (optional, deferred) `courage-intro.mp4` (+ `.vtt`) | MP4, H.264 (Main), yuv420p, AAC-LC mono ≤ 64 kbps *or no audio track*, ≤ 15 s, 24 fps, 7:4 or 3:2, longest side ≤ 960 px, **≤ 3 MB**, `moov` at the front (faststart), no loop. Closer framing: the face must be at least ~15 % of the frame height. Hungarian WebVTT captions if anyone speaks. | Child-started, muted by default, controls visible, respects reduced-motion, falls back to the cover. Loaded whole and played from memory like the audio (iOS and the host's range behaviour), and **not** part of any „Offline is elérhető” claim until it really is cached. Needs `ffmpeg` (not installed here) to produce from the prototype. |
+| 6 | **Intro video** (optional, deferred) `courage-intro.mp4` (+ `.vtt`) | MP4, H.264 (Main), yuv420p, AAC-LC mono ≤ 64 kbps *or no audio track*, ≤ 15 s, 24 fps, 7:4 or 3:2, longest side ≤ 960 px, **≤ 3 MB**, `moov` at the front (faststart), no loop. Hungarian WebVTT captions if anyone speaks. | Child-started, muted by default, controls visible, respects reduced-motion, falls back to the cover. Loaded whole and played from memory like the audio (iOS and the host's range behaviour), and **not** part of any „Offline is elérhető” claim until it really is cached. Needs `ffmpeg` (not installed here) to produce from the prototype. |
 | 7 | Alt texts (Hungarian) | Written when the art exists. | |
 
 Precache effect: the two new `.webp` pairs (~1.7 MB) are picked up by the existing `assets/*.webp` pattern; the

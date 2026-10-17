@@ -154,7 +154,7 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
 - **Personal reflection** („Egy kis lépés nálad”, `private: true`): one choice, no free text; the parent view shows only that it was done.
 - **Optional intro video** (`introVideo` in the adventure, shown by `IntroVideo` in `Adventure.jsx`): introduction screen
   only, started by a tap, never autoplaying, never beside narration, and it says it does not replace the story. **No
-  video is set**: the prototype is not a final asset (14.8 MB, small faces, unknown audio, unclear rights).
+  video is set**: the prototype is not a final asset (14.8 MB, 7:4 format, unknown audio, unclear rights).
 - **Placeholders (final assets still to be made):** world art and cover (the designed icon cards are shown), the **15
   recordings** (`COURAGE_RECORDINGS_PENDING` in `audio.js`, deliberately *not* in `RECORDINGS`; until then the device's
   Hungarian voice reads it and the adventure makes no offline claim), and the intro video.
