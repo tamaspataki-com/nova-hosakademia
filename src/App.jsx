@@ -149,10 +149,15 @@ function Shell() {
       <div className={`app ${showNav ? 'has-nav' : ''}`}>
         {showNav ? (
           <nav className="rail" aria-label="Fő navigáció">
-            <div className="rail-logo">
+            <button
+              type="button"
+              className="rail-logo logo-btn"
+              aria-label="NOVA – főoldal"
+              onClick={() => go({ name: 'today' })}
+            >
               <img src="assets/nova-star.webp" alt="" />
               <span>NOVA</span>
-            </div>
+            </button>
             {NAV.map(([id, label, icon]) => (
               <button
                 key={id}
@@ -180,10 +185,15 @@ function Shell() {
         <main className="main">
           {showNav ? (
             <div className="topbar">
-              <span className="topbar-logo">
+              <button
+                type="button"
+                className="topbar-logo logo-btn"
+                aria-label="NOVA – főoldal"
+                onClick={() => go({ name: 'today' })}
+              >
                 <img src="assets/nova-star.webp" alt="" />
                 NOVA
-              </span>
+              </button>
               <button
                 type="button"
                 className="profile-btn small"
