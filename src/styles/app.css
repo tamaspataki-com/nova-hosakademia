@@ -1007,8 +1007,8 @@ ul.routine {
   padding: 20px;
 }
 .feature-art {
-  aspect-ratio: 16 / 7;
-  min-height: 140px;
+  /* all covers are 3:2: on a phone the whole picture is shown, not a cropped strip */
+  aspect-ratio: 3 / 2;
 }
 .feature-art img {
   width: 100%;
@@ -1041,6 +1041,9 @@ ul.routine {
   border-color: var(--primary);
 }
 @media (min-width: 700px) {
+  .world-card img {
+    aspect-ratio: 16 / 8;
+  }
   .tiles {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1082,7 +1085,7 @@ ul.routine {
 }
 .world-card img {
   width: 100%;
-  aspect-ratio: 16 / 8;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
   display: block;
 }
@@ -1431,8 +1434,8 @@ details summary {
 }
 @media (max-width: 420px) {
   .adv-thumb {
-    width: 84px;
-    height: 64px;
+    width: 96px;
+    height: 64px; /* 3:2, like the covers */
   }
 }
 
@@ -1651,4 +1654,13 @@ mark.swap {
   outline: 3px solid var(--secondary);
   outline-offset: 4px;
   border-radius: 12px;
+}
+
+/* On a phone the cover pictures (all 3:2) are shown whole instead of being cut to a height limit. */
+@media (max-width: 699px) {
+  img.cover {
+    max-height: none;
+    aspect-ratio: 3 / 2;
+    height: auto;
+  }
 }
