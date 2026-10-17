@@ -2,6 +2,18 @@
 
 These are standing rules from the owner. They apply to every future change, deploy and content package.
 
+## 0. Progress reports (mandatory, every task, every message)
+
+Tamás is not a developer and wants to follow along. This is the same rule as in his other projects (babka, popcorn,
+gyemantcsepp). Keep a numbered step list for the task and **start every message, including the last, with**
+
+`Status: step X of N · about X%.`
+
+using the real numbers; the last message says `Status: step N of N · 100%. Done.` When not finished, add what is left,
+e.g. `Remaining: step 5 (check and deploy) · about 70%.` If something is wrong, say the problem right after the Status
+line. A message in the middle of work (when the user asks "where are you at?") gets the same line. Use simple,
+non-technical language.
+
 ## 1. The update bar (mandatory)
 
 Whenever a new version of the app is available, an info bar must appear **at the top of the app**:
