@@ -232,8 +232,7 @@ authored feedback and the choice can be retried; the correct answer opens „Tov
 resume after a reload mid-step (earlier misses stay marked); help panel offers only „Szünetet tartok”; 375 px wide layout; all targets ≥ 48 px;
 all seven clips load with the right duration and decoded audio.
 
-**Not verified:** the *spoken content* of the clips (Hungarian wording, pronunciation, lip sync) was not checked against the text by anyone but
-the owner's approval; playback on real iPhone/Safari and Android/Chrome; screen reader; keyboard-only walk; usage rights of the Hedra output
+**Not verified:** the *spoken content* of the clips is **owner-approved; no independent speech verification** (wording, pronunciation and lip sync were not compared with the text by anyone else); playback on real iPhone/Safari and Android/Chrome; screen reader; keyboard-only walk; usage rights of the Hedra output
 and the characters; offline.
 
 **Wording that is not in the storyboard (written for the interface, needs the owner's approval):** world name's description („Segíts a
