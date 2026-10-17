@@ -19,6 +19,7 @@ export default function Passage({ api }) {
   const mode = run.mode;
   const listening = mode === 'listen' || mode === 'combined';
   const timer = useRef(null);
+  const playId = useRef(0); // identifies the current clip: events from any earlier clip are ignored
 
   // Shorter presentation: authored chunks when the section has them, otherwise one sentence at a time.
   const chunked = !!st.chunked;
@@ -56,6 +57,18 @@ export default function Passage({ api }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Switching to another part (shorter parts on or off, next or previous part) resets the player on purpose: whatever
+  // was playing or paused stops, the watchdog timer is cleared, and late events from the old clip are dropped.
+  const resetPlayer = () => {
+    playId.current += 1;
+    clearTimeout(timer.current);
+    speaker.stop();
+  };
+  useEffect(() => {
+    resetPlayer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chunked, idx]);
+
   const setStatus = (s, reason) => {
     patch({ listen: s, listenError: s === 'error' ? reason || 'play' : undefined });
     log('audio_status', { activity: step.id, status: s, ...(reason ? { reason, online: navigator.onLine } : null) });
@@ -78,7 +91,9 @@ export default function Passage({ api }) {
     }
     patch({ played: true, listen: 'playing', stoppedBy: undefined });
     armTimer();
+    const mine = ++playId.current;
     speaker.play(clip, text, (s, reason) => {
+      if (mine !== playId.current) return; // an earlier clip ending (it was stopped to start this one)
       clearTimeout(timer.current);
       setStatus(s, reason);
     });
@@ -260,7 +275,11 @@ export default function Passage({ api }) {
       <div className="row">
         {main}
         {chunked && idx > 0 ? (
-          <Btn kind="ghost" icon="arrow_back" onClick={() => patch({ chunk: idx - 1 })}>
+          <Btn
+            kind="ghost"
+            icon="arrow_back"
+            onClick={() => patch({ chunk: idx - 1, listen: undefined, played: false })}
+          >
             Előző rész
           </Btn>
         ) : null}

@@ -1,21 +1,41 @@
 // Recordings are loaded whole and played from memory (a blob URL). The static host answers range requests with the
 // full file, and iPhones may refuse to play audio that is not served in ranges; a blob supports seeking everywhere.
+import { evictRecording, isAudioResponse, storeRecording } from './recordings.js';
+
+// Recordings are loaded whole and played from memory (a blob URL). The static host answers range requests with the
+// full file, and iPhones may refuse to play audio that is not served in ranges; a blob supports seeking everywhere.
+//
+// A recording that failed (download, not audio, or unreadable) is removed from the device cache, and the next
+// attempt for it – "Újrapróbálom" – fetches a fresh copy from the network and replaces the cached entry.
 const blobUrls = new Map();
+const failed = new Set(); // urls whose last attempt failed: the next attempt must not trust any cached copy
 function forgetRecording(url) {
   const src = blobUrls.get(url);
   if (src) URL.revokeObjectURL(src);
   blobUrls.delete(url);
 }
+async function failRecording(url) {
+  failed.add(url);
+  forgetRecording(url);
+  await evictRecording(url);
+}
 async function loadRecording(url) {
   if (blobUrls.has(url)) return blobUrls.get(url);
-  const res = await fetch(url); // a network failure rejects here: stage 'download'
-  if (!res.ok) throw new Error(`recording ${res.status}`);
-  // The host answers an unknown path with the app page (status 200): that is a missing file, not an audio file.
-  const type = res.headers.get('content-type') || '';
-  if (!/^audio\//i.test(type) && !/octet-stream/i.test(type)) throw new Error(`not audio (${type})`);
-  const src = URL.createObjectURL(await res.blob());
-  blobUrls.set(url, src);
-  return src;
+  const fresh = failed.has(url);
+  try {
+    const res = await fetch(url, fresh ? { cache: 'reload' } : undefined); // a network failure rejects: 'download'
+    // The host answers an unknown path with the app page (status 200): that is a missing file, not an audio file.
+    if (!isAudioResponse(res)) throw new Error(`not audio (${res.status} ${res.headers.get('content-type') || ''})`);
+    const copy = res.clone();
+    const src = URL.createObjectURL(await res.blob());
+    blobUrls.set(url, src);
+    failed.delete(url);
+    await storeRecording(url, copy);
+    return src;
+  } catch (e) {
+    await failRecording(url);
+    throw e;
+  }
 }
 
 // Narration service: recorded files (by clip id) take priority over browser speech.
@@ -77,7 +97,7 @@ export const Narrator = {
           a.playbackRate = rate;
           a.onended = () => cur.finish('completed');
           a.onerror = () => {
-            forgetRecording(this.recorded[id]); // a retry fetches a fresh copy
+            failRecording(this.recorded[id]); // unreadable: drop it everywhere, a retry fetches a fresh copy
             cur.finish('error', 'decode');
           };
           return a.play().catch((e) => {

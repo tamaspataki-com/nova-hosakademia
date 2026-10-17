@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Narrator } from './narrator.js';
 import { RECORDINGS } from '../content/audio.js';
+import { AUDIO_CACHE, isAudioResponse } from './recordings.js';
 
 // Audio provider order: supplied recordings (Narrator.recorded[id]) → a verified Hungarian browser voice →
 // none. When neither exists the UI says so and offers reading; it never shows playback that makes no sound.
@@ -15,9 +16,16 @@ function warmRecordings() {
   const urls = [...new Set(Object.values(RECORDINGS))];
   const run = async () => {
     try {
-      const cache = await caches.open('nova-audio');
-      // cache.add rejects on any failed or non-2xx download, so a file only counts once it is really stored.
-      for (const u of urls) if (!(await cache.match(u))) await cache.add(u);
+      const cache = await caches.open(AUDIO_CACHE);
+      // A file counts as stored only when it is a valid audio response. A leftover bad entry (an app page or a
+      // failed download kept by an earlier version) is removed and fetched again.
+      for (const u of urls) {
+        const have = await cache.match(u);
+        if (have && isAudioResponse(have)) continue;
+        if (have) await cache.delete(u);
+        const res = await fetch(u);
+        if (isAudioResponse(res)) await cache.put(u, res);
+      }
     } catch (e) {
       /* offline or blocked: the clips simply stream when played, and offline readiness stays "not ready" */
     } finally {

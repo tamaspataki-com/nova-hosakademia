@@ -40,10 +40,10 @@ export default defineConfig({
         runtimeCaching: [
           {
             // Recorded narration: cached whole, answered with range support (iPhones request audio in ranges).
-            // Filled by warmRecordings() in src/app/audio.js; cache key includes ?v= from src/content/audio.js.
+            // Only a 200 that really is audio is kept (an app page returned for a missing file is not). Filled by warmRecordings() in src/app/audio.js; cache key includes ?v= from src/content/audio.js.
             urlPattern: ({ url }) => url.pathname.endsWith('.mp3'),
             handler: 'CacheFirst',
-            options: { cacheName: 'nova-audio', rangeRequests: true, cacheableResponse: { statuses: [200] } }
+            options: { cacheName: 'nova-audio', rangeRequests: true, cacheableResponse: { statuses: [200], headers: { 'Content-Type': 'audio/mpeg' } } }
           },
           {
             urlPattern: ({ url }) => url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com',

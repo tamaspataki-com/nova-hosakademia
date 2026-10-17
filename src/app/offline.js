@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { RECORDINGS } from '../content/audio.js';
+import { isAudioResponse } from './recordings.js';
 
 // Offline readiness is never assumed. An adventure is "available offline" only after its required files have been
 // found in the device's caches: the app shell (the page, controlled by the service worker), its cover picture, and
@@ -20,6 +21,15 @@ const cached = async (url, ignoreSearch) => {
   }
 };
 
+// A recording only counts when the cached entry is a valid audio response (not an app page or a failed download).
+const cachedAudio = async (url) => {
+  try {
+    return isAudioResponse(await caches.match(url));
+  } catch (e) {
+    return false;
+  }
+};
+
 // -> { ready, shell, missing: number, total: number }
 export async function checkOffline(adv) {
   if (typeof caches === 'undefined') return { ready: false, shell: false, missing: -1, total: 0, unsupported: true };
@@ -27,7 +37,7 @@ export async function checkOffline(adv) {
   const shell = !!navigator.serviceWorker?.controller && (await cached('index.html', true));
   const have = [
     ...(await Promise.all(f.images.map((u) => cached(u, true)))),
-    ...(await Promise.all(f.audio.map((u) => cached(u, false))))
+    ...(await Promise.all(f.audio.map((u) => cachedAudio(u))))
   ];
   const total = have.length;
   const missing = have.filter((x) => !x).length;
