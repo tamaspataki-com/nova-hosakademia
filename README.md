@@ -153,3 +153,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Adventure 4 (A polip búvóhelye, animal world): content review finished (until then it stays „unreviewed")
 - [ ] Adventure 4: no recordings yet (browser Hungarian voice only); animal-world cover and adventure cover not yet supplied (neutral octopus icon in use). Instructions of the true / false / not stated activity clear to Lacika; real-device keyboard/touch use tested
 - [ ] Adventure 4, pending verification: the update-bar proof for the deploy a53cadf (skipped by the owner's decision: no service worker in the built-in browser, Chrome not connected); listening and combined modes; the guided path (solution reveal) by keyboard only
+- [ ] Adventure 4: listened to all nine recordings (octopus1-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping (only file durations and successful playback in a desktop browser were checked)
+- [ ] Adventure 4: recordings, covers and offline readiness checked on a real iPhone and a real Android device (offline readiness needs a service worker, which the test browser could not register)

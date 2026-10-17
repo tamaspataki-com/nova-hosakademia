@@ -8,6 +8,7 @@ const file = (name) => `audio/${name}.mp3?v=${V}`;
 const DINO = 'dino-muddy-footprints-01:story';
 const CRATES = 'dino-mixed-crates-02:story';
 const GATE = 'dino-gate-clues-03:story';
+const OCTOPUS = 'animals-octopus-hideout-01:story';
 
 export const RECORDINGS = {
   [`${DINO}:p1`]: file('dino-p1'),
@@ -41,5 +42,15 @@ export const RECORDINGS = {
   [`${GATE}:p2:c1`]: file('dino3-p2-c1'),
   [`${GATE}:p3`]: file('dino3-p3'),
   [`${GATE}:p3:c0`]: file('dino3-p3-c0'),
-  [`${GATE}:p3:c1`]: file('dino3-p3-c1')
+  [`${GATE}:p3:c1`]: file('dino3-p3-c1'),
+  // Adventure 4 (A polip búvóhelye). Each file must hold exactly the displayed passage text or authored part.
+  [`${OCTOPUS}:p1`]: file('octopus1-p1'),
+  [`${OCTOPUS}:p1:c0`]: file('octopus1-p1-c0'),
+  [`${OCTOPUS}:p1:c1`]: file('octopus1-p1-c1'),
+  [`${OCTOPUS}:p2`]: file('octopus1-p2'),
+  [`${OCTOPUS}:p2:c0`]: file('octopus1-p2-c0'),
+  [`${OCTOPUS}:p2:c1`]: file('octopus1-p2-c1'),
+  [`${OCTOPUS}:p3`]: file('octopus1-p3'),
+  [`${OCTOPUS}:p3:c0`]: file('octopus1-p3-c0'),
+  [`${OCTOPUS}:p3:c1`]: file('octopus1-p3-c1')
 };

@@ -31,6 +31,9 @@ export const WORLDS = [
     name: 'Állati különlegességek',
     description: 'Meglepő képességek és izgalmas történetek az állatvilágból.',
     icon: 'octopus',
+    art: 'assets/animals-world.webp',
+    artAlt:
+      'Tengerparti természetvédelmi központ, előtte egy róka és egy jégmadár, a nagy akváriumablakban pedig egy polip',
     series: [{ id: 'observation-station', name: 'A tengeri megfigyelőállomás' }]
   },
   {

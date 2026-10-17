@@ -27,8 +27,10 @@ export const OCTOPUS = {
   modes: ['read', 'listen', 'combined'],
   objectives: ['detail', 'compare', 'infoCheck', 'mainIdea'], // technical labels: parent area only
   hideObjectives: true,
-  // Neutral octopus icon until artwork is supplied (animal-world cover and adventure cover come later). Never the
-  // dinosaur artwork, and never a picture of the polip leaving the correct hiding place.
+  // Cover: Lili watching a swimming octopus. Shown only in the library and on the introduction – never inside an
+  // activity. It shows no hiding place; the octopus icon is the fallback while it loads.
+  coverAsset: 'assets/octopus-observation.webp',
+  coverAlt: 'Lili a megfigyelőablaknál az állát a kezére támasztva nézi a vízben úszó polipot',
   coverIcon: 'octopus',
   badge: 'pontos-megfigyelo',
   glossary: [
