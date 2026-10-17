@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StoreProvider, useStore } from './app/store.jsx';
 import { initAudio } from './app/audio.js';
-import { applyUpdate, useUpdateReady } from './app/update.js';
+import UpdateBar from './app/UpdateBar.jsx';
 import { fromHash, toHash } from './app/routes.js';
 import { Icon, Sheet, Btn } from './app/ui.jsx';
 import { allAdventures, customAdventures, findAdventure } from './content/index.js';
@@ -45,8 +45,6 @@ function Shell() {
   // A link such as #/dino opens that screen directly (no welcome screen); otherwise the app starts at the welcome.
   const [route, setRoute] = useState(() => fromHash(window.location.hash) || { name: 'welcome' });
   const [profile, setProfile] = useState(false);
-  const updateReady = useUpdateReady();
-  const [later, setLater] = useState(false);
   const settings = state.settings;
 
   // history entries carry their depth (i), so "back" only leaves the app's own screens.
@@ -141,107 +139,94 @@ function Shell() {
   const name = (settings.name || '').trim() || 'Hős';
   const initial = name[0].toUpperCase();
 
-  // The update banner never appears while an adventure is open, so an activity is not interrupted.
-  const showUpdate = updateReady && !later && route.name !== 'adventure';
-
   return (
-    <div className={`app ${showNav ? 'has-nav' : ''}`}>
-      {showUpdate ? (
-        <div className="update-bar" role="status">
-          <span>
-            <Icon name="system_update" /> Új verzió érhető el
-          </span>
-          <Btn className="small" onClick={applyUpdate}>
-            Frissítés
-          </Btn>
-          <Btn kind="ghost" className="small" onClick={() => setLater(true)}>
-            Később
-          </Btn>
-        </div>
-      ) : null}
-      {showNav ? (
-        <nav className="rail" aria-label="Fő navigáció">
-          <div className="rail-logo">
-            <img src="assets/nova-star.webp" alt="" />
-            <span>NOVA</span>
-          </div>
-          {NAV.map(([id, label, icon]) => (
-            <button
-              key={id}
-              type="button"
-              className={`rail-item ${tab === id ? 'on' : ''}`}
-              aria-current={tab === id ? 'page' : undefined}
-              onClick={() => go({ name: id })}
-            >
-              <Icon name={icon} size={27} />
-              <span>{label}</span>
-            </button>
-          ))}
-          <div className="grow" />
-          <button
-            type="button"
-            className="profile-btn"
-            aria-label="Profil és beállítások"
-            onClick={() => setProfile(true)}
-          >
-            {initial}
-          </button>
-        </nav>
-      ) : null}
-
-      <main className="main">
+    <>
+      <UpdateBar />
+      <div className={`app ${showNav ? 'has-nav' : ''}`}>
         {showNav ? (
-          <div className="topbar">
-            <span className="topbar-logo">
+          <nav className="rail" aria-label="Fő navigáció">
+            <div className="rail-logo">
               <img src="assets/nova-star.webp" alt="" />
-              NOVA
-            </span>
+              <span>NOVA</span>
+            </div>
+            {NAV.map(([id, label, icon]) => (
+              <button
+                key={id}
+                type="button"
+                className={`rail-item ${tab === id ? 'on' : ''}`}
+                aria-current={tab === id ? 'page' : undefined}
+                onClick={() => go({ name: id })}
+              >
+                <Icon name={icon} size={27} />
+                <span>{label}</span>
+              </button>
+            ))}
+            <div className="grow" />
             <button
               type="button"
-              className="profile-btn small"
+              className="profile-btn"
               aria-label="Profil és beállítások"
               onClick={() => setProfile(true)}
             >
               {initial}
             </button>
-          </div>
+          </nav>
         ) : null}
-        {screen}
-      </main>
 
-      {showNav ? (
-        <nav className="bottomnav" aria-label="Fő navigáció">
-          {NAV.map(([id, label, icon]) => (
-            <button
-              key={id}
-              type="button"
-              className={`bn-item ${tab === id ? 'on' : ''}`}
-              aria-current={tab === id ? 'page' : undefined}
-              onClick={() => go({ name: id })}
-            >
-              <Icon name={icon} size={26} />
-              <span>{label}</span>
-            </button>
-          ))}
-        </nav>
-      ) : null}
-
-      {profile ? (
-        <Sheet title="Profil" onClose={() => setProfile(false)}>
-          <div className="stack">
-            <div className="row">
-              <span className="profile-btn static" aria-hidden="true">
-                {initial}
+        <main className="main">
+          {showNav ? (
+            <div className="topbar">
+              <span className="topbar-logo">
+                <img src="assets/nova-star.webp" alt="" />
+                NOVA
               </span>
-              <strong className="h3">{name}</strong>
+              <button
+                type="button"
+                className="profile-btn small"
+                aria-label="Profil és beállítások"
+                onClick={() => setProfile(true)}
+              >
+                {initial}
+              </button>
             </div>
-            <Btn kind="ghost" icon="lock" onClick={() => go({ name: 'parent' })}>
-              Szülői tér
-            </Btn>
-          </div>
-        </Sheet>
-      ) : null}
-    </div>
+          ) : null}
+          {screen}
+        </main>
+
+        {showNav ? (
+          <nav className="bottomnav" aria-label="Fő navigáció">
+            {NAV.map(([id, label, icon]) => (
+              <button
+                key={id}
+                type="button"
+                className={`bn-item ${tab === id ? 'on' : ''}`}
+                aria-current={tab === id ? 'page' : undefined}
+                onClick={() => go({ name: id })}
+              >
+                <Icon name={icon} size={26} />
+                <span>{label}</span>
+              </button>
+            ))}
+          </nav>
+        ) : null}
+
+        {profile ? (
+          <Sheet title="Profil" onClose={() => setProfile(false)}>
+            <div className="stack">
+              <div className="row">
+                <span className="profile-btn static" aria-hidden="true">
+                  {initial}
+                </span>
+                <strong className="h3">{name}</strong>
+              </div>
+              <Btn kind="ghost" icon="lock" onClick={() => go({ name: 'parent' })}>
+                Szülői tér
+              </Btn>
+            </div>
+          </Sheet>
+        ) : null}
+      </div>
+    </>
   );
 }
 

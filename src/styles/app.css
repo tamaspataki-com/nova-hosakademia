@@ -161,8 +161,8 @@ button:disabled {
     width: 108px;
     flex: none;
     position: sticky;
-    top: 0;
-    height: 100dvh;
+    top: var(--update-h, 0px);
+    height: calc(100dvh - var(--update-h, 0px));
     padding: 22px 0 18px;
     background: var(--rail);
     border-right: 1px solid rgba(235, 213, 163, 0.12);
@@ -828,7 +828,7 @@ ul.routine {
 /* ---------- runner ---------- */
 .runner-bar {
   position: sticky;
-  top: 0;
+  top: var(--update-h, 0px);
   z-index: 4;
   display: flex;
   align-items: center;
@@ -1477,10 +1477,8 @@ details summary {
    controls. The separate 48px word buttons under the text are the accessible way to open a definition. */
 
 .update-bar {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 30;
   display: flex;
   flex-wrap: wrap;
@@ -1489,9 +1487,11 @@ details summary {
   padding: calc(8px + env(safe-area-inset-top)) 14px 8px;
   background: #0b2329;
   border-bottom: 2px solid var(--primary);
-  font-weight: 800;
 }
-.update-bar > span {
+.update-text {
   flex: 1;
-  min-width: 160px;
+  min-width: 180px;
+}
+.update-text .muted {
+  font-size: 15px;
 }

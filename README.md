@@ -82,13 +82,14 @@ Completion methods are `self-reported`, `typed` or `adult-observed`. The adult c
 Önállóan / Segítséggel / Most nem említette / Nem figyeltem meg) opens behind the parent PIN when one is set; no score is
 ever shown to the child.
 
-### Updates
+### Updates (mandatory behaviour – see CLAUDE.md)
 
-The service worker uses `registerType: 'prompt'`. A new version downloads in the background and the banner
-„Új verzió érhető el" → „Frissítés" appears; it is never shown during an adventure and nothing reloads until
-someone taps it. Progress lives in localStorage and survives the reload. Limits: the check runs when the app
-opens, when it returns to the foreground and hourly, so a device that stays offline or closed keeps the old
-version until it next opens online (iOS may only check at launch).
+The service worker uses `registerType: 'prompt'`. A new version downloads in the background and an info bar appears
+**at the top of every screen, also during an adventure**: „Új verzió érhető el" with the button „Frissítés"
+(`src/app/UpdateBar.jsx`). Nothing reloads until someone taps it, the bar cannot be dismissed, and progress lives in
+localStorage and survives the reload (an adventure resumes at its step). Limits: the check runs when the app opens, when
+it returns to the foreground and hourly, so a device that stays offline or closed keeps the old version until it next
+opens online (iOS may only check at launch). Copies installed before the prompt version need one full close and reopen.
 
 ## PWA notes
 
