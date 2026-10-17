@@ -28,7 +28,10 @@ export const GATE = {
   modes: ['read', 'listen', 'combined'],
   objectives: ['relevant', 'prediction', 'verify'], // technical labels: parent area only
   hideObjectives: true,
-  // No artwork yet: a neutral dinosaur icon is shown. Cover artwork will be supplied separately.
+  // Cover: Bence and the Triceratops at the gate. Shown only in the library and on the introduction – never inside an
+  // activity. It shows no outcome (no feeding, no bucket); the dinosaur icon is the fallback while it loads.
+  coverAsset: 'assets/dino-gate.webp',
+  coverAlt: 'Bence a kifutó korlátjánál áll, és egy fiatal Triceratopsot néz a kapu előtt',
   coverIcon: 'dino',
   badge: 'figyelmes-megfigyelo',
   glossary: [
@@ -78,6 +81,8 @@ export const GATE = {
         {
           id: 'p3',
           label: '3. rész',
+          // The outcome: not offered (read, heard, reread or replayed) until the prediction step has been submitted.
+          unlockAfter: 'prediction',
           sentences: [
             { id: 'p3-s1', text: 'A gondozó a leveleket az etetőhelyre tette, majd kinyitotta a belső kaput.' },
             { id: 'p3-s2', text: 'A Triceratops odasétált, és enni kezdett.' },

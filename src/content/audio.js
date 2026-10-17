@@ -7,6 +7,7 @@ const V = 1;
 const file = (name) => `audio/${name}.mp3?v=${V}`;
 const DINO = 'dino-muddy-footprints-01:story';
 const CRATES = 'dino-mixed-crates-02:story';
+const GATE = 'dino-gate-clues-03:story';
 
 export const RECORDINGS = {
   [`${DINO}:p1`]: file('dino-p1'),
@@ -28,15 +29,17 @@ export const RECORDINGS = {
   [`${CRATES}:p2:c1`]: file('dino2-p2-c1'),
   [`${CRATES}:p3`]: file('dino2-p3'),
   [`${CRATES}:p3:c0`]: file('dino2-p3-c0'),
-  [`${CRATES}:p3:c1`]: file('dino2-p3-c1')
+  [`${CRATES}:p3:c1`]: file('dino2-p3-c1'),
+  // Adventure 3 (A Triceratops a kapunál). Each file must hold exactly the displayed passage text or authored part.
+  // The p3 recordings belong to the outcome: the interface only offers them after the prediction is submitted (see
+  // `unlockAfter` in src/content/gate.js); keeping them cached on the device does not expose them.
+  [`${GATE}:p1`]: file('dino3-p1'),
+  [`${GATE}:p1:c0`]: file('dino3-p1-c0'),
+  [`${GATE}:p1:c1`]: file('dino3-p1-c1'),
+  [`${GATE}:p2`]: file('dino3-p2'),
+  [`${GATE}:p2:c0`]: file('dino3-p2-c0'),
+  [`${GATE}:p2:c1`]: file('dino3-p2-c1'),
+  [`${GATE}:p3`]: file('dino3-p3'),
+  [`${GATE}:p3:c0`]: file('dino3-p3-c0'),
+  [`${GATE}:p3:c1`]: file('dino3-p3-c1')
 };
-
-// Recording keys prepared for adventure 3 (A Triceratops a kapunál). No files exist yet, so none is listed in
-// RECORDINGS: until they are supplied the adventure uses the device's Hungarian voice, with the usual honest fallback.
-// Only the displayed passage text belongs in a recording (never questions or extras).
-const GATE = 'dino-gate-clues-03:story';
-export const PREPARED_GATE_KEYS = ['p1', 'p2', 'p3'].flatMap((p) => [
-  `${GATE}:${p}`,
-  `${GATE}:${p}:c0`,
-  `${GATE}:${p}:c1`
-]);

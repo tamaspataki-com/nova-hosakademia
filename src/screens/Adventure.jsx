@@ -269,7 +269,10 @@ function Runner({ adv, run, go }) {
 
   // ----- help -----
   const canHelp = scored || step.type === 'retell' || step.type === 'prediction';
-  const srcSecs = sourceSections(adv, step);
+  // A section can be locked until another step has been submitted (the outcome of a prediction). Locked sections are
+  // never read, heard, reread or replayed: not in the help panel, not in the reference, not as a passage step.
+  const locked = (sec) => !!sec?.unlockAfter && !run.steps[sec.unlockAfter]?.prediction;
+  const srcSecs = sourceSections(adv, step).filter((sec) => !locked(sec));
   // Replay plays the step's source section(s) in order – the recording of each one when it exists.
   const secClip = (sec) => `${adv.id}:${step.source?.passageId ?? adv.passages[0].id}:${sec.id}`;
   const playSections = (secs, i = 0) =>
@@ -355,6 +358,14 @@ function Runner({ adv, run, go }) {
   });
 
   const Activity = ACTIVITIES[step.type];
+  // A saved position that points at a locked passage (e.g. a changed or damaged save) goes back to the step that
+  // unlocks it, without showing anything of the passage.
+  const blocked = step.type === 'passage' && locked(thisSec);
+  const unlockIdx = blocked ? adv.steps.findIndex((s) => s.id === thisSec.unlockAfter) : -1;
+  useEffect(() => {
+    if (blocked && unlockIdx >= 0) act.run(adv.id, { stepIndex: unlockIdx });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blocked, unlockIdx]);
   const showGuide = scored && settings.guideSeen < 1;
 
   return (
@@ -407,7 +418,7 @@ function Runner({ adv, run, go }) {
             </section>
           ) : null}
 
-          <Activity key={step.id} api={api} />
+          {blocked ? null : <Activity key={step.id} api={api} />}
         </div>
 
         {help ? (
@@ -437,6 +448,7 @@ function Runner({ adv, run, go }) {
               step={step}
               mark={ref.mark}
               only={ref.only}
+              allow={(sec) => !locked(sec)}
               glossary={adv.glossary}
               onWord={openWord}
             />

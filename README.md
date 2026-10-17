@@ -147,4 +147,6 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Adventure 3 (A Triceratops a kapunál): content review finished (until then it stays „unreviewed")
 - [ ] Adventure 3: instructions clear to Lacika (clue selection, prediction, check) and spoken narration checked once recordings exist; real-device keyboard/touch use tested
 - [ ] Focus handling (step heading focus, feedback announcements, help panel focus) tested with a real screen reader (VoiceOver/TalkBack) and on real devices
+- [ ] Adventure 3: listened to all nine recordings (dino3-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping
+- [ ] Adventure 3: recordings, cover and the prediction boundary (outcome stays hidden until the prediction is submitted) checked on a real iPhone and a real Android device
 

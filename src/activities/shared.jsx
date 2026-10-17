@@ -57,19 +57,21 @@ export function SectionText({ sec, mark, glossary, onWord }) {
   );
 }
 
-export function Reference({ adv, step, mark, glossary, onWord, only }) {
+export function Reference({ adv, step, mark, glossary, onWord, only, allow }) {
   // `only`: show a single sentence of the source (e.g. just the quoted instruction).
-  const secs = sourceSections(adv, step).map((sec) =>
-    only
-      ? {
-          ...sec,
-          // just the quoted words when the sentence has a quotation („…”), else the whole sentence
-          sentences: sec.sentences
-            .filter((x) => x.id === only)
-            .map((x) => ({ ...x, text: x.text.match(/„[^”]*”/)?.[0] ?? x.text }))
-        }
-      : sec
-  );
+  const secs = sourceSections(adv, step)
+    .filter((sec) => !allow || allow(sec))
+    .map((sec) =>
+      only
+        ? {
+            ...sec,
+            // just the quoted words when the sentence has a quotation („…”), else the whole sentence
+            sentences: sec.sentences
+              .filter((x) => x.id === only)
+              .map((x) => ({ ...x, text: x.text.match(/„[^”]*”/)?.[0] ?? x.text }))
+          }
+        : sec
+    );
   const words = wordsIn(
     glossary,
     secs.flatMap((sec) => sec.sentences)
