@@ -150,4 +150,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Adventure 3: listened to all nine recordings (dino3-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping
 - [ ] Adventure 3: recordings, cover and the prediction boundary (outcome stays hidden until the prediction is submitted) checked on a real iPhone and a real Android device
 - [ ] Accessibility (pending, not implemented): announce when the solution becomes available – „Most már kérheted a megoldás megmutatását.” – so a screen-reader user learns that „Megmutatom a megoldást” has appeared after the second miss
-
+- [ ] Adventure 4 (A polip búvóhelye, animal world): content review finished (until then it stays „unreviewed")
+- [ ] Adventure 4: no recordings yet (browser Hungarian voice only); animal-world cover and adventure cover not yet supplied (neutral octopus icon in use). Instructions of the true / false / not stated activity clear to Lacika; real-device keyboard/touch use tested

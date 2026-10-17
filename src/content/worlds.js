@@ -30,8 +30,8 @@ export const WORLDS = [
     id: 'animals',
     name: 'Állati különlegességek',
     description: 'Meglepő képességek és izgalmas történetek az állatvilágból.',
-    icon: 'pets',
-    series: []
+    icon: 'octopus',
+    series: [{ id: 'observation-station', name: 'A tengeri megfigyelőállomás' }]
   },
   {
     id: 'space',
@@ -67,5 +67,7 @@ export const OBJECTIVE_NAMES = {
   check: 'Ellenőrzés',
   relevant: 'Releváns információ',
   prediction: 'Alátámasztott feltételezés',
-  verify: 'Következtetés ellenőrzése'
+  verify: 'Következtetés ellenőrzése',
+  compare: 'Összehasonlítás',
+  infoCheck: 'Információ ellenőrzése'
 };

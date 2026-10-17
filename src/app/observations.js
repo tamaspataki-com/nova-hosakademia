@@ -6,7 +6,8 @@ export const ATYPE = {
   evidence: 'Bizonyíték',
   vocabulary: 'Szómagyarázat',
   delayedRecall: 'Későbbi felidézés',
-  retell: 'Elmesélés'
+  retell: 'Elmesélés',
+  informationCheck: 'Információ ellenőrzése'
 };
 export const COMPLETION = {
   independent: 'Önállóan',

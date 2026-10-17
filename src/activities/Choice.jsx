@@ -44,7 +44,20 @@ export default function Choice({ api, variant = 'choice' }) {
           <p className="read-text">{priorText}</p>
         </section>
       ) : null}
+      {step.cards ? (
+        <section className="stack tight" aria-label={step.cardsLabel || 'Leírások'}>
+          <ul className="ref-cards">
+            {step.cards.map((c) => (
+              <li key={c.id} className="card stack tight">
+                <strong>{c.title}</strong>
+                <span>{c.text}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <h2 className="h2">{step.prompt}</h2>
+      {step.description ? <p className="lead">{step.description}</p> : null}
 
       <div className="stack tight" role="group" aria-label="Válaszlehetőségek">
         {order.map((id) => {
@@ -85,7 +98,7 @@ export default function Choice({ api, variant = 'choice' }) {
       ) : (
         <div className="row">
           <Btn disabled={!selected} onClick={check}>
-            Ellenőrzöm
+            {step.submitLabel || 'Ellenőrzöm'}
           </Btn>
           {showGuided ? (
             <Btn kind="ghost" icon="visibility" onClick={rules.reveal}>

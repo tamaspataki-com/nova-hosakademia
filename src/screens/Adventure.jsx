@@ -265,7 +265,41 @@ function Runner({ adv, run, go }) {
   // This run's events so far (supports and definitions between steps are read from them).
   const events = state.events.filter((e) => e.adv === adv.id && e.t >= run.startedAt);
 
-  const api = { adv, step, st, run, act, settings, voiceReady, speaker, patch, log, next, setMode, openWord, events };
+  // Information check: the current statement and its own state (hints, story opened, replay), kept per statement.
+  const stmt =
+    step.type === 'informationCheck' ? step.statements[Math.min(st.index || 0, step.statements.length - 1)] : null;
+  const patchItem = (p) =>
+    patch((cur) => ({ ...cur, items: { ...(cur.items || {}), [stmt.id]: { ...(cur.items?.[stmt.id] || {}), ...p } } }));
+  // Opening the story again (a reread, or the transcript while listening) counts as support.
+  const openStory = () => {
+    if (run.mode === 'listen') patch({ transcript: true });
+    else patch({ rereads: (st.rereads || 0) + 1 });
+    if (stmt) patchItem({ opened: true });
+    log('passage_reread', {
+      activity: step.id,
+      transcript: run.mode === 'listen',
+      ...(stmt ? { statement: stmt.id } : null)
+    });
+    setRef({});
+  };
+
+  const api = {
+    adv,
+    step,
+    st,
+    run,
+    act,
+    settings,
+    voiceReady,
+    speaker,
+    patch,
+    log,
+    next,
+    setMode,
+    openWord,
+    openStory,
+    events
+  };
 
   // ----- help -----
   const canHelp = scored || step.type === 'retell' || step.type === 'prediction';
@@ -283,7 +317,9 @@ function Runner({ adv, run, go }) {
         setFail({ reason, secs });
       }
     });
-  const unseen = (step.hints || []).filter((h) => !(st.shown || []).includes(h));
+  const unseen = stmt
+    ? [stmt.hint].filter((h) => !(st.items?.[stmt.id]?.shown || []).includes(h))
+    : (step.hints || []).filter((h) => !(st.shown || []).includes(h));
   const first = srcSecs[0];
   const passageSecs = step.type === 'passage' ? adv.passages.find((p) => p.id === step.passageId)?.sections : null;
   const thisSec = passageSecs?.find((s) => s.id === step.sectionId);
@@ -295,8 +331,9 @@ function Runner({ adv, run, go }) {
       icon: 'lightbulb',
       label: 'Kapok egy támpontot',
       run() {
-        patch({ shown: [...(st.shown || []), unseen[0]] });
-        log('hint_opened', { activity: step.id, auto: false });
+        if (stmt) patchItem({ shown: [...(st.items?.[stmt.id]?.shown || []), unseen[0]] });
+        else patch({ shown: [...(st.shown || []), unseen[0]] });
+        log('hint_opened', { activity: step.id, auto: false, ...(stmt ? { statement: stmt.id } : null) });
       }
     });
   if (canHelp && !st.solved && srcSecs.length)
@@ -304,12 +341,7 @@ function Runner({ adv, run, go }) {
       key: 'reread',
       icon: run.mode === 'listen' && !st.transcript ? 'subtitles' : 'menu_book',
       label: run.mode === 'listen' && !st.transcript ? 'Megmutatom a szöveget' : 'Újra elolvasom',
-      run() {
-        if (run.mode === 'listen') patch({ transcript: true });
-        else patch({ rereads: (st.rereads || 0) + 1 });
-        log('passage_reread', { activity: step.id, transcript: run.mode === 'listen' });
-        setRef({});
-      }
+      run: openStory
     });
   if (canHelp && !st.solved && step.quote)
     options.push({
@@ -329,7 +361,8 @@ function Runner({ adv, run, go }) {
       label: 'Újra meghallgatom',
       run() {
         patch({ replays: (st.replays || 0) + 1 });
-        log('audio_replayed', { activity: step.id });
+        if (stmt) patchItem({ replayed: true });
+        log('audio_replayed', { activity: step.id, ...(stmt ? { statement: stmt.id } : null) });
         playSections(srcSecs);
       }
     });

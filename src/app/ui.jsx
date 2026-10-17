@@ -30,9 +30,33 @@ export const DinoIcon = ({ size = 48 }) => (
   </svg>
 );
 
-// Material icon by name, or the dinosaur silhouette for the name 'dino'.
+// A neutral octopus silhouette used until illustrations are supplied.
+export const OctopusIcon = ({ size = 48 }) => (
+  <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" fill="currentColor" stroke="currentColor">
+    <ellipse cx="50" cy="38" rx="26" ry="24" stroke="none" />
+    {[18, 34, 50, 66, 82].map((x, i) => (
+      <path
+        key={x}
+        d={`M${x} 52 C ${x + (i % 2 ? 8 : -8)} 68, ${x + (i % 2 ? -6 : 6)} 78, ${x + (i % 2 ? 6 : -6)} 90`}
+        fill="none"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+    ))}
+    <circle cx="40" cy="38" r="4.5" fill="var(--bg, #fff)" stroke="none" />
+    <circle cx="60" cy="38" r="4.5" fill="var(--bg, #fff)" stroke="none" />
+  </svg>
+);
+
+// Material icon by name, or a custom silhouette for the names 'dino' and 'octopus'.
 export const Glyph = ({ name, size = 24 }) =>
-  name === 'dino' ? <DinoIcon size={size} /> : <Icon name={name} size={size} />;
+  name === 'dino' ? (
+    <DinoIcon size={size} />
+  ) : name === 'octopus' ? (
+    <OctopusIcon size={size} />
+  ) : (
+    <Icon name={name} size={size} />
+  );
 
 export function Btn({ kind = 'primary', icon, iconAfter, children, className = '', ...rest }) {
   return (
