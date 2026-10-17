@@ -21,8 +21,8 @@ system is shared by every topic.
 
 | Path | What |
 | --- | --- |
-| `src/content/` | All educational content, as data. `worlds.js` (4 worlds), `energymag.js` (heroes adventure), `dino.js`, `crates.js`, `gate.js` (dinosaur adventures 1–3), `octopus.js` (animals), `space.js` (space), `practice.js` (the prototype's 18 short practice texts converted to adventures), `audio.js` (clip id → recording), `badges.js`, `tools.js`, `authored.js` (original authored text), `index.js` (registry and parent-made adventures). |
-| `src/activities/` | One component per activity type: `passage`, `choice` (also delayed recall), `sequence`, `evidence`, `vocabulary`, `retell`, `reflection`, `sort`, `instruction`, `correctPlacement`, `selectClues`, `prediction`, `informationCheck`, `fillBlank`, `route`, `outcome`. `shared.jsx` holds the common scoring rules (`useScored`). |
+| `src/content/` | All educational content, as data. `worlds.js` (5 worlds), `energymag.js` (heroes adventure), `dino.js`, `crates.js`, `gate.js` (dinosaur adventures 1–3), `octopus.js` (animals), `space.js` (space), `courage.js` (Bátorság bolygója), `practice.js` (the prototype's 18 short practice texts converted to adventures), `audio.js` (clip id → recording), `badges.js`, `tools.js`, `authored.js` (original authored text), `index.js` (registry and parent-made adventures). |
+| `src/activities/` | One component per activity type: `passage`, `choice` (also delayed recall), `sequence`, `evidence`, `vocabulary`, `retell`, `reflection`, `sort`, `instruction`, `correctPlacement`, `selectClues`, `prediction`, `informationCheck`, `fillBlank`, `route`, `outcome`, `storyChoice`. `shared.jsx` holds the common scoring rules (`useScored`). |
 | `src/screens/` | Today (Mai kaland), Explore (Felfedezés) + world view, MyWorld (Saját világom) + tool demos, Rest (Pihenő), Adventure (intro, mode choice, step player, help), Complete, Parent. |
 | `src/app/store.jsx` | All state, persisted to localStorage (`nova.hosakademia.v2`), with migration from the prototype's v1 save. |
 | `src/app/audio.js`, `narrator.js` | Audio provider: recorded files (`Narrator.recorded[id]`) → Hungarian browser voice → none. |
@@ -104,8 +104,8 @@ adventure 5 is text only by design.
 
 ### The journey (unlocking and daily pacing)
 
-`src/content/journey.js` lists the six ordered full adventures: Az eltűnt energiamag → A sáros lábnyomok rejtélye → A polip
-búvóhelye → A marsjáró elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál. Only the next unfinished one
+`src/content/journey.js` lists the seven ordered full adventures: Az eltűnt energiamag → A sáros lábnyomok rejtélye → A polip
+búvóhelye → A marsjáró elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál → Az első bátor lépés. Only the next unfinished one
 opens, and **one new adventure opens per calendar day**:
 
 - The first adventure is open at once. Completing a journey adventure **for the first time** schedules the next unfinished
@@ -129,7 +129,7 @@ opens, and **one new adventure opens per calendar day**:
 - **The device clock decides.** Changing the clock (or the date) on the device changes what opens, so this is a pacing
   feature, not a tamper-proof parental control.
 
-**Utazás újrakezdése** (Szülői tér → Napi ütemezés, asks for the PIN again and a confirmation): resets only the six journey
+**Utazás újrakezdése** (Szülői tér → Napi ütemezés, asks for the PIN again and a confirmation): resets only the journey
 adventures – their completions, unfinished runs, pacing dates and journey badges – so the child starts again from the first
 adventure. PIN, name, settings, notes, own texts, practice progress, favourites, observations and retellings are kept; a
 `journey_reset` event is logged. It cannot be undone.
@@ -139,6 +139,25 @@ parent-made texts. One rule, `access`/`canOpen` (with the day), is used by Today
 (a locked adventure shows only its title and what unlocks it, and when) and the store (a locked adventure never gets a
 run). Pihenő is no longer in the main navigation or on the home page; „Szünetet tartok" in an adventure's help panel opens
 it with a return button and keeps the run. Extend `JOURNEY` when more animal, space and heroes adventures arrive.
+
+### Bátorság bolygója (world 5)
+
+`src/content/courage.js`: „Az első bátor lépés” (`courage-first-step-01`, the 7th journey step), a fiction about **Léna**
+(a new character, drawn after her look in the generated prototype video; Nóri's design is unchanged), her companion
+robot **Csipp**, and the child (Lacika) who advises her. The text is the owner-approved package (design/world-5-courage-proposal.md).
+Two plans remain *only* in that document, with no playable entry: „A félresikerült próba”, „A közös küldetés”.
+
+- **`storyChoice`** (`src/activities/StoryChoice.jsx`): the child advises the character; every option is valid, there is no
+  retry or hint ladder, and each option shows its own authored consequence (a section of the `paths` passage, with a
+  recording when one exists). It logs `story_choice_made` (ids only) and **never** `activity_completed`, so it does not
+  enter the scored observations. Only the three scored recall questions do.
+- **Personal reflection** („Egy kis lépés nálad”, `private: true`): one choice, no free text; the parent view shows only that it was done.
+- **Optional intro video** (`introVideo` in the adventure, shown by `IntroVideo` in `Adventure.jsx`): introduction screen
+  only, started by a tap, never autoplaying, never beside narration, and it says it does not replace the story. **No
+  video is set**: the prototype is not a final asset (14.8 MB, small faces, unknown audio, unclear rights).
+- **Placeholders (final assets still to be made):** world art and cover (the designed icon cards are shown), the **15
+  recordings** (`COURAGE_RECORDINGS_PENDING` in `audio.js`, deliberately *not* in `RECORDINGS`; until then the device's
+  Hungarian voice reads it and the adventure makes no offline claim), and the intro video.
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -226,4 +245,8 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
+- [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
+- [ ] Adventure 1: Léna and Csipp illustrations, world art and cover made after the video reference; the 15 recordings produced and listened to (`courage1-*.mp3`), then merged into `RECORDINGS`
+- [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
+- [ ] Intro video (if ever used): re-encoded (≤3 MB), rights confirmed, its audio checked, plays on real iPhone and Android
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone

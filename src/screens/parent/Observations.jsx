@@ -305,12 +305,15 @@ function Extra({ adventures }) {
     .filter((e) => e.type === 'retell_observed')
     .slice(-5)
     .reverse();
-  const refl = ev
-    .filter((e) => e.type === 'reflection_saved' && e.choices)
+  const stepOf = (e) => adventures.find((a) => a.id === e.adv)?.steps.find((s) => s.id === e.activity);
+  // A personal reflection (`private` step, e.g. „Egy kis lépés nálad”) is never shown to the parent: only that it was done.
+  const reflAll = ev.filter((e) => e.type === 'reflection_saved' && e.choices);
+  const refl = reflAll
+    .filter((e) => !stepOf(e)?.private)
     .slice(-5)
     .reverse();
+  const privateDone = reflAll.filter((e) => stepOf(e)?.private).length;
   const counts = passages.reduce((m, e) => ((m[e.listen] = (m[e.listen] || 0) + 1), m), {});
-  const stepOf = (e) => adventures.find((a) => a.id === e.adv)?.steps.find((s) => s.id === e.activity);
   const REFL = (e) => {
     const step = stepOf(e);
     return e.choices.map((id) => step?.options?.find((o) => o.id === id)?.text || id);
@@ -358,6 +361,12 @@ function Extra({ adventures }) {
             </div>
           ))}
         </section>
+      ) : null}
+
+      {privateDone ? (
+        <p className="muted">
+          Személyes visszatekintés (a gyerek saját életéről): {privateDone}× kitöltve. A válasz szándékosan nem látható.
+        </p>
       ) : null}
 
       {refl.length ? (

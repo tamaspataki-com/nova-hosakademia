@@ -20,7 +20,8 @@ export const JOURNEY = [
   'animals-octopus-hideout-01',
   'space-rover-message-01',
   'dino-mixed-crates-02',
-  'dino-gate-clues-03'
+  'dino-gate-clues-03',
+  'courage-first-step-01' // the first adventure of Bátorság bolygója
 ];
 
 export const inJourney = (id) => JOURNEY.includes(id);

@@ -123,6 +123,7 @@ function Intro({ adv, go }) {
           <Glyph name={adv.coverIcon} size={96} />
         </div>
       ) : null}
+      {adv.introVideo ? <IntroVideo video={adv.introVideo} poster={adv.coverAsset} /> : null}
       <div className="chips">
         <Chip>{formatLabel(adv.format)}</Chip>
         {classLabel(adv) ? <Chip>{classLabel(adv)}</Chip> : null}
@@ -187,6 +188,37 @@ function Intro({ adv, go }) {
         </Sheet>
       ) : null}
     </div>
+  );
+}
+
+// Optional introduction video. Only on the introduction (never inside an activity), only after a tap, never autoplaying,
+// never beside narration (the introduction has none), and the page says it does not replace the story. The video file
+// is loaded only when asked for (preload none) and no offline claim covers it.
+function IntroVideo({ video, poster }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="stack tight" aria-label="Bevezető videó">
+      {open ? (
+        <video
+          className="cover"
+          src={video.src}
+          poster={video.poster || poster}
+          controls
+          playsInline
+          preload="none"
+          aria-label="Bevezető videó"
+        >
+          {video.captions ? <track kind="captions" srcLang="hu" label="Magyar" src={video.captions} default /> : null}
+        </video>
+      ) : (
+        <Btn kind="ghost" icon="play_circle" onClick={() => setOpen(true)}>
+          Megnézem a bevezető videót
+        </Btn>
+      )}
+      <span className="muted">
+        A videó nem kötelező, és nem helyettesíti a történet elolvasását vagy meghallgatását.
+      </span>
+    </section>
   );
 }
 

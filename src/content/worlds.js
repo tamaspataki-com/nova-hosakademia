@@ -1,4 +1,4 @@
-// The four worlds. Adventures reference a world by id; a world with no available adventure shows an honest
+// The five worlds. Adventures reference a world by id; a world with no available adventure shows an honest
 // "upcoming" state. Only the heroes world has artwork (its six-island map); the others use designed icon cards.
 export const WORLDS = [
   {
@@ -45,6 +45,15 @@ export const WORLDS = [
     artSet: 'assets/space-world-768.webp 768w, assets/space-world.webp 1536w',
     artAlt: 'Űrkutató központ megfigyelőtoronnyal, egy űrhajóval és egy gyűrűs bolygóval az égen, előtte egy marsjáró',
     series: [{ id: 'red-planet-messages', name: 'Üzenetek a vörös bolygóról' }]
+  },
+  {
+    id: 'courage',
+    name: 'Bátorság bolygója',
+    description: 'Kis lépések, próbák és közös küldetések egy csillagtérkép-állomáson.',
+    // PLACEHOLDER: no world art yet, so the designed icon card is shown. The real art (a star-map station, drawn after
+    // Léna's video look, clearly different from the space world) is still to be made.
+    icon: 'flag',
+    series: [{ id: 'star-map-station', name: 'A csillagtérkép-állomás' }]
   }
 ];
 

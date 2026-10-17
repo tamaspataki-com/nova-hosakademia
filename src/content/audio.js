@@ -12,6 +12,30 @@ const OCTOPUS = 'animals-octopus-hideout-01:story';
 const ROVER = 'space-rover-message-01:story';
 const ENERGY = 'heroes.energymag:story';
 
+// PENDING: "Az első bátor lépés" (courage-first-step-01) has 15 recordings still to be produced from the approved text
+// (design/world-5-courage-proposal.md §7.3). They are NOT in RECORDINGS on purpose: an entry for a file that does not
+// exist would make the app claim recorded narration and offline readiness it cannot deliver. Until the files are in
+// public/audio/, the adventure is spoken by the device's Hungarian voice. When they exist, merge this list into
+// RECORDINGS (one change, then check every clip says exactly its text).
+const COURAGE = 'courage-first-step-01';
+export const COURAGE_RECORDINGS_PENDING = {
+  [`${COURAGE}:story:p1`]: file('courage1-p1'),
+  [`${COURAGE}:story:p1:c0`]: file('courage1-p1-c0'),
+  [`${COURAGE}:story:p1:c1`]: file('courage1-p1-c1'),
+  [`${COURAGE}:story:p2`]: file('courage1-p2'),
+  [`${COURAGE}:story:p2:c0`]: file('courage1-p2-c0'),
+  [`${COURAGE}:story:p2:c1`]: file('courage1-p2-c1'),
+  [`${COURAGE}:story:p3`]: file('courage1-p3'),
+  [`${COURAGE}:story:p3:c0`]: file('courage1-p3-c0'),
+  [`${COURAGE}:story:p3:c1`]: file('courage1-p3-c1'),
+  [`${COURAGE}:paths:x1a`]: file('courage1-x1a'),
+  [`${COURAGE}:paths:x1b`]: file('courage1-x1b'),
+  [`${COURAGE}:paths:x1c`]: file('courage1-x1c'),
+  [`${COURAGE}:paths:x2a`]: file('courage1-x2a'),
+  [`${COURAGE}:paths:x2b`]: file('courage1-x2b'),
+  [`${COURAGE}:paths:x2c`]: file('courage1-x2c')
+};
+
 export const RECORDINGS = {
   [`${DINO}:p1`]: file('dino-p1'),
   [`${DINO}:p1:c0`]: file('dino-p1-c0'),

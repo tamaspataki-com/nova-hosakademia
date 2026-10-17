@@ -6,9 +6,10 @@ import { CRATES } from './crates.js';
 import { GATE } from './gate.js';
 import { OCTOPUS } from './octopus.js';
 import { SPACE } from './space.js';
+import { COURAGE } from './courage.js';
 
 // Built-in adventures, in the order they are suggested. Parent-created adventures are added at runtime.
-const RAW = [ENERGYMAG, DINO, CRATES, GATE, OCTOPUS, SPACE, ...PRACTICE];
+const RAW = [ENERGYMAG, DINO, CRATES, GATE, OCTOPUS, SPACE, COURAGE, ...PRACTICE];
 
 // Content rules for the model. A factual adventure must carry sources and an adult review before it can be shown;
 // anything that breaks the rules is held back as "upcoming" and reported in the console.

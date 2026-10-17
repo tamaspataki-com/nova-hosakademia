@@ -14,6 +14,7 @@ import InformationCheck from './InformationCheck.jsx';
 import FillBlank from './FillBlank.jsx';
 import Route from './Route.jsx';
 import Outcome from './Outcome.jsx';
+import StoryChoice from './StoryChoice.jsx';
 
 // One component per activity type. Content decides which steps an adventure has; nothing in these components
 // knows about any particular story.
@@ -34,7 +35,8 @@ export const ACTIVITIES = {
   informationCheck: InformationCheck,
   fillBlank: FillBlank,
   route: Route,
-  outcome: Outcome
+  outcome: Outcome,
+  storyChoice: StoryChoice // unscored: the child advises the character, each option has its own consequence
 };
 
 // Which step types score answers (and therefore take hints, guided help and a solution reveal).

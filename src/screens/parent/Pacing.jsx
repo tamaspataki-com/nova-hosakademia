@@ -130,7 +130,7 @@ export default function Pacing() {
       <section className="card stack" aria-label="Utazás újrakezdése">
         <h2 className="h3">Utazás újrakezdése</h2>
         <p className="muted">
-          A hat kalandot elölről kezdi: törli a befejezéseket, a megkezdett kalandokat, az ütemezett napokat és az
+          Az utazás kalandjait elölről kezdi: törli a befejezéseket, a megkezdett kalandokat, az ütemezett napokat és az
           utazás jelvényeit. Megmarad a PIN, a név, a beállítások, a jegyzetek, a saját szövegek, a gyakorló szövegek
           haladása, a kedvencek és a megfigyelések.
         </p>
