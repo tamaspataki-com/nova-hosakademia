@@ -26,6 +26,21 @@
         "--strictPort"
       ],
       "port": 4173
+    },
+    {
+      "name": "nova-preview-lan",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "4174",
+        "--strictPort"
+      ],
+      "port": 4174
     }
   ]
 }

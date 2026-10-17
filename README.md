@@ -255,6 +255,26 @@ Live at **https://nova-hosakademia.pages.dev** (Cloudflare Pages project `nova-h
 After changing the app: commit, `git push`, then `npm run deploy` (uses `wrangler`; run `npx wrangler login` once per
 machine). Installed copies update the next time they are opened online.
 
+### Release checklist – World 5, adventure 1 (scope frozen 2026-10-17)
+
+**Scope is frozen:** no new features before release. The shared solution-button announcement („Most már kérheted a megoldás
+megmutatását.”, wording approved) is **deferred to a separate task** and is **not implemented**.
+
+**Private preview (before production):** `npm run build`, then the config `nova-preview-lan` in `.claude/launch.json`
+(`npm run preview -- --host 0.0.0.0 --port 4174 --strictPort`) serves `dist/` on the home network at
+`http://<this Mac's LAN address>:4174` (private to the Wi-Fi; stop the server when done). Over plain http the phone cannot register a
+service worker, so the preview tests **recordings, covers, video and the adventure only** – **not** the update bar and **not** offline use.
+The local preview answers range requests (the production host does not); the app loads the video and recordings whole, so this does not change the result.
+
+**Before any production deployment is reported done (mandatory, `CLAUDE.md` §1):** the update-bar proof – `npm run build`, `npm run preview`
+(on `localhost`, service worker active), clear the service worker, start an adventure, change a visible string, rebuild, call
+`registration.update()`, and confirm (a) no bar in the adventure, its help panel or a break from it, (b) the bar appears after returning to the
+main app, (c) „Frissítés” loads the new bundle and keeps the adventure and its step; undo the test change; after `npm run deploy` confirm the
+live site serves the new bundle. **Not yet run for this build.** Do not report a deployment complete without it.
+
+**Still marked untested / limited:** real-device playback of recordings and video (iPhone/Safari, Android/Chrome); real screen reader; the
+video is online-only (not part of any offline claim); usage rights of the video, artwork and reference sheet are unverified.
+
 ## Owner checklist (only the owner ticks these)
 
 - [ ] Listened to all nine recordings: wording matches the text, pronunciation, pace, no clipping
