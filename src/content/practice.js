@@ -1,7 +1,8 @@
 import { ACTS, PATHS, TASK_CHILD } from './authored.js';
 
-// The prototype's 18 reviewed practice passages, converted to the shared adventure format. The texts, questions,
-// answers and hints are the authored originals; nothing here is new educational content.
+// The prototype's 18 practice passages, converted to the shared adventure format. The texts, questions, answers and
+// hints are the authored originals; nothing here is new educational content. No adult review is recorded for them
+// (see `review` below). They have no artwork of their own, so they carry a neutral book icon.
 const LETTERS = ['a', 'b', 'c', 'd'];
 const OBJECTIVE = { understand: 'detail', recall: 'detail', seq: 'sequence', main: 'mainIdea', later: 'delayedRecall' };
 
@@ -67,6 +68,7 @@ function convert(actId, a) {
     context: 'practice',
     level: a.level,
     transfer: !!a.transfer,
+    coverIcon: 'menu_book', // neutral placeholder until artwork is supplied
     defaultMode: a.path === 'listen' ? 'listen' : 'read',
     modes: ['read', 'listen', 'combined'],
     objectives: [...objectives],

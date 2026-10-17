@@ -21,8 +21,8 @@ system is shared by every topic.
 
 | Path | What |
 | --- | --- |
-| `src/content/` | All educational content, as data. `worlds.js` (4 worlds), `energymag.js` (the first adventure), `practice.js` (the prototype's practice texts converted to adventures), `tools.js`, `authored.js` (original authored text), `index.js` (registry and parent-made adventures). |
-| `src/activities/` | One component per activity type: `passage`, `choice`, `sequence`, `evidence`, `vocabulary`, `retell`, `delayedRecall`, `reflection`. `shared.jsx` holds the common scoring rules (`useScored`). |
+| `src/content/` | All educational content, as data. `worlds.js` (4 worlds), `energymag.js` (heroes adventure), `dino.js`, `crates.js`, `gate.js` (dinosaur adventures 1–3), `octopus.js` (animals), `space.js` (space), `practice.js` (the prototype's 18 short practice texts converted to adventures), `audio.js` (clip id → recording), `badges.js`, `tools.js`, `authored.js` (original authored text), `index.js` (registry and parent-made adventures). |
+| `src/activities/` | One component per activity type: `passage`, `choice` (also delayed recall), `sequence`, `evidence`, `vocabulary`, `retell`, `reflection`, `sort`, `instruction`, `correctPlacement`, `selectClues`, `prediction`, `informationCheck`, `fillBlank`, `route`, `outcome`. `shared.jsx` holds the common scoring rules (`useScored`). |
 | `src/screens/` | Today (Mai kaland), Explore (Felfedezés) + world view, MyWorld (Saját világom) + tool demos, Rest (Pihenő), Adventure (intro, mode choice, step player, help), Complete, Parent. |
 | `src/app/store.jsx` | All state, persisted to localStorage (`nova.hosakademia.v2`), with migration from the prototype's v1 save. |
 | `src/app/audio.js`, `narrator.js` | Audio provider: recorded files (`Narrator.recorded[id]`) → Hungarian browser voice → none. |
@@ -94,6 +94,12 @@ are still arriving it says so; when offline and something is missing it shows an
 (reading still works). Only adventures that have recordings make an offline claim. A device that has *never* loaded the app
 online cannot open it offline at all – no web app can show anything then; that is the browser's own offline page.
 
+**Where the recordings come from.** All 45 files in `public/audio/` (adventures 1–5) carry embedded content-credential
+metadata (C2PA) that names ElevenLabs. That is the only evidence in the repository: no account, plan, licence, voice name
+or generation settings are recorded, so the provenance beyond "tagged as ElevenLabs" is **not established**. The heroes
+adventure (`heroes.energymag`) and the 18 practice texts have **no recordings**; they use the Hungarian browser voice,
+or no audio on a device without one. The outcome panel of adventure 5 is text only by design.
+
 ### Links
 
 Screens can be opened from a link. The dinosaur adventure: **https://nova-hosakademia.pages.dev/#/dino** (long form
@@ -120,7 +126,7 @@ launch). Copies installed before the prompt version need one full close and reop
 
 ## PWA notes
 
-- Everything is precached (app shell, icons, all artwork, ~2.6 MB), so the whole app works offline after the first visit.
+- The app shell, icons and all artwork (`public/assets/*.webp`, currently about 5.7 MB including the recordings' covers) are precached; recordings are cached separately when first fetched (see Offline readiness). Whether the whole app really works offline has **not** been verified on a real device.
 - Fonts come from Google Fonts and are cached at runtime.
 - `base: './'` keeps the build working from any sub-path.
 - Artwork is WebP generated from the PNGs in `design/source-art/app/` with `node scripts/optimize-art.mjs`
@@ -151,12 +157,12 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Adventure 3: recordings, cover and the prediction boundary (outcome stays hidden until the prediction is submitted) checked on a real iPhone and a real Android device
 - [ ] Accessibility (pending, not implemented): announce when the solution becomes available – „Most már kérheted a megoldás megmutatását.” – so a screen-reader user learns that „Megmutatom a megoldást” has appeared after the second miss
 - [ ] Adventure 4 (A polip búvóhelye, animal world): content review finished (until then it stays „unreviewed")
-- [ ] Adventure 4: no recordings yet (browser Hungarian voice only); animal-world cover and adventure cover not yet supplied (neutral octopus icon in use). Instructions of the true / false / not stated activity clear to Lacika; real-device keyboard/touch use tested
+- [ ] Adventure 4: instructions of the true / false / not stated activity clear to Lacika; real-device keyboard/touch use tested
 - [ ] Adventure 4, pending verification: the update-bar proof for the deploy a53cadf (skipped by the owner's decision: no service worker in the built-in browser, Chrome not connected); listening and combined modes; the guided path (solution reveal) by keyboard only
 - [ ] Adventure 4: listened to all nine recordings (octopus1-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping (only file durations and successful playback in a desktop browser were checked)
 - [ ] Adventure 4: recordings, covers and offline readiness checked on a real iPhone and a real Android device (offline readiness needs a service worker, which the test browser could not register)
 - [ ] Adventure 5 (A marsjáró elveszett üzenete, space world): content review finished (until then it stays „unreviewed")
-- [ ] Adventure 5: no recordings yet (browser Hungarian voice only; the outcome panel is text only by design); space-world and adventure covers not yet supplied (neutral rover icon in use). Instructions of the message-restoring and route activities clear to Lacika; real-device touch and keyboard use tested; the route map checked on real phone screens
+- [ ] Adventure 5: instructions of the message-restoring and route activities clear to Lacika; real-device touch and keyboard use tested; the route map checked on real phone screens
 - [ ] Adventure 5, pending verification: the update-bar proof for this deploy (no service worker in the test browser); full Tab-only walk through every step in listening mode; screen-reader announcements of the rover position and the blank
 - [ ] Adventure 5: listened to all nine recordings (rover1-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping (only file durations and successful playback in a desktop browser were checked)
 - [ ] Adventure 5: recordings, covers (central 16:9 crop checked on screen only) and offline readiness checked on a real iPhone and a real Android device (offline readiness needs a service worker, which the test browser could not register)
