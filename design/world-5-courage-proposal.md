@@ -17,6 +17,13 @@ text below only becomes a package once the owner says "approved" (or sends corre
 
 ---
 
+## 0c. Recordings integrated (2026-10-17)
+
+15 ElevenLabs clips (`public/audio/courage1-*.mp3`, mono 44.1 kHz 128 kbps) are registered in `src/content/audio.js`. The export contained
+no CLAUDE-READ-ME.txt and no manifest.json and named files by generation time; mapping to clip ids is by order, supported by duration and
+sentence-pause positions. **Not confirmed by listening:** the exact words and the pronunciation of Léna, Csipp, pittyentett; the
+narrator voice is not named in the files. `courage1-p1-c1.mp3` trimmed by 6 frames (0.157 s). Tested in read, listening and combined modes.
+
 ## 0b. Covers delivered (2026-10-17)
 
 World art `courage-world` (wide station, table, Léna and Csipp small) and adventure cover `courage-first-step` (close-up, Léna's face

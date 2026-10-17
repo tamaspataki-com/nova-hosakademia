@@ -162,9 +162,14 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   delivered in the working session; the generator's original files were not available. The cover appears only on the
   card, the introduction and the Mai kaland card, never inside an activity; `coverPosition` keeps Léna's hair and flower inside
   the 360 px band on wide screens.
-- **Placeholders (still to be made):** the **15 recordings** (`COURAGE_RECORDINGS_PENDING` in `audio.js`, deliberately *not* in
-  `RECORDINGS`; until then the device's Hungarian voice reads it and the adventure makes no offline claim; the narrator
-  voice is not yet identified) and the intro video (`introVideo: null`).
+- **Recordings:** 15 clips (`courage1-*.mp3`: three passages with their shorter parts, and the six consequence clips
+  `courage1-x1a…x2c`), exported from ElevenLabs on 2026-10-17 (C2PA credential: Eleven Labs Inc.; **the voice name is not
+  recorded in the files or the export** – the export had no README or manifest). The export named the files by generation time;
+  they were mapped to clip ids by order and checked against the script by duration and by where the sentence pauses fall
+  (consistent for all 15). **Nobody has listened to them yet to confirm the words and the pronunciation of „Léna”, „Csipp”,
+  „pittyentett”.** `courage1-p1-c1.mp3` was shortened by 6 MP3 frames (0.157 s of trailing silence); that edit invalidates
+  the file's embedded content credential.
+- **Placeholder (still to be made):** the intro video (`introVideo: null`).
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -253,7 +258,7 @@ machine). Installed copies update the next time they are opened online.
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
 - [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
-- [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings produced and listened to (`courage1-*.mp3`), then merged into `RECORDINGS`
+- [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping, and the narrator voice named
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
 - [ ] Intro video (if ever used): re-encoded (≤3 MB), rights confirmed, its audio checked, plays on real iPhone and Android
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone

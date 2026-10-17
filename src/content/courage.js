@@ -3,8 +3,7 @@
 // corrections). Interface wording that is not in the package (button labels of the shared system) lives in the
 // activity components. A fictional story about the character Léna: nothing here is a claim about the child.
 //
-// PLACEHOLDERS (final assets do not exist yet): the 15 recordings and the intro video. Until they arrive the app speaks
-// the text with the device's Hungarian voice and shows no video. See COURAGE_RECORDINGS_PENDING in audio.js and `introVideo` below.
+// Narration: the 15 recordings in public/audio/courage1-*.mp3 (registered in audio.js). The intro video is not set.
 const src = (sectionId) => ({ passageId: 'story', sectionId });
 
 export const COURAGE = {
