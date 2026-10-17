@@ -5,12 +5,14 @@ import Observations from './parent/Observations.jsx';
 import Settings from './parent/Settings.jsx';
 import OwnText from './parent/OwnText.jsx';
 import Content from './parent/Content.jsx';
+import Pacing from './parent/Pacing.jsx';
 
 const TABS = [
   ['obs', 'Megfigyelések', 'visibility'],
   ['settings', 'Beállítások', 'tune'],
   ['own', 'Saját szöveg', 'edit_note'],
-  ['content', 'Tartalom', 'fact_check']
+  ['content', 'Tartalom', 'fact_check'],
+  ['pacing', 'Napi ütemezés', 'event']
 ];
 
 export default function Parent({ go, adventures, tab: tab0 = 'obs' }) {
@@ -99,6 +101,7 @@ export default function Parent({ go, adventures, tab: tab0 = 'obs' }) {
       {tab === 'settings' ? <Settings go={go} /> : null}
       {tab === 'own' ? <OwnText go={go} /> : null}
       {tab === 'content' ? <Content adventures={adventures} /> : null}
+      {tab === 'pacing' ? <Pacing /> : null}
     </div>
   );
 }

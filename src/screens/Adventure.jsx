@@ -5,7 +5,7 @@ import { AnnounceContext } from '../activities/live.jsx';
 import { tone } from '../app/tone.js';
 import OfflineNote from '../app/OfflineNote.jsx';
 import { canOpen } from '../content/journey.js';
-import { journeyCurrent, lockText } from '../app/access.js';
+import { PACING_NOTE, journeyCurrent, lockText } from '../app/access.js';
 import { OFFLINE_UNAVAILABLE_TEXT, useOfflineStatus } from '../app/offline.js';
 import {
   canPlay,
@@ -38,10 +38,10 @@ const MODE_INFO = [
 const formatLabel = (f) => FORMATS.find((x) => x.id === f)?.label || f;
 
 export default function Adventure({ adv, go }) {
-  const { state, act } = useStore();
+  const { state, act, today } = useStore();
   const run = state.progress[adv.id];
   // A locked journey adventure (reached by a link, a bookmark or anything else) shows only what unlocks it.
-  if (!run && !canOpen(state, adv.id)) return <Locked adv={adv} go={go} />;
+  if (!run && !canOpen(state, adv.id, today)) return <Locked adv={adv} go={go} />;
   if (!run) return <Intro adv={adv} go={go} />;
   if (!run.mode) return <ModePicker adv={adv} run={run} go={go} />;
   return <Runner key={adv.id} adv={adv} run={run} go={go} />;
@@ -49,10 +49,12 @@ export default function Adventure({ adv, go }) {
 
 // ---------- locked ----------
 function Locked({ adv, go }) {
-  const { state } = useStore();
+  const { state, today } = useStore();
   const headRef = useHeadingFocus();
   const currentId = journeyCurrent(state);
   const current = currentId ? findAdventure(currentId, []) : null;
+  // The button only leads somewhere that opens now; a date-locked "next adventure" cannot be opened either.
+  const target = current && canOpen(state, current.id, today) ? current : null;
   return (
     <div className="page narrow stack">
       <button type="button" className="back" onClick={() => go({ name: 'back' })}>
@@ -67,16 +69,24 @@ function Locked({ adv, go }) {
       <div className="note soft" role="status">
         <Icon name="lock" />
         <span>
-          <strong>Ez a kaland még zárolva van.</strong> {lockText(state, adv.id)}
+          <strong>Ez a kaland még zárolva van.</strong> {lockText(state, adv.id, today)}
         </span>
       </div>
-      {current ? (
-        <div className="row">
-          <Btn iconAfter="arrow_forward" onClick={() => go({ name: 'adventure', id: current.id, replace: true })}>
-            Ugrás ide: {current.title}
+      <p className="muted">{PACING_NOTE}</p>
+      <div className="row">
+        {target ? (
+          <Btn iconAfter="arrow_forward" onClick={() => go({ name: 'adventure', id: target.id, replace: true })}>
+            Ugrás ide: {target.title}
           </Btn>
-        </div>
-      ) : null}
+        ) : (
+          <>
+            <Btn onClick={() => go({ name: 'today' })}>Vissza a főoldalra</Btn>
+            <Btn kind="ghost" onClick={() => go({ name: 'explore' })}>
+              Kalandok újrajátszása
+            </Btn>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -438,7 +448,7 @@ function Runner({ adv, run, go }) {
   options.push({
     key: 'break',
     icon: 'self_improvement',
-    label: 'Tartok egy kis szünetet',
+    label: 'Szünetet tartok',
     run() {
       speaker.stop();
       log('break_started', { activity: step.id });

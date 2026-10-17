@@ -17,8 +17,7 @@ import Complete from './screens/Complete.jsx';
 const NAV = [
   ['today', 'Mai kaland', 'home'],
   ['explore', 'Felfedezés', 'explore'],
-  ['myworld', 'Saját világom', 'backpack'],
-  ['rest', 'Pihenő', 'nights_stay']
+  ['myworld', 'Saját világom', 'backpack']
 ];
 // Which main destination a route belongs to (for the highlighted nav item).
 const TAB_OF = {
@@ -27,7 +26,6 @@ const TAB_OF = {
   world: 'explore',
   myworld: 'myworld',
   tool: 'myworld',
-  rest: 'rest',
   parent: 'today'
 };
 const NO_NAV = new Set(['welcome', 'adventure', 'complete']);

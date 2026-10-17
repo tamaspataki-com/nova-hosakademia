@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
-import { canOpen } from '../content/journey.js';
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
+import { canOpen, dayOf, isDay, journeyCurrent, paceAfterCompletion } from '../content/journey.js';
 
 // All app state lives here and is persisted to localStorage. Screens read it with useStore() and change it only
 // through the actions returned there, so progress, events and completion rules stay in one place.
@@ -39,6 +39,8 @@ export const initial = () => ({
   discoveries: {},
   notes: [],
   pinCode: null,
+  // Daily pacing (see content/journey.js): the first-completion day and the unlock day per journey adventure.
+  pacing: { completed: {}, unlocks: {} },
   hw: blankHw(),
   hwSaved: [],
   legacy: null
@@ -95,7 +97,14 @@ export function load() {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const o = JSON.parse(raw);
-      return { ...initial(), ...o, settings: { ...DEFAULT_SETTINGS, ...(o.settings || {}) } };
+      const base = initial();
+      return {
+        ...base,
+        ...o,
+        settings: { ...DEFAULT_SETTINGS, ...(o.settings || {}) },
+        // saves from before daily pacing have no pacing records: nothing is scheduled, nothing is held back
+        pacing: { completed: { ...(o.pacing?.completed || {}) }, unlocks: { ...(o.pacing?.unlocks || {}) } }
+      };
     }
     const v1 = localStorage.getItem(KEY_V1);
     if (v1) return migrateV1(JSON.parse(v1));
@@ -113,7 +122,7 @@ export function reducer(s, a) {
       return { ...s, settings: { ...s.settings, ...a.patch } };
 
     case 'start': {
-      if (!canOpen(s, a.id)) return s; // a locked journey adventure never gets a run, whatever opened the screen
+      if (!canOpen(s, a.id, dayOf(a.t))) return s; // a locked journey adventure never gets a run, whatever opened the screen
       const old = s.progress[a.id];
       if (old && !a.restart) return s;
       const run = {
@@ -152,6 +161,7 @@ export function reducer(s, a) {
       const prev = s.history[a.id] || { completions: 0 };
       return {
         ...s,
+        pacing: paceAfterCompletion(s, a.id, a.t),
         progress: rest,
         history: { ...s.history, [a.id]: { completions: prev.completions + 1, last: a.t } },
         badges: a.badge && !s.badges.includes(a.badge) ? [...s.badges, a.badge] : s.badges
@@ -160,6 +170,11 @@ export function reducer(s, a) {
     case 'log': {
       const events = [...s.events, a.e];
       return { ...s, events: events.length > MAX_EVENTS ? events.slice(-MAX_EVENTS) : events };
+    }
+    case 'unlockDay': {
+      // Parent: change the day the next journey adventure opens (a past or today's day opens it now).
+      if (a.id !== journeyCurrent(s) || !isDay(a.day)) return s;
+      return { ...s, pacing: { ...s.pacing, unlocks: { ...s.pacing.unlocks, [a.id]: a.day } } };
     }
     case 'fav':
       return {
@@ -223,6 +238,7 @@ export function StoreProvider({ children }) {
       step: (id, stepId, patch) => dispatch({ type: 'step', id, stepId, patch }),
       abandon: (id) => dispatch({ type: 'abandon', id }),
       complete: (adv) => dispatch({ type: 'complete', id: adv.id, badge: adv.badge, t: Date.now() }),
+      unlockDay: (id, day) => dispatch({ type: 'unlockDay', id, day }),
       fav: (id) => dispatch({ type: 'fav', id }),
       retell: (r) => dispatch({ type: 'retell', r }),
       discovery: (id, patch) => dispatch({ type: 'discovery', id, patch }),
@@ -246,7 +262,45 @@ export function StoreProvider({ children }) {
     [log]
   );
 
-  const value = useMemo(() => ({ state, act }), [state, act]);
+  // Today's local calendar day. It is looked at again when the app returns to the foreground, when the page is shown
+  // again, at the next midnight and once a minute, so a day change never waits for a restart.
+  const [today, setToday] = useState(() => dayOf());
+  useEffect(() => {
+    const check = () => setToday((d) => (dayOf() === d ? d : dayOf()));
+    let timer;
+    const arm = () => {
+      clearTimeout(timer);
+      const n = new Date();
+      const ms = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1, 0, 0, 1).getTime() - n.getTime();
+      timer = setTimeout(
+        () => {
+          check();
+          arm();
+        },
+        Math.min(Math.max(ms, 1000), 2 ** 31 - 1)
+      );
+    };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        check();
+        arm();
+      }
+    };
+    arm();
+    const interval = setInterval(check, 60 * 1000);
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+    window.addEventListener('pageshow', onVisible);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
+      window.removeEventListener('pageshow', onVisible);
+    };
+  }, []);
+
+  const value = useMemo(() => ({ state, act, today }), [state, act, today]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

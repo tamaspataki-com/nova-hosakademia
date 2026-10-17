@@ -100,17 +100,38 @@ or generation settings are recorded, so the provenance beyond "tagged as ElevenL
 adventure (`heroes.energymag`) and the 18 practice texts have **no recordings**; they use the Hungarian browser voice,
 or no audio on a device without one. The outcome panel of adventure 5 is text only by design.
 
-### The journey (unlocking)
+### The journey (unlocking and daily pacing)
 
 `src/content/journey.js` lists the six ordered full adventures: Az eltűnt energiamag → A sáros lábnyomok rejtélye → A polip
-búvóhelye → A marsjáró elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál. Only the next unfinished one opens. A journey
-adventure is also open when it was completed before (replay) or already has a saved unfinished run (resume). Guided
-completion counts as completion. Not locked: the 18 short practice texts (the optional „Gyakorlás (nem kötelező)" series of
-Hősök városa) and parent-made texts. One rule, `canOpen`, is used by Today,
-the world cards, favourites, direct links (a locked adventure shows only its title and what unlocks it) and the store (a
-locked adventure never gets a run). Locked cards show the title and a Hungarian explanation. When the whole journey is
-done, Today offers replay and the optional practice, and suggests nothing "next". Extend `JOURNEY` when more animal, space
-and heroes adventures arrive.
+búvóhelye → A marsjáró elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál. Only the next unfinished one
+opens, and **one new adventure opens per calendar day**:
+
+- The first adventure is open at once. Completing a journey adventure **for the first time** schedules the next unfinished
+  one for the **next calendar day** (device local time, midnight to midnight – not 24 hours later). Guided completion counts.
+  Replays change nothing.
+- A journey adventure is also open when it was completed before (replay) or already has a saved unfinished run (resume).
+  An adventure with no unlock day is open, so progress made before pacing existed is **not** held back: pacing starts
+  with the next new completion.
+- Stored on the device (in `nova.hosakademia.v2`, key `pacing`): `completed` (first-completion day per adventure) and
+  `unlocks` (the day each scheduled adventure opens). Refreshing, reopening, replaying and app updates leave them alone.
+  Old saves without `pacing` load with empty records.
+- Szülői tér → **Napi ütemezés** (behind the parent PIN; if no PIN exists it must be set first): shows the next adventure
+  and its unlock day, lets the parent change that day or press „Feloldás most". An adventure unlocked early still
+  schedules the following one for the next calendar day after it is completed; a later day chosen by the parent is never
+  shortened by a completion.
+- The completion screen says „Mára végeztél a kalanddal! A következő kaland holnap lesz elérhető." with the next title and
+  date (a journey-complete message after the last one). Today and the locked cards/screens show when the next adventure
+  opens and that the daily limit applies to new journey adventures; completed adventures and the practice texts stay open.
+- The day is re-read when the app returns to the foreground, when the page is shown again, at the next midnight and once a
+  minute (`today` in the store context).
+- **The device clock decides.** Changing the clock (or the date) on the device changes what opens, so this is a pacing
+  feature, not a tamper-proof parental control.
+
+Not locked: the 18 short practice texts (the optional „Gyakorlás (nem kötelező)" series of Hősök városa) and
+parent-made texts. One rule, `access`/`canOpen` (with the day), is used by Today, the world cards, favourites, direct links
+(a locked adventure shows only its title and what unlocks it, and when) and the store (a locked adventure never gets a
+run). Pihenő is no longer in the main navigation or on the home page; „Szünetet tartok" in an adventure's help panel opens
+it with a return button and keeps the run. Extend `JOURNEY` when more animal, space and heroes adventures arrive.
 
 ### Links
 
@@ -185,3 +206,4 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Needed from the owner: artwork for the heroes practice texts (a neutral book icon is shown meanwhile)
 - [ ] Splash screen fits the first screen without scrolling: checked in a desktop browser at 320×568, 375×667, 390×844, 667×375 (landscape) and 768×1024; still to check on real phones
 - [ ] Update-bar proof on the six-step journey build: passed in a desktop browser (same checks as above); still to do on real phones; independently unverified by the owner
+- [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used

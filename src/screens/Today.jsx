@@ -1,26 +1,29 @@
 import { useStore } from '../app/store.jsx';
 import { Btn, Icon, Chip } from '../app/ui.jsx';
 import { classLabel } from '../content/index.js';
-import { journeyCurrent } from '../content/journey.js';
+import { access, journeyCurrent } from '../content/journey.js';
+import { PACING_NOTE, fmtDay, whenText } from '../app/access.js';
 
-// Mai kaland: continue the unfinished adventure; else offer the next unfinished adventure of the journey (the only
-// new one that can be opened). When the whole journey is done nothing "next" is suggested: replay and the optional
-// practice texts are offered instead.
-export function suggest(state, adventures) {
+// Mai kaland: continue the unfinished adventure; else offer the next unfinished adventure of the journey when it is
+// open today. When it opens on a later day (daily pacing), say when, and offer replay and the optional practice
+// instead. When the whole journey is done nothing "next" is suggested either.
+export function suggest(state, adventures, today) {
   const active = adventures
     .filter((a) => state.progress[a.id])
     .sort((a, b) => state.progress[b.id].startedAt - state.progress[a.id].startedAt)[0];
   if (active) return { adv: active, kind: 'continue' };
   const id = journeyCurrent(state);
   const next = id ? adventures.find((a) => a.id === id) : null;
-  if (next) return { adv: next, kind: 'new' };
-  return { adv: null, kind: 'journeyDone' };
+  if (!next) return { adv: null, kind: 'journeyDone' };
+  const a = access(state, next.id, today);
+  if (a.open) return { adv: next, kind: 'new' };
+  return { adv: next, kind: 'waiting', day: a.day };
 }
 
 export default function Today({ go, adventures }) {
-  const { state } = useStore();
+  const { state, today } = useStore();
   const name = (state.settings.name || '').trim() || 'Hős';
-  const { adv, kind } = suggest(state, adventures);
+  const { adv, kind, day } = suggest(state, adventures, today);
   const run = adv ? state.progress[adv.id] : null;
   const firstVisit = !state.events.length && !Object.keys(state.history).length && !run;
   const lastDone = run && run.mode && run.stepIndex > 0 ? adv.steps[run.stepIndex - 1]?.title : null;
@@ -43,7 +46,32 @@ export default function Today({ go, adventures }) {
           </div>
         </div>
 
-        {kind === 'journeyDone' ? (
+        {kind === 'waiting' ? (
+          <article className="card feature">
+            <div className="feature-art">
+              <img src="assets/map.webp" alt="" />
+            </div>
+            <div className="stack">
+              <span className="eyebrow gold">Mára kész vagy az új kalanddal</span>
+              <h2 className="h2">A következő kaland: {adv.title}</h2>
+              <p className="lead">
+                <Icon name="event" />{' '}
+                {whenText(day, today) === 'holnap'
+                  ? `Holnap lesz elérhető (${fmtDay(day)}).`
+                  : `Ekkor lesz elérhető: ${fmtDay(day)}`}
+              </p>
+              <p className="muted">{PACING_NOTE}</p>
+              <div className="row">
+                <Btn iconAfter="arrow_forward" onClick={() => go({ name: 'explore' })}>
+                  Kalandok újrajátszása
+                </Btn>
+                <Btn kind="ghost" onClick={() => go({ name: 'world', id: 'heroes' })}>
+                  Gyakorlás
+                </Btn>
+              </div>
+            </div>
+          </article>
+        ) : kind === 'journeyDone' ? (
           <article className="card feature">
             <div className="feature-art">
               <img src="assets/map.webp" alt="" />
@@ -94,9 +122,6 @@ export default function Today({ go, adventures }) {
           </button>
           <button type="button" className="tile" onClick={() => go({ name: 'myworld', tab: 'tools' })}>
             <Icon name="backpack" size={30} /> <span>Eszközeim</span>
-          </button>
-          <button type="button" className="tile" onClick={() => go({ name: 'rest', breath: true })}>
-            <Icon name="air" size={30} /> <span>Egy kis megérkezés</span>
           </button>
         </div>
       </div>

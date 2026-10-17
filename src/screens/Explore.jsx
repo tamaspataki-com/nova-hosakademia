@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { useStore, statusOf, STATUS_LABEL } from '../app/store.jsx';
 import { Icon, Chip, Glyph } from '../app/ui.jsx';
-import { canOpen } from '../content/journey.js';
-import { lockText } from '../app/access.js';
+import { access } from '../content/journey.js';
+import { PACING_NOTE, lockText } from '../app/access.js';
 import { canPlayAdventure, useVoiceReady } from '../app/audio.js';
 import { useOfflineStatus } from '../app/offline.js';
 import { FORMATS, MODE_NAMES, UPCOMING_TEXT, WORLDS, availableIn, worldById } from '../content/index.js';
 
 export function AdventureCard({ adv, go }) {
-  const { state, act } = useStore();
+  const { state, act, today } = useStore();
   const voiceReady = useVoiceReady();
   const status = statusOf(state, adv.id);
   const fav = state.favourites.includes(adv.id);
   const fmt = FORMATS.find((f) => f.id === adv.format)?.label;
   const audio = canPlayAdventure(voiceReady, adv);
   const offline = useOfflineStatus(adv); // only 'ready' is ever claimed
-  if (!canOpen(state, adv.id)) {
+  const lock = access(state, adv.id, today);
+  if (!lock.open) {
     // A locked journey adventure: its title and what unlocks it, nothing else, and no way in.
     return (
       <article className="card adv-card locked">
@@ -28,8 +29,9 @@ export function AdventureCard({ adv, go }) {
               <span className="adv-title">{adv.title}</span>
               <span className="muted">
                 <span className="sr-only">Zárolt kaland. </span>
-                {lockText(state, adv.id)}
+                {lockText(state, adv.id, today)}
               </span>
+              {lock.reason === 'date' ? <span className="muted">{PACING_NOTE}</span> : null}
             </span>
           </span>
         </div>
