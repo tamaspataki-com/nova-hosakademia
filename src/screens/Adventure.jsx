@@ -201,30 +201,58 @@ function Intro({ adv, go }) {
 // is loaded only when asked for (preload none) and no offline claim covers it.
 function IntroVideo({ video, cover }) {
   const [open, setOpen] = useState(false);
+  const [src, setSrc] = useState(null); // an object URL: the file is loaded whole and played from memory, like the recordings
   const [failed, setFailed] = useState(false);
   const ref = useRef(null);
   const close = () => {
     ref.current?.pause();
     setOpen(false);
   };
+  // The static host answers range requests with the whole file and iPhones may refuse such video, so (as for the
+  // recordings) the file is fetched as a whole when the child asks for it and played from memory.
+  useEffect(() => {
+    if (!open || src) return undefined;
+    const ctl = new AbortController();
+    setFailed(false);
+    fetch(video.src, { signal: ctl.signal })
+      .then((r) => {
+        if (!r.ok || !/^video\//i.test(r.headers.get('content-type') || '')) throw new Error('not a video');
+        return r.blob();
+      })
+      .then((b) => setSrc(URL.createObjectURL(b)))
+      .catch((e) => {
+        if (e.name !== 'AbortError') setFailed(true);
+      });
+    return () => ctl.abort();
+  }, [open, src, video.src]);
+  useEffect(() => () => src && URL.revokeObjectURL(src), [src]);
+  const ratio = video.width && video.height ? { aspectRatio: `${video.width} / ${video.height}` } : undefined;
   return (
     <section className="stack tight" aria-label="Bevezető videó">
       {open ? (
         <>
-          <video
-            ref={ref}
-            className="intro-video"
-            src={video.src}
-            poster={video.poster}
-            style={video.width && video.height ? { aspectRatio: `${video.width} / ${video.height}` } : undefined}
-            controls
-            playsInline
-            preload="metadata"
-            aria-label={video.label || 'Bevezető videó'}
-            onError={() => setFailed(true)}
-          >
-            {video.captions ? <track kind="captions" srcLang="hu" label="Magyar" src={video.captions} default /> : null}
-          </video>
+          {src && !failed ? (
+            <video
+              ref={ref}
+              className="intro-video"
+              src={src}
+              poster={video.poster}
+              style={ratio}
+              controls
+              playsInline
+              preload="metadata"
+              aria-label={video.label || 'Bevezető videó'}
+              onError={() => setFailed(true)}
+            >
+              {video.captions ? (
+                <track kind="captions" srcLang="hu" label="Magyar" src={video.captions} default />
+              ) : null}
+            </video>
+          ) : failed ? null : (
+            <div className="intro-video loading" style={ratio} role="status">
+              A videó betöltődik…
+            </div>
+          )}
           {failed ? (
             <div className="note soft" role="alert">
               <Icon name="error" />

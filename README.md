@@ -177,12 +177,20 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   content credential. The untouched source is kept at `design/source-audio/courage/courage1-p1-c1.untrimmed-source.mp3`.
   `courage1-p3.mp3` is left as generated (its trailing silence meets the 0.3 s limit).
 - **Release hold:** the listening review is complete (above); nothing is pushed or deployed until the owner says so.
-- **Intro video (optional, not yet integrated):** the player is built (`IntroVideo` in `Adventure.jsx`): introduction screen only,
-  started by a tap (no autoplay, no loop), with the browser's playback controls and „Kihagyom a videót”, never inside an activity or
-  a recall question, and it states that it does not replace reading or hearing the story. The file is read only when opened.
-  `scripts/encode-intro-video.swift` prepares a file (original proportions, ≤ 15 s, no audio, H.264 Main, yuv420p, fast start, < 3 MB;
-  the original is never touched). Tested on the old Nori prototype copy only (960 × 548, 15.00 s, 2.82 MB, no audio, Main, moov first);
-  **the Hedra video was not available on the machine, so `introVideo` stays `null`.** Its usage rights are not verified.
+- **Intro video (optional, integrated):** `public/video/courage-intro.mp4`, set as `introVideo` in `courage.js`. Source: the owner's
+  `Nori And The Star Map.mp4` (the Hedra video per the owner; its embedded content credentials name **fal.ai**, AI-generated – both
+  are recorded, not reconciled); the original is untouched (md5 `4b01099f4b0aaf90d8447c5b0933bccf`, 14.8 MB, 1344 × 768, 15.08 s,
+  with audio) and a copy is kept locally in `design/source-video/courage/` (not committed). Final export with
+  `scripts/encode-intro-video.swift`: **896 × 512 (exactly the original 7:4), 15.00 s, 24 fps, no audio track, H.264 Main level 3.1
+  (8-bit 4:2:0 = yuv420p), moov atom before mdat (fast start), 2,721,049 bytes = 2.72 MB** (under 3 MB). Behaviour: shown only on the
+  introduction (`IntroVideo` in `Adventure.jsx`), never inside an activity or a recall question; the cover is shown first and a tap on
+  „Megnézem a bevezető videót” loads the file (nothing is downloaded before that) and swaps the cover for the player; browser
+  playback controls, **no autoplay, no loop**, „Kihagyom a videót” closes it; it says it does not replace reading or hearing the story;
+  the file is fetched whole and played from memory, like the recordings, because the host answers range requests with the whole file; on
+  failure a note appears and the adventure starts normally. It is not part of any offline claim.
+  **Tested in a desktop browser only** (phone-sized 375 px and desktop 1280 px windows: opens, plays, reaches the end without
+  looping, skip returns to the cover, failure note on a blocked download). **Not tested on real iPhone/Android.**
+  **Usage rights are not verified** (no licence or terms evidence).
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -273,5 +281,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
 - [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping (voice: Adam – Articulate Engineering Professor, Eleven v4); only then push/deploy
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
-- [ ] Intro video (Hedra, not yet supplied): encoded with the script, rights confirmed with evidence, plays on real iPhone and Android
+- [ ] Intro video: usage rights confirmed with evidence (generator terms/licence); plays on a real iPhone and Android; its look and length approved
 - [ ] Eszközeim: the shield and compass texts read clearly to Lacika; the compass explanations match the controls on a real phone

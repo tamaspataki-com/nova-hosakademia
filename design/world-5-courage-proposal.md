@@ -19,7 +19,7 @@ text below only becomes a package once the owner says "approved" (or sends corre
 
 ## 0d. Listening review and video (2026-10-17)
 
-The owner's listening review approved all 15 clips (wording, pronunciation, sound). The temporary review page was removed. The optional intro-video player is built; the Hedra video file was not on this machine, so it is not integrated (`introVideo: null`); rights unverified.
+The owner's listening review approved all 15 clips (wording, pronunciation, sound). The temporary review page was removed. The optional intro video is integrated (896 × 512, 15.00 s, no audio, H.264 Main, fast start, 2.72 MB) from the owner's original, which stays unchanged; rights unverified. See the README.
 
 ## 0c. Recordings integrated (2026-10-17)
 
