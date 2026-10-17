@@ -29,7 +29,11 @@ export const SPACE = {
   // not "main idea".
   objectives: ['detail', 'connect', 'instruction'],
   hideObjectives: true,
-  // Neutral rover icon until the adventure cover is supplied.
+  // Cover: Nóri watching the rover on a mission-control display. Shown only in the library and on the introduction –
+  // never inside an activity. It shows no route and no answer; the rover icon is the fallback while it loads.
+  coverAsset: 'assets/rover-message.webp',
+  coverSet: 'assets/rover-message-768.webp 768w, assets/rover-message.webp 1536w',
+  coverAlt: 'Nóri az irányítóterem kijelzőjén nézi a marsi tájon álló marsjárót',
   coverIcon: 'rover',
   badge: 'urbeli-utkereso',
   glossary: [

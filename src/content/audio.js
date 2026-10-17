@@ -9,6 +9,7 @@ const DINO = 'dino-muddy-footprints-01:story';
 const CRATES = 'dino-mixed-crates-02:story';
 const GATE = 'dino-gate-clues-03:story';
 const OCTOPUS = 'animals-octopus-hideout-01:story';
+const ROVER = 'space-rover-message-01:story';
 
 export const RECORDINGS = {
   [`${DINO}:p1`]: file('dino-p1'),
@@ -52,5 +53,16 @@ export const RECORDINGS = {
   [`${OCTOPUS}:p2:c1`]: file('octopus1-p2-c1'),
   [`${OCTOPUS}:p3`]: file('octopus1-p3'),
   [`${OCTOPUS}:p3:c0`]: file('octopus1-p3-c0'),
-  [`${OCTOPUS}:p3:c1`]: file('octopus1-p3-c1')
+  [`${OCTOPUS}:p3:c1`]: file('octopus1-p3-c1'),
+  // Adventure 5 (A marsjáró elveszett üzenete). Each file must hold exactly the displayed passage text or authored part.
+  // The outcome panel has no recording and never uses one of these.
+  [`${ROVER}:p1`]: file('rover1-p1'),
+  [`${ROVER}:p1:c0`]: file('rover1-p1-c0'),
+  [`${ROVER}:p1:c1`]: file('rover1-p1-c1'),
+  [`${ROVER}:p2`]: file('rover1-p2'),
+  [`${ROVER}:p2:c0`]: file('rover1-p2-c0'),
+  [`${ROVER}:p2:c1`]: file('rover1-p2-c1'),
+  [`${ROVER}:p3`]: file('rover1-p3'),
+  [`${ROVER}:p3:c0`]: file('rover1-p3-c0'),
+  [`${ROVER}:p3:c1`]: file('rover1-p3-c1')
 };

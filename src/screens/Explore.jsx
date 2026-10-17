@@ -18,7 +18,7 @@ export function AdventureCard({ adv, go }) {
       <button type="button" className="adv-main" onClick={() => go({ name: 'adventure', id: adv.id })}>
         <span className="adv-head">
           {adv.coverAsset ? (
-            <img className="adv-thumb" src={adv.coverAsset} alt="" />
+            <img className="adv-thumb" src={adv.coverAsset} srcSet={adv.coverSet} sizes="108px" alt="" />
           ) : adv.coverIcon ? (
             <span className="adv-icon" aria-hidden="true">
               <Glyph name={adv.coverIcon} size={48} />
@@ -69,7 +69,7 @@ export default function Explore({ go, custom }) {
           return (
             <button key={w.id} type="button" className="world-card" onClick={() => go({ name: 'world', id: w.id })}>
               {w.art ? (
-                <img src={w.art} alt="" />
+                <img src={w.art} srcSet={w.artSet} sizes="(min-width: 800px) 400px, 100vw" alt="" />
               ) : (
                 <span className="world-icon">
                   <Glyph name={w.icon} size={w.icon === 'dino' ? 96 : 44} />
@@ -109,7 +109,15 @@ export function WorldView({ id, go }) {
       <button type="button" className="back" onClick={() => go({ name: 'back' })}>
         <Icon name="arrow_back" /> Világok
       </button>
-      {world.art ? <img className="cover" src={world.art} alt={world.artAlt || ''} /> : null}
+      {world.art ? (
+        <img
+          className="cover"
+          src={world.art}
+          srcSet={world.artSet}
+          sizes="(min-width: 900px) 900px, 100vw"
+          alt={world.artAlt || ''}
+        />
+      ) : null}
       <h1 className="h1">{world.name}</h1>
       <p className="lead">{world.description}</p>
 

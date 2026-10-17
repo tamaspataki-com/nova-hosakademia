@@ -52,7 +52,15 @@ function Intro({ adv, go }) {
       <button type="button" className="back" onClick={() => go({ name: 'back' })}>
         <Icon name="arrow_back" /> Vissza
       </button>
-      {adv.coverAsset ? <img className="cover" src={adv.coverAsset} alt={adv.coverAlt || ''} /> : null}
+      {adv.coverAsset ? (
+        <img
+          className="cover"
+          src={adv.coverAsset}
+          srcSet={adv.coverSet}
+          sizes="(min-width: 700px) 700px, 100vw"
+          alt={adv.coverAlt || ''}
+        />
+      ) : null}
       {!adv.coverAsset && adv.coverIcon ? (
         <div className="cover cover-icon" aria-hidden="true">
           <Glyph name={adv.coverIcon} size={96} />

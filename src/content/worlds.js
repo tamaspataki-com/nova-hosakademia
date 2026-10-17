@@ -41,6 +41,9 @@ export const WORLDS = [
     name: 'Űrfelfedezők',
     description: 'Bolygók, űreszközök és távoli kutatóküldetések.',
     icon: 'rover',
+    art: 'assets/space-world.webp',
+    artSet: 'assets/space-world-768.webp 768w, assets/space-world.webp 1536w',
+    artAlt: 'Űrkutató központ megfigyelőtoronnyal, egy űrhajóval és egy gyűrűs bolygóval az égen, előtte egy marsjáró',
     series: [{ id: 'red-planet-messages', name: 'Üzenetek a vörös bolygóról' }]
   }
 ];
