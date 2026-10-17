@@ -74,6 +74,7 @@ until the owner has tested on real devices:**
 - **adventure 2, keyboard**: select/place/move/cancel/submit/reset in the first sorting activity were tested with real key
   presses, but full **Tab-only navigation through activities 1–4** is **pending** (some focus transitions were skipped in
   the test); touch and mouse dragging are also untested;
+- **accessibility, pending**: no announcement yet when the solution button appears after the second miss – to add „Most már kérheted a megoldás megmutatását.” (not implemented); the focus and live-region handling is untested with a real screen reader;
 - behaviour with a real **Hungarian device voice**, and Lacika's experience of the instructions.
 
 Owner checklist (the owner ticks these, nobody else): see the end of README.md.
