@@ -239,8 +239,8 @@ and the characters; offline.
 **Wording that is not in the storyboard (written for the interface, needs the owner's approval):** world name's description („Segíts a
 barátoknak megtalálni a szavakat, hogy megértsék egymást.”), series name „A csillagjátszótér”, the step titles in the progress bar
 („Mira üzenete”, „Zénó története”, „Mit tudunk biztosan?”, „Melyik mondat segítene?”, „Mira kimondja”, „Zénó válasza”, „Mit mondhat Mira?”,
-„Mira döntése”, „Zénó döntése”, „Most te következel”, „Mira köszöni”), the button „Segítek Mirának”, „Ezt választom”, the completion title/text
-(„Segítettél Mirának!” …), the online note, and the „Mira mondja / Zénó mondja” label. The sentence options are shown without quotation marks.
+„Mira döntése”, „Zénó döntése”, „Most te következel”, „Mira megköszöni”), the button „Segítek Mirának”, „Ezt választom”, the completion title/text
+(„Segítettél Mirának!”; text revised 2026-10-17), the online note, and the „Mira mondja / Zénó mondja” label. The sentence options are shown without quotation marks.
 Not built: the „zárókép” of scene 5 (no still exists; the text „Most mást választottak…” sits under video 6), the badge picture (two speech
 bubbles with a star; the `forum` icon is used), cover and world artwork (icon cards). The production note „Ez a történet egyik lényeges pontja…”
 is not shown to the child. Review status is „unreviewed”.

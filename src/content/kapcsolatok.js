@@ -189,7 +189,7 @@ export const KAPCSOLATOK = {
     {
       id: 'v7-mira',
       type: 'clip',
-      title: 'Mira köszöni',
+      title: 'Mira megköszöni',
       speaker: 'Mira',
       clip: clip(7),
       say: 'Köszönöm, hogy segítettél! Elmondtam, mit szeretnék, és meghallgattam Zénót is. Kicsit izgultam közben. De jó érzés, hogy most már tudja.',
@@ -199,7 +199,7 @@ export const KAPCSOLATOK = {
   discoveries: [],
   completion: {
     title: 'Segítettél Mirának!',
-    text: 'Végigkövetted, hogyan mondta el Mira, mit szeretne, és hogyan hallgatta meg Zénót is. Együtt találtatok olyan megoldást, amelyben mindkét barátnak volt választása.',
+    text: 'Segítettél Mirának elmondani, mit szeretne, és közben meghallgatni Zénót is. A két barát most mást választott, és ezt mindketten elfogadták.',
     actions: [{ to: 'world', label: 'Vissza a kalandokhoz' }]
   }
 };
