@@ -94,11 +94,13 @@ are still arriving it says so; when offline and something is missing it shows an
 (reading still works). Only adventures that have recordings make an offline claim. A device that has *never* loaded the app
 online cannot open it offline at all – no web app can show anything then; that is the browser's own offline page.
 
-**Where the recordings come from.** All 45 files in `public/audio/` (adventures 1–5) carry embedded content-credential
-metadata (C2PA) that names ElevenLabs. That is the only evidence in the repository: no account, plan, licence, voice name
-or generation settings are recorded, so the provenance beyond "tagged as ElevenLabs" is **not established**. The heroes
-adventure (`heroes.energymag`) and the 18 practice texts have **no recordings**; they use the Hungarian browser voice,
-or no audio on a device without one. The outcome panel of adventure 5 is text only by design.
+**Where the recordings come from.** All 59 files in `public/audio/` (the five newer adventures and `heroes.energymag`) carry
+embedded content-credential metadata (C2PA) that names ElevenLabs. That is the only evidence in the repository: no account,
+plan, licence, voice name or generation settings are recorded, so the provenance beyond "tagged as ElevenLabs" is **not
+established**. `heroes.energymag` has 14 clips (`energymag-s1.mp3` … `s3-c3.mp3`): its three sections have no authored shorter
+parts, so `…:s1:c0` etc. are the single sentences played one at a time by „Kisebb részekben haladok". The 18 practice texts
+have **no recordings**; they use the Hungarian browser voice, or no audio on a device without one. The outcome panel of
+adventure 5 is text only by design.
 
 ### The journey (unlocking and daily pacing)
 
@@ -202,7 +204,8 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Update-bar proof: passed in a desktop browser on the journey build (bar hidden in an adventure, its help panel and a break; shown in the main app; „Frissítés" loaded the new bundle and the adventure resumed at its step). Still to do on real phones/tablets.
 - [ ] Journey unlocking checked on real devices; the lock explanations read clearly to Lacika
 - [ ] Needed from the owner: authored guided explanations for the practice main-idea texts `m1`, `m2`, `m3` (none exist; nothing was invented)
-- [ ] Needed from the owner: recordings for `heroes.energymag` – its three sections have **no** authored shorter parts (`chunks`), so three whole-section clips (`s1`, `s2`, `s3`); "Kisebb részekben haladok" then splits by sentence and, without sentence clips, falls back to the browser voice – decide whether sentence-level clips (3 + 4 + 4) are wanted. The 18 practice texts have no recordings either (one section each).
+- [ ] Heroes adventure (Az eltűnt energiamag): listened to all 14 recordings (energymag-*.mp3): each says exactly its displayed text, pronunciation, pace, no clipping (only file durations and successful playback in a desktop browser were checked); checked on a real iPhone and Android device; offline readiness unverified
+- [ ] Practice texts have no recordings (browser voice only); decide whether they get recordings
 - [ ] Needed from the owner: artwork for the heroes practice texts (a neutral book icon is shown meanwhile)
 - [ ] Splash screen fits the first screen without scrolling: checked in a desktop browser at 320×568, 375×667, 390×844, 667×375 (landscape) and 768×1024; still to check on real phones
 - [ ] Update-bar proof on the six-step journey build: passed in a desktop browser (same checks as above); still to do on real phones; independently unverified by the owner

@@ -10,6 +10,7 @@ const CRATES = 'dino-mixed-crates-02:story';
 const GATE = 'dino-gate-clues-03:story';
 const OCTOPUS = 'animals-octopus-hideout-01:story';
 const ROVER = 'space-rover-message-01:story';
+const ENERGY = 'heroes.energymag:story';
 
 export const RECORDINGS = {
   [`${DINO}:p1`]: file('dino-p1'),
@@ -64,5 +65,21 @@ export const RECORDINGS = {
   [`${ROVER}:p2:c1`]: file('rover1-p2-c1'),
   [`${ROVER}:p3`]: file('rover1-p3'),
   [`${ROVER}:p3:c0`]: file('rover1-p3-c0'),
-  [`${ROVER}:p3:c1`]: file('rover1-p3-c1')
+  [`${ROVER}:p3:c1`]: file('rover1-p3-c1'),
+  // Heroes adventure (Az eltűnt energiamag). Its sections have no authored shorter parts: `:c<i>` is sentence i of the
+  // section, played one at a time by "Kisebb részekben haladok". Each file must hold exactly the displayed text.
+  [`${ENERGY}:s1`]: file('energymag-s1'),
+  [`${ENERGY}:s1:c0`]: file('energymag-s1-c0'),
+  [`${ENERGY}:s1:c1`]: file('energymag-s1-c1'),
+  [`${ENERGY}:s1:c2`]: file('energymag-s1-c2'),
+  [`${ENERGY}:s2`]: file('energymag-s2'),
+  [`${ENERGY}:s2:c0`]: file('energymag-s2-c0'),
+  [`${ENERGY}:s2:c1`]: file('energymag-s2-c1'),
+  [`${ENERGY}:s2:c2`]: file('energymag-s2-c2'),
+  [`${ENERGY}:s2:c3`]: file('energymag-s2-c3'),
+  [`${ENERGY}:s3`]: file('energymag-s3'),
+  [`${ENERGY}:s3:c0`]: file('energymag-s3-c0'),
+  [`${ENERGY}:s3:c1`]: file('energymag-s3-c1'),
+  [`${ENERGY}:s3:c2`]: file('energymag-s3-c2'),
+  [`${ENERGY}:s3:c3`]: file('energymag-s3-c3')
 };
