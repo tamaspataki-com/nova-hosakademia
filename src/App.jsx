@@ -95,6 +95,10 @@ function Shell() {
 
   const tab = TAB_OF[route.name];
   const showNav = !NO_NAV.has(route.name);
+  // While an adventure is active – its screens and help panels, a break taken from it, and its completion screen –
+  // no update is offered and nothing can reload. The bar appears once the child is back in the main app.
+  const inAdventure =
+    route.name === 'adventure' || route.name === 'complete' || (route.name === 'rest' && !!route.from);
 
   let screen = null;
   switch (route.name) {
@@ -141,7 +145,7 @@ function Shell() {
 
   return (
     <>
-      <UpdateBar />
+      {!inAdventure ? <UpdateBar /> : null}
       <div className={`app ${showNav ? 'has-nav' : ''}`}>
         {showNav ? (
           <nav className="rail" aria-label="Fő navigáció">

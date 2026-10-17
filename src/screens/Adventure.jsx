@@ -2,7 +2,17 @@ import { useEffect, useState } from 'react';
 import { useStore, statusOf } from '../app/store.jsx';
 import { Btn, Icon, Chip, Sheet, Glyph } from '../app/ui.jsx';
 import { tone } from '../app/tone.js';
-import { canPlay, canPlayAdventure, NO_AUDIO_TEXT, useSpeaker, useVoiceReady } from '../app/audio.js';
+import OfflineNote from '../app/OfflineNote.jsx';
+import { OFFLINE_UNAVAILABLE_TEXT, useOfflineStatus } from '../app/offline.js';
+import {
+  canPlay,
+  canPlayAdventure,
+  failureText,
+  FAIL_TITLE,
+  NO_AUDIO_TEXT,
+  useSpeaker,
+  useVoiceReady
+} from '../app/audio.js';
 import { ACTIVITIES, SCORED } from '../activities/index.jsx';
 import { Reference, sourceSections } from '../activities/shared.jsx';
 import { FORMATS, LEVELS, classLabel, MODE_NAMES, OBJECTIVE_NAMES, ROUTINE, sectionText } from '../content/index.js';
@@ -52,6 +62,7 @@ function Intro({ adv, go }) {
       </div>
       <h1 className="h1">{adv.title}</h1>
       <p className="lead">{adv.intro || adv.description}</p>
+      <OfflineNote adv={adv} />
 
       {status === 'done' ? (
         <div className="note soft">
@@ -93,6 +104,8 @@ function ModePicker({ adv, run, go }) {
   const { act } = useStore();
   const voiceReady = useVoiceReady();
   const audioOk = canPlayAdventure(voiceReady, adv);
+  const offlineState = useOfflineStatus(adv); // 'unavailable': offline and the recordings are not on this device
+  const noOffline = offlineState === 'unavailable';
   const choose = (mode) => {
     act.run(adv.id, { mode });
     act.log('mode_chosen', adv, { mode });
@@ -108,7 +121,7 @@ function ModePicker({ adv, run, go }) {
       <div className="stack tight">
         {MODE_INFO.filter(([id]) => adv.modes.includes(id)).map(([id, label, icon, text]) => {
           const needs = id !== 'read';
-          const off = needs && !audioOk;
+          const off = needs && (!audioOk || noOffline);
           return (
             <button key={id} type="button" className="mode-card" disabled={off} onClick={() => choose(id)}>
               <Icon name={icon} size={32} />
@@ -120,7 +133,13 @@ function ModePicker({ adv, run, go }) {
           );
         })}
       </div>
-      {!audioOk ? (
+      {noOffline ? (
+        <div className="note soft" role="alert">
+          <Icon name="cloud_off" />
+          <span>{OFFLINE_UNAVAILABLE_TEXT}</span>
+        </div>
+      ) : null}
+      {!audioOk && !noOffline ? (
         <div className="note soft" role="status">
           <Icon name="volume_off" />
           <span>{voiceReady === null ? 'A felolvasás ellenőrzése folyamatban van…' : NO_AUDIO_TEXT}</span>
@@ -139,6 +158,7 @@ function Runner({ adv, run, go }) {
   const [help, setHelp] = useState(false);
   const [ref, setRef] = useState(null); // { mark?, transcript? } – the story, opened for a reread
   const [word, setWord] = useState(null);
+  const [fail, setFail] = useState(null); // a replay that could not be played: { reason, secs }
 
   const idx = Math.min(run.stepIndex, adv.steps.length - 1);
   const step = adv.steps[idx];
@@ -166,7 +186,10 @@ function Runner({ adv, run, go }) {
     if (run.stepIndex + 1 >= adv.steps.length) finish();
     else act.run(adv.id, { stepIndex: run.stepIndex + 1 });
   };
-  const setMode = (mode) => act.run(adv.id, { mode });
+  const setMode = (mode, why) => {
+    act.run(adv.id, { mode }); // the step and all progress stay exactly as they are
+    log('mode_changed', { from: run.mode, to: mode, ...(why ? { why } : null) });
+  };
   const openWord = (g) => {
     setWord(g);
     log('word_opened', { activity: step.id, word: g.key });
@@ -182,8 +205,12 @@ function Runner({ adv, run, go }) {
   // Replay plays the step's source section(s) in order – the recording of each one when it exists.
   const secClip = (sec) => `${adv.id}:${step.source?.passageId ?? adv.passages[0].id}:${sec.id}`;
   const playSections = (secs, i = 0) =>
-    speaker.play(secClip(secs[i]), secs[i].narration ?? sectionText(secs[i]), (status) => {
+    speaker.play(secClip(secs[i]), secs[i].narration ?? sectionText(secs[i]), (status, reason) => {
       if (status === 'completed' && i + 1 < secs.length) playSections(secs, i + 1);
+      if (status === 'error') {
+        log('audio_status', { activity: step.id, status: 'error', reason, online: navigator.onLine });
+        setFail({ reason, secs });
+      }
     });
   const unseen = (step.hints || []).filter((h) => !(st.shown || []).includes(h));
   const first = srcSecs[0];
@@ -323,6 +350,41 @@ function Runner({ adv, run, go }) {
           <Btn kind="ghost" onClick={() => setRef(null)}>
             Vissza a feladathoz
           </Btn>
+        </Sheet>
+      ) : null}
+
+      {fail ? (
+        <Sheet title="Lejátszási hiba" onClose={() => setFail(null)}>
+          <div className="stack">
+            <strong>{FAIL_TITLE}</strong>
+            <p className="lead">{failureText(fail.reason)}</p>
+            <div className="row">
+              <Btn
+                icon="refresh"
+                onClick={() => {
+                  const secs = fail.secs;
+                  setFail(null);
+                  log('audio_retry', { activity: step.id, reason: fail.reason });
+                  playSections(secs);
+                }}
+              >
+                Újrapróbálom
+              </Btn>
+              <Btn
+                kind="ghost"
+                icon="menu_book"
+                onClick={() => {
+                  setFail(null);
+                  setMode('read', 'audio_failed');
+                  patch({ rereads: (st.rereads || 0) + 1 });
+                  log('passage_reread', { activity: step.id, transcript: false });
+                  setRef({});
+                }}
+              >
+                Olvasással folytatom
+              </Btn>
+            </div>
+          </div>
         </Sheet>
       ) : null}
 

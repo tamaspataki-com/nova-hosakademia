@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { sectionOf, sectionText } from '../content/index.js';
 import { Btn, Icon } from '../app/ui.jsx';
-import { canPlay, NO_AUDIO_TEXT } from '../app/audio.js';
+import { canPlay, failureText, FAIL_TITLE, NO_AUDIO_TEXT } from '../app/audio.js';
 import { SectionText, wordsIn } from './shared.jsx';
 
 // One section of a passage, presented as the child chose: reading, listening or both.
@@ -39,7 +39,8 @@ export default function Passage({ api }) {
   const paused = speaker.paused === clip; // paused with the position kept (recorded audio only)
   const status = st.listen; // undefined | playing | completed | interrupted | unknown | error
   const noAudio = listening && !audioOk;
-  const unfinished = ['paused', 'interrupted', 'unknown', 'error'].includes(status);
+  const unfinished = ['paused', 'interrupted', 'unknown'].includes(status);
+  const failed = status === 'error'; // the recording could not be downloaded, opened or started
 
   useEffect(() => {
     // Speech does not survive a reload or a break: a clip that was "playing" was interrupted.
@@ -55,9 +56,9 @@ export default function Passage({ api }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setStatus = (s) => {
-    patch({ listen: s });
-    log('audio_status', { activity: step.id, status: s });
+  const setStatus = (s, reason) => {
+    patch({ listen: s, listenError: s === 'error' ? reason || 'play' : undefined });
+    log('audio_status', { activity: step.id, status: s, ...(reason ? { reason, online: navigator.onLine } : null) });
   };
 
   const armTimer = () => {
@@ -68,7 +69,8 @@ export default function Passage({ api }) {
   };
 
   const play = () => {
-    if (st.played) {
+    if (failed) log('audio_retry', { activity: step.id, reason: st.listenError }); // a retry is not a replay
+    if (st.played && !failed) {
       // Playing again after a pause that could not keep its position starts from the beginning: say so.
       const fromPause = st.stoppedBy === 'pause';
       patch((s) => ({ ...s, replays: (s.replays || 0) + 1 }));
@@ -76,9 +78,9 @@ export default function Passage({ api }) {
     }
     patch({ played: true, listen: 'playing', stoppedBy: undefined });
     armTimer();
-    speaker.play(clip, text, (s) => {
+    speaker.play(clip, text, (s, reason) => {
       clearTimeout(timer.current);
-      setStatus(s);
+      setStatus(s, reason);
     });
   };
 
@@ -197,6 +199,24 @@ export default function Passage({ api }) {
       ) : null}
 
       {mode === 'combined' && !noAudio ? <div className="row">{audioBtn('ghost')}</div> : null}
+
+      {failed && listening ? (
+        <div className="note soft" role="alert">
+          <Icon name="error" />
+          <div className="stack tight">
+            <strong>{FAIL_TITLE}</strong>
+            <span>{failureText(st.listenError)}</span>
+            <div className="row">
+              <Btn icon="refresh" onClick={play}>
+                Újrapróbálom
+              </Btn>
+              <Btn kind="ghost" icon="menu_book" onClick={() => setMode('read', 'audio_failed')}>
+                Olvasással folytatom
+              </Btn>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {noAudio ? (
         <div className="note soft" role="status">

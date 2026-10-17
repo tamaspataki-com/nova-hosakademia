@@ -16,9 +16,12 @@ function warmRecordings() {
   const run = async () => {
     try {
       const cache = await caches.open('nova-audio');
+      // cache.add rejects on any failed or non-2xx download, so a file only counts once it is really stored.
       for (const u of urls) if (!(await cache.match(u))) await cache.add(u);
     } catch (e) {
-      /* offline or blocked: the clips simply stream when played */
+      /* offline or blocked: the clips simply stream when played, and offline readiness stays "not ready" */
+    } finally {
+      window.dispatchEvent(new Event('nova:warmed')); // lets the offline indicators check again
     }
   };
   (window.requestIdleCallback || ((f) => setTimeout(f, 2000)))(run);
@@ -62,7 +65,7 @@ export const canPlayAdventure = (voiceReady, adv) => passageClips(adv).every((c)
 export const NO_AUDIO_TEXT =
   'Ezen az eszközön most nincs elérhető magyar felolvasás. Olvasással folytathatod a kalandot.';
 
-// Playback hook. play(id, text, onDone) – onDone(status) with 'completed' | 'interrupted' | 'error'.
+// Playback hook. play(id, text, onDone) – onDone(status, reason) with 'completed' | 'interrupted' | 'error'.
 // pause(id) returns true when the position is kept (recorded files) and false when the clip was stopped (speech),
 // in which case playing it again starts from the beginning. resume(id) continues a kept position.
 export function useSpeaker(rate = 1) {
@@ -78,10 +81,10 @@ export function useSpeaker(rate = 1) {
     (id, text, onDone) => {
       setPaused(null);
       setPlaying(id);
-      Narrator.speak(id, text, rate, (status) => {
+      Narrator.speak(id, text, rate, (status, reason) => {
         setPlaying((p) => (p === id ? null : p));
         setPaused((p) => (p === id ? null : p));
-        onDone?.(status);
+        onDone?.(status, reason);
       });
     },
     [rate]
@@ -102,3 +105,16 @@ export function useSpeaker(rate = 1) {
   }, []);
   return { playing, paused, play, pause, resume, stop };
 }
+
+// What the child is told when a recording cannot be played. Never says "done"; always offers a way on.
+export function failureText(reason) {
+  const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+  if (reason === 'download')
+    return offline
+      ? 'Nincs internetkapcsolat, és ez a felvétel még nincs letöltve ezen az eszközön.'
+      : 'A felvételt nem sikerült letölteni.';
+  if (reason === 'decode') return 'A felvételt nem sikerült megnyitni.';
+  if (reason === 'play') return 'Az eszköz nem engedte elindítani a lejátszást.';
+  return 'A felolvasás nem indult el.';
+}
+export const FAIL_TITLE = 'A felvételt most nem sikerült lejátszani.';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStore, statusOf, STATUS_LABEL } from '../app/store.jsx';
 import { Icon, Chip, Glyph } from '../app/ui.jsx';
 import { canPlayAdventure, useVoiceReady } from '../app/audio.js';
+import { useOfflineStatus } from '../app/offline.js';
 import { FORMATS, MODE_NAMES, UPCOMING_TEXT, WORLDS, availableIn, worldById } from '../content/index.js';
 
 export function AdventureCard({ adv, go }) {
@@ -11,6 +12,7 @@ export function AdventureCard({ adv, go }) {
   const fav = state.favourites.includes(adv.id);
   const fmt = FORMATS.find((f) => f.id === adv.format)?.label;
   const audio = canPlayAdventure(voiceReady, adv);
+  const offline = useOfflineStatus(adv); // only 'ready' is ever claimed
   return (
     <article className="card adv-card">
       <button type="button" className="adv-main" onClick={() => go({ name: 'adventure', id: adv.id })}>
@@ -39,6 +41,7 @@ export function AdventureCard({ adv, go }) {
             );
           })}
           <Chip tone={status === 'done' ? 'good' : status === 'active' ? 'gold' : ''}>{STATUS_LABEL[status]}</Chip>
+          {offline === 'ready' ? <Chip tone="good">Offline is elérhető</Chip> : null}
         </span>
       </button>
       <button

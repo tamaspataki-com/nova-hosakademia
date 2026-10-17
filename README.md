@@ -74,9 +74,25 @@ from the beginning („Újra az elejéről"); the event log records `audio_pause
 `src/content/audio.js` maps clip ids to the MP3 files in `public/audio/`; they are preferred over the device voice and make
 listening available even on devices with no Hungarian voice. Clip ids: `<adventureId>:<passageId>:<sectionId>` for a whole
 section (e.g. `dino-muddy-footprints-01:story:p1` = `dino-p1.mp3`) and `…:c0`, `…:c1` for the authored shorter parts
-(`dino-p1-c0.mp3`, …). Pause and resume keep the exact position for recordings. The service worker caches the files whole
-and answers range requests (iPhones need them); `warmRecordings()` in `src/app/audio.js` fetches them once when online.
-Replacing a recording: copy the new file over the old one and raise `V` in `src/content/audio.js`.
+(`dino-p1-c0.mp3`, …). Pause and resume keep the exact position for recordings. Replacing a recording: copy the new file
+over the old one and raise `V` in `src/content/audio.js`.
+
+**How playback is done, and what is unverified.** Each recording is fetched whole and played from memory (a blob URL),
+because the static host answers range requests with the full file. That is an implementation choice, **not proof that
+playback works in every browser: iPhone/Safari and Android/Chrome playback is unverified until tested on real devices.**
+Only desktop-browser tests have been run.
+
+**Failures.** If a recording cannot be downloaded, opened or started, the child sees „A felvételt most nem sikerült
+lejátszani." with the reason in Hungarian (no connection / not downloadable / cannot be opened / not allowed to start) and
+the buttons „Újrapróbálom" and „Olvasással folytatom". The step and all progress stay exactly as they were, the failure is
+logged as `audio_status` `error` with its reason, it is never counted as completed, and there is no „Befejeztem" shortcut
+after a failure.
+
+**Offline readiness.** `src/app/offline.js` checks the device's caches; the app says „Offline is elérhető" for an adventure
+**only when** the app shell, its cover picture and every one of its recordings are really cached (`caches.match`). While files
+are still arriving it says so; when offline and something is missing it shows an unavailable message and disables listening
+(reading still works). Only adventures that have recordings make an offline claim. A device that has *never* loaded the app
+online cannot open it offline at all – no web app can show anything then; that is the browser's own offline page.
 
 ### Links
 
@@ -94,11 +110,13 @@ ever shown to the child.
 ### Updates (mandatory behaviour – see CLAUDE.md)
 
 The service worker uses `registerType: 'prompt'`. A new version downloads in the background and an info bar appears
-**at the top of every screen, also during an adventure**: „Új verzió érhető el" with the button „Frissítés"
-(`src/app/UpdateBar.jsx`). Nothing reloads until someone taps it, the bar cannot be dismissed, and progress lives in
-localStorage and survives the reload (an adventure resumes at its step). Limits: the check runs when the app opens, when
-it returns to the foreground and hourly, so a device that stays offline or closed keeps the old version until it next
-opens online (iOS may only check at launch). Copies installed before the prompt version need one full close and reopen.
+**at the top of the main app**: „Új verzió érhető el" with the button „Frissítés" (`src/app/UpdateBar.jsx`). It is **not**
+shown while an adventure is active – the adventure screens and their help panels, a break taken from the adventure, and
+the completion screen – and nothing reloads there; it is offered once the child is back in the main app. Nothing ever
+reloads until someone taps it, the bar cannot be dismissed, and progress lives in localStorage and survives the reload
+(an adventure resumes at its step). Limits: the check runs when the app opens, when it returns to the foreground and
+hourly, so a device that stays offline or closed keeps the old version until it next opens online (iOS may only check at
+launch). Copies installed before the prompt version need one full close and reopen.
 
 ## PWA notes
 
@@ -113,3 +131,12 @@ opens online (iOS may only check at launch). Copies installed before the prompt 
 Live at **https://nova-hosakademia.pages.dev** (Cloudflare Pages project `nova-hosakademia`, direct upload).
 After changing the app: commit, `git push`, then `npm run deploy` (uses `wrangler`; run `npx wrangler login` once per
 machine). Installed copies update the next time they are opened online.
+
+## Owner checklist (only the owner ticks these)
+
+- [ ] Listened to all nine recordings: wording matches the text, pronunciation, pace, no clipping
+- [ ] Playback tested on a real iPhone
+- [ ] Playback tested on a real Android device
+- [ ] Pause/resume, replay and shorter parts tested on a real device with the recordings
+- [ ] Instructions are clear to Lacika without explanation
+- [ ] Dinosaur adventure content review finished (until then it stays „unreviewed")

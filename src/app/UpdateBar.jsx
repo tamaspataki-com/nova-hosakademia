@@ -2,9 +2,10 @@ import { useEffect, useRef } from 'react';
 import { applyUpdate, useUpdateReady } from './update.js';
 import { Btn, Icon } from './ui.jsx';
 
-// PERMANENT RULE (see CLAUDE.md): whenever a new version is ready, this bar appears at the top of the app, on every
-// screen including during an adventure, and stays until the app is updated. It never reloads by itself – only when
-// someone taps „Frissítés" – and saved progress survives the reload, so tapping it is always safe.
+// PERMANENT RULE (see CLAUDE.md): whenever a new version is ready, this bar appears at the top of the main app and
+// stays until the app is updated. It is NOT rendered while an adventure is active (App.jsx: adventure screens and their
+// help panels, a break taken from an adventure, the completion screen) – it is offered once the child is back in the
+// main app. It never reloads by itself, only when someone taps „Frissítés"; saved progress survives the reload.
 export default function UpdateBar() {
   const ready = useUpdateReady();
   const ref = useRef(null);
