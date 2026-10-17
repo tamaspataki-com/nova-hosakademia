@@ -14,7 +14,7 @@ import {
   useVoiceReady
 } from '../app/audio.js';
 import { ACTIVITIES, SCORED } from '../activities/index.jsx';
-import { Reference, sourceSections } from '../activities/shared.jsx';
+import { Reference, sourceSections, wordsIn } from '../activities/shared.jsx';
 import { FORMATS, LEVELS, classLabel, MODE_NAMES, OBJECTIVE_NAMES, ROUTINE, sectionText } from '../content/index.js';
 
 const MODE_INFO = [
@@ -39,6 +39,8 @@ function Intro({ adv, go }) {
   const status = statusOf(state, adv.id);
   const fav = state.favourites.includes(adv.id);
   const level = LEVELS.find((l) => l.id === adv.level);
+  const [word, setWord] = useState(null);
+  const introWords = adv.introGlossary ? wordsIn(adv.glossary, [{ text: adv.intro || '' }]) : [];
   const start = () => {
     act.start(adv, { restart: true });
     act.log('adventure_started', adv, { repeat: status === 'done', level: adv.level });
@@ -62,6 +64,18 @@ function Intro({ adv, go }) {
       </div>
       <h1 className="h1">{adv.title}</h1>
       <p className="lead">{adv.intro || adv.description}</p>
+      {introWords.length ? (
+        <div className="stack tight" aria-label="Szómagyarázat">
+          <span className="eyebrow">Szavak, ha kíváncsi vagy rájuk</span>
+          <div className="chips">
+            {introWords.map((g) => (
+              <button key={g.key} type="button" className="pill" onClick={() => setWord(g)}>
+                {g.word}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
       <OfflineNote adv={adv} />
 
       {status === 'done' ? (
@@ -84,7 +98,7 @@ function Intro({ adv, go }) {
 
       <div className="row">
         <Btn iconAfter="arrow_forward" onClick={start}>
-          {status === 'done' ? 'Gyakorlás indítása' : 'Kaland indítása'}
+          {status === 'done' ? 'Gyakorlás indítása' : adv.startLabel || 'Kaland indítása'}
         </Btn>
         <Btn
           kind="ghost"
@@ -95,6 +109,14 @@ function Intro({ adv, go }) {
           {fav ? 'Kedvencekből kiveszem' : 'Kedvencekhez adom'}
         </Btn>
       </div>
+      {word ? (
+        <Sheet title="Szómagyarázat" onClose={() => setWord(null)}>
+          <div className="stack tight">
+            <strong className="h3">{word.word}</strong>
+            <p className="lead">{word.def}</p>
+          </div>
+        </Sheet>
+      ) : null}
     </div>
   );
 }
@@ -240,6 +262,17 @@ function Runner({ adv, run, go }) {
         setRef({});
       }
     });
+  if (canHelp && !st.solved && step.quote)
+    options.push({
+      key: 'quote',
+      icon: 'format_quote',
+      label: 'Csak az üzenetet mutasd meg',
+      run() {
+        patch({ quoteShown: (st.quoteShown || 0) + 1 });
+        log('instruction_quote_shown', { activity: step.id });
+        setRef({ only: step.quote.sentenceId });
+      }
+    });
   if (canHelp && !st.solved && listening && srcSecs.length && srcSecs.every((sec) => canPlay(voiceReady, secClip(sec))))
     options.push({
       key: 'replay',
@@ -345,8 +378,8 @@ function Runner({ adv, run, go }) {
       ) : null}
 
       {ref ? (
-        <Sheet title="A történet" wide onClose={() => setRef(null)}>
-          <Reference adv={adv} step={step} mark={ref.mark} glossary={adv.glossary} onWord={openWord} />
+        <Sheet title={ref.only ? 'Az üzenet' : 'A történet'} wide onClose={() => setRef(null)}>
+          <Reference adv={adv} step={step} mark={ref.mark} only={ref.only} glossary={adv.glossary} onWord={openWord} />
           <Btn kind="ghost" onClick={() => setRef(null)}>
             Vissza a feladathoz
           </Btn>

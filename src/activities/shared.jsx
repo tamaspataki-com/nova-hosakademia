@@ -53,8 +53,19 @@ export function SectionText({ sec, mark, glossary, onWord }) {
   );
 }
 
-export function Reference({ adv, step, mark, glossary, onWord }) {
-  const secs = sourceSections(adv, step);
+export function Reference({ adv, step, mark, glossary, onWord, only }) {
+  // `only`: show a single sentence of the source (e.g. just the quoted instruction).
+  const secs = sourceSections(adv, step).map((sec) =>
+    only
+      ? {
+          ...sec,
+          // just the quoted words when the sentence has a quotation („…”), else the whole sentence
+          sentences: sec.sentences
+            .filter((x) => x.id === only)
+            .map((x) => ({ ...x, text: x.text.match(/„[^”]*”/)?.[0] ?? x.text }))
+        }
+      : sec
+  );
   const words = wordsIn(
     glossary,
     secs.flatMap((sec) => sec.sentences)
@@ -79,6 +90,26 @@ export function Reference({ adv, step, mark, glossary, onWord }) {
           </div>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+// Glossary words that occur in a step's own wording (task activities have no passage text to tap).
+export function StepWords({ api }) {
+  const { adv, step, openWord } = api;
+  const whole = JSON.stringify({ ...step, guided: null, hints: null, feedback: null, after: null }).toLowerCase();
+  const words = (adv.glossary || []).filter((g) => whole.includes(g.key));
+  if (!words.length) return null;
+  return (
+    <div className="stack tight" aria-label="Szómagyarázat">
+      <span className="eyebrow">Szavak, ha kíváncsi vagy rájuk</span>
+      <div className="chips">
+        {words.map((g) => (
+          <button key={g.key} type="button" className="pill" onClick={() => openWord(g)}>
+            {g.word}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -130,9 +161,17 @@ export function supportOf(adv, run, step, st) {
     replays: (st.replays || 0) + sum('replays'),
     transcript: !!(st.transcript || ps.some((p) => p.transcript)),
     shorter: ps.some((p) => p.chunked),
-    retellPrompts: !!st.promptsOpened
+    retellPrompts: !!st.promptsOpened,
+    quote: !!st.quoteShown // only the quoted instruction was shown again
   };
-  out.used = out.hints > 0 || out.rereads > 0 || out.replays > 0 || out.transcript || out.shorter || out.retellPrompts;
+  out.used =
+    out.hints > 0 ||
+    out.rereads > 0 ||
+    out.replays > 0 ||
+    out.transcript ||
+    out.shorter ||
+    out.retellPrompts ||
+    out.quote;
   return out;
 }
 
@@ -175,6 +214,8 @@ export function useScored(api) {
       shorter: sup.shorter,
       definitions: evs.filter((e) => e.type === 'word_opened' && e.t >= since).length,
       guidedPlacement: !!st.guidedPlacement,
+      quoteShown: sup.quote,
+      ...step.record, // e.g. a checking task with a visible reference is recorded as such
       attempts: extra.attempts,
       firstCorrect: extra.first,
       completion: guided ? 'guided' : extra.first && !sup.used ? 'independent' : 'supported'

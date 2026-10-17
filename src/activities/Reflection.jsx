@@ -74,6 +74,7 @@ export default function Reflection({ api }) {
 
   const toggle = (o) => {
     if (done) return;
+    if (step.single) return setPicked([o.id]); // one answer, unscored
     setPicked((cur) =>
       o.exclusive
         ? cur.includes(o.id)
@@ -116,6 +117,12 @@ export default function Reflection({ api }) {
           Elmentem
         </Btn>
       )}
+      {picked.length && step.after ? (
+        <div className="note good" role="status">
+          <Icon name="lightbulb" />
+          <span>{step.after}</span>
+        </div>
+      ) : null}
       <Btn iconAfter="arrow_forward" disabled={!done} onClick={next}>
         Tovább
       </Btn>

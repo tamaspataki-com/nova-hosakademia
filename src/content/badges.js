@@ -2,5 +2,6 @@
 // Saját világom → Jelvényeim. They never unlock or lock anything: every strategy tool is always available.
 export const BADGES = {
   goggles: { id: 'goggles', name: 'Nyomkereső szemüveg', art: 'assets/tool-goggles.webp' },
-  nyomkutato: { id: 'nyomkutato', name: 'Nyomkutató', icon: 'dino' }
+  nyomkutato: { id: 'nyomkutato', name: 'Nyomkutató', icon: 'dino' },
+  'szallitasi-nyomozo': { id: 'szallitasi-nyomozo', name: 'Szállítási nyomozó', icon: 'inventory_2' }
 };

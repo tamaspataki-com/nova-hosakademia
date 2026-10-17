@@ -5,6 +5,9 @@ import Evidence from './Evidence.jsx';
 import Vocabulary from './Vocabulary.jsx';
 import Retell from './Retell.jsx';
 import Reflection from './Reflection.jsx';
+import Sort from './Sort.jsx';
+import Instruction from './Instruction.jsx';
+import CorrectPlacement from './CorrectPlacement.jsx';
 
 // One component per activity type. Content decides which steps an adventure has; nothing in these components
 // knows about any particular story.
@@ -16,8 +19,20 @@ export const ACTIVITIES = {
   vocabulary: Vocabulary,
   retell: Retell,
   delayedRecall: (props) => <Choice {...props} variant="delayedRecall" />,
-  reflection: Reflection
+  reflection: Reflection,
+  sort: Sort,
+  instruction: Instruction,
+  correctPlacement: CorrectPlacement
 };
 
 // Which step types score answers (and therefore take hints, guided help and a solution reveal).
-export const SCORED = new Set(['choice', 'sequence', 'evidence', 'vocabulary', 'delayedRecall']);
+export const SCORED = new Set([
+  'choice',
+  'sequence',
+  'evidence',
+  'vocabulary',
+  'delayedRecall',
+  'sort',
+  'instruction',
+  'correctPlacement'
+]);

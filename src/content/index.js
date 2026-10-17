@@ -2,9 +2,10 @@ import { WORLDS } from './worlds.js';
 import { ENERGYMAG } from './energymag.js';
 import { PRACTICE } from './practice.js';
 import { DINO } from './dino.js';
+import { CRATES } from './crates.js';
 
 // Built-in adventures, in the order they are suggested. Parent-created adventures are added at runtime.
-const RAW = [ENERGYMAG, DINO, ...PRACTICE];
+const RAW = [ENERGYMAG, DINO, CRATES, ...PRACTICE];
 
 // Content rules for the model. A factual adventure must carry sources and an adult review before it can be shown;
 // anything that breaks the rules is held back as "upcoming" and reported in the console.

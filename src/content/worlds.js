@@ -61,5 +61,8 @@ export const OBJECTIVE_NAMES = {
   mainIdea: 'A lényeg',
   vocabulary: 'Szavak megértése',
   retell: 'Elmesélés',
-  delayedRecall: 'Későbbi felidézés'
+  delayedRecall: 'Későbbi felidézés',
+  connect: 'Információk összekapcsolása',
+  instruction: 'Utasítás követése',
+  check: 'Ellenőrzés'
 };
