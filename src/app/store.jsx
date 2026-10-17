@@ -27,7 +27,7 @@ export const blankHw = () => ({
   hint: ''
 });
 
-const initial = () => ({
+export const initial = () => ({
   v: 2,
   settings: { ...DEFAULT_SETTINGS },
   progress: {},
@@ -106,7 +106,8 @@ export function load() {
 }
 
 // ---- reducer ----
-function reducer(s, a) {
+// Exported so the rules in it (for example that a locked adventure never gets a run) can be tested directly.
+export function reducer(s, a) {
   switch (a.type) {
     case 'settings':
       return { ...s, settings: { ...s.settings, ...a.patch } };

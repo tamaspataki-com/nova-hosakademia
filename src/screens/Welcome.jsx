@@ -15,14 +15,14 @@ const STAGES = [
   [5, 3900]
 ];
 
-const useWidth = () => {
-  const [w, setW] = useState(window.innerWidth);
+const useSize = () => {
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
   useEffect(() => {
-    const on = () => setW(window.innerWidth);
+    const on = () => setSize([window.innerWidth, window.innerHeight]);
     window.addEventListener('resize', on);
     return () => window.removeEventListener('resize', on);
   }, []);
-  return w;
+  return size;
 };
 
 // A spot of light positioned on the hero picture (percentages of the picture).
@@ -37,9 +37,15 @@ const dot = (x, y, animation, extra) => ({
 
 export default function Welcome({ go }) {
   const { state } = useStore();
-  const w = useWidth();
-  const wide = w >= 900;
-  const tablet = w >= 600 && w < 900;
+  const [w, h] = useSize();
+  // A phone turned sideways is short and wide: it gets the two-column layout with small type, so that everything still
+  // fits on the first screen. Otherwise width decides.
+  const short = h < 560 && w > h;
+  const wide = w >= 900 || short;
+  const tablet = !short && w >= 600 && w < 900;
+  // Everything on the splash screen must fit on the first screen, without scrolling: the type scales with the height
+  // and the hero picture takes whatever height is left.
+  const fit = !wide;
   const name = (state.settings.name || '').trim() || 'Hős';
 
   const reduced =
@@ -129,7 +135,14 @@ export default function Welcome({ go }) {
   return (
     <div
       onClick={skip}
-      style={{ position: 'relative', minHeight: '100dvh', overflow: 'hidden', background: '#102D35', display: 'flex' }}
+      style={{
+        position: 'relative',
+        minHeight: '100dvh',
+        height: wide && !short ? undefined : '100dvh',
+        overflow: 'hidden',
+        background: '#102D35',
+        display: 'flex'
+      }}
     >
       {s < 5 ? (
         <button
@@ -183,10 +196,13 @@ export default function Welcome({ go }) {
           display: 'grid',
           gridTemplateColumns: wide ? 'minmax(0,1fr) minmax(0,1fr)' : '1fr',
           alignItems: 'center',
-          gap: '24px',
-          padding: wide
-            ? '48px 64px'
-            : 'calc(28px + env(safe-area-inset-top)) 20px calc(36px + env(safe-area-inset-bottom))',
+          gap: short ? '16px' : fit ? 'clamp(8px, 2dvh, 24px)' : '24px',
+          minHeight: 0,
+          padding: short
+            ? '12px 28px'
+            : wide
+              ? '48px 64px'
+              : 'calc(clamp(14px, 3dvh, 28px) + env(safe-area-inset-top)) 20px calc(clamp(16px, 3.5dvh, 36px) + env(safe-area-inset-bottom))',
           maxWidth: '1280px',
           margin: '0 auto',
           width: '100%'
@@ -196,7 +212,7 @@ export default function Welcome({ go }) {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '20px',
+            gap: fit ? 'clamp(8px, 2dvh, 20px)' : short ? '10px' : '20px',
             alignItems: align,
             textAlign: wide ? 'left' : 'center',
             order: wide ? 0 : 1
@@ -207,7 +223,7 @@ export default function Welcome({ go }) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: align,
-              gap: '10px',
+              gap: fit ? 'clamp(4px, 1dvh, 10px)' : '10px',
               opacity: s >= 4 ? 1 : 0,
               transform: s >= 4 ? 'none' : 'scale(.9) translateY(10px)',
               transition: 'opacity .7s ease, transform .7s ease'
@@ -217,8 +233,8 @@ export default function Welcome({ go }) {
               src="assets/nova-star.webp"
               alt=""
               style={{
-                width: wide ? '120px' : '72px',
-                height: wide ? '120px' : '72px',
+                width: short ? '44px' : wide ? '120px' : 'clamp(40px, 8dvh, 72px)',
+                height: short ? '44px' : wide ? '120px' : 'clamp(40px, 8dvh, 72px)',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 0 28px rgba(243,197,104,.45))'
               }}
@@ -226,7 +242,7 @@ export default function Welcome({ go }) {
             <h1
               style={{
                 margin: 0,
-                fontSize: wide ? '88px' : tablet ? '72px' : '56px',
+                fontSize: short ? '40px' : wide ? '88px' : tablet ? '72px' : 'clamp(36px, 8dvh, 56px)',
                 lineHeight: 1,
                 fontWeight: 900,
                 letterSpacing: '.16em',
@@ -241,7 +257,7 @@ export default function Welcome({ go }) {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '20px',
+              gap: fit ? 'clamp(8px, 2dvh, 20px)' : short ? '8px' : '20px',
               alignItems: align,
               opacity: s >= 5 ? 1 : 0,
               transform: s >= 5 ? 'none' : 'translateY(12px)',
@@ -252,7 +268,7 @@ export default function Welcome({ go }) {
               className="welcome-lead"
               style={{
                 margin: 0,
-                fontSize: wide ? '30px' : '22px',
+                fontSize: short ? '20px' : wide ? '30px' : 'clamp(18px, 3.4dvh, 22px)',
                 lineHeight: 1.35,
                 fontWeight: 700,
                 color: '#F6EAD2',
@@ -262,13 +278,27 @@ export default function Welcome({ go }) {
             >
               A megértés kalandot nyit.
             </p>
-            <p style={{ margin: 0, fontSize: '18px', color: '#CFC3A8', maxWidth: '34ch', textWrap: 'pretty' }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: short ? '15px' : fit ? 'clamp(15px, 2.6dvh, 18px)' : '18px',
+                color: '#CFC3A8',
+                maxWidth: '34ch',
+                textWrap: 'pretty'
+              }}
+            >
               Szia, {name}! Az akadémia hősei már várnak a lebegő városban.
             </p>
             <button
               type="button"
               className="btn btn-primary"
-              style={{ minHeight: '58px', padding: '0 30px', fontSize: '18px', borderRadius: '16px', gap: '10px' }}
+              style={{
+                minHeight: short || fit ? '52px' : '58px',
+                padding: '0 30px',
+                fontSize: '18px',
+                borderRadius: '16px',
+                gap: '10px'
+              }}
               onClick={() => go({ name: 'today', replace: true })}
             >
               Belépés az akadémiára
@@ -283,7 +313,10 @@ export default function Welcome({ go }) {
             justifyContent: 'center',
             alignItems: 'flex-end',
             order: wide ? 1 : 0,
-            paddingBottom: '28px'
+            paddingBottom: short ? '14px' : fit ? 'clamp(10px, 2.5dvh, 28px)' : '28px',
+            // the picture area gets the remaining height; it can shrink instead of pushing the text off screen
+            minHeight: 0,
+            flex: fit ? '1 1 0' : undefined
           }}
         >
           <div style={{ position: 'relative' }}>
@@ -317,7 +350,14 @@ export default function Welcome({ go }) {
               style={{
                 position: 'relative',
                 display: 'block',
-                height: wide ? 'min(76dvh,720px)' : tablet ? 'min(46dvh,520px)' : 'min(38dvh,340px)',
+                height: short
+                  ? 'min(70dvh, 260px)'
+                  : wide
+                    ? 'min(76dvh,720px)'
+                    : tablet
+                      ? 'min(46dvh,520px)'
+                      : 'min(34dvh, calc(100dvh - 400px), 340px)',
+                minHeight: '96px',
                 width: 'auto',
                 filter: 'drop-shadow(0 18px 30px rgba(0,0,0,.35))',
                 opacity: s >= 1 ? 1 : 0,

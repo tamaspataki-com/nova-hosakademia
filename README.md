@@ -102,11 +102,11 @@ or no audio on a device without one. The outcome panel of adventure 5 is text on
 
 ### The journey (unlocking)
 
-`src/content/journey.js` lists the ordered full adventures: A sáros lábnyomok rejtélye → A polip búvóhelye → A marsjáró
-elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál. Only the next unfinished one opens. A journey
+`src/content/journey.js` lists the six ordered full adventures: Az eltűnt energiamag → A sáros lábnyomok rejtélye → A polip
+búvóhelye → A marsjáró elveszett üzenete → Az összecserélt ládák → A Triceratops a kapunál. Only the next unfinished one opens. A journey
 adventure is also open when it was completed before (replay) or already has a saved unfinished run (resume). Guided
 completion counts as completion. Not locked: the 18 short practice texts (the optional „Gyakorlás (nem kötelező)" series of
-Hősök városa), the older heroes adventure `heroes.energymag`, and parent-made texts. One rule, `canOpen`, is used by Today,
+Hősök városa) and parent-made texts. One rule, `canOpen`, is used by Today,
 the world cards, favourites, direct links (a locked adventure shows only its title and what unlocks it) and the store (a
 locked adventure never gets a run). Locked cards show the title and a Hungarian explanation. When the whole journey is
 done, Today offers replay and the optional practice, and suggests nothing "next". Extend `JOURNEY` when more animal, space
