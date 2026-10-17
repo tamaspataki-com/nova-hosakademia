@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
-import { canOpen, dayOf, isDay, journeyCurrent, paceAfterCompletion } from '../content/journey.js';
+import { JOURNEY, canOpen, dayOf, isDay, journeyCurrent, paceAfterCompletion } from '../content/journey.js';
 
 // All app state lives here and is persisted to localStorage. Screens read it with useStore() and change it only
 // through the actions returned there, so progress, events and completion rules stay in one place.
@@ -171,6 +171,18 @@ export function reducer(s, a) {
       const events = [...s.events, a.e];
       return { ...s, events: events.length > MAX_EVENTS ? events.slice(-MAX_EVENTS) : events };
     }
+    case 'resetJourney': {
+      // Parent: start the six journey adventures from zero. Only their completions, unfinished runs, pacing dates and
+      // badges go; settings, PIN, notes, own texts, practice progress, favourites, observations and everything else stay.
+      const drop = (o) => Object.fromEntries(Object.entries(o).filter(([id]) => !JOURNEY.includes(id)));
+      return {
+        ...s,
+        progress: drop(s.progress),
+        history: drop(s.history),
+        pacing: { completed: drop(s.pacing.completed), unlocks: drop(s.pacing.unlocks) },
+        badges: s.badges.filter((b) => !(a.badges || []).includes(b))
+      };
+    }
     case 'unlockDay': {
       // Parent: change the day the next journey adventure opens (a past or today's day opens it now).
       if (a.id !== journeyCurrent(s) || !isDay(a.day)) return s;
@@ -239,6 +251,7 @@ export function StoreProvider({ children }) {
       abandon: (id) => dispatch({ type: 'abandon', id }),
       complete: (adv) => dispatch({ type: 'complete', id: adv.id, badge: adv.badge, t: Date.now() }),
       unlockDay: (id, day) => dispatch({ type: 'unlockDay', id, day }),
+      resetJourney: (badges) => dispatch({ type: 'resetJourney', badges }),
       fav: (id) => dispatch({ type: 'fav', id }),
       retell: (r) => dispatch({ type: 'retell', r }),
       discovery: (id, patch) => dispatch({ type: 'discovery', id, patch }),
