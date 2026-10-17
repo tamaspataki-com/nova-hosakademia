@@ -19,6 +19,8 @@ text below only becomes a package once the owner says "approved" (or sends corre
 
 ## 0d. Listening review and video (2026-10-17)
 
+Video provenance (owner): generated through Hedra's signed-in interface with MiniMax H3 Max; its credentials name fal.ai; different parts of the chain, no contradiction, no rights established. Interface strings „A videó betöltődik…”, „Kihagyom a videót”, „A videót most nem sikerült lejátszani. A kaland nélküle is elindítható.” approved. Content review result: README, section „Bátorság bolygója”.
+
 The owner's listening review approved all 15 clips (wording, pronunciation, sound). The temporary review page was removed. The optional intro video is integrated (896 × 512, 15.00 s, no audio, H.264 Main, fast start, 2.72 MB) from the owner's original, which stays unchanged; rights unverified. See the README.
 
 ## 0c. Recordings integrated (2026-10-17)

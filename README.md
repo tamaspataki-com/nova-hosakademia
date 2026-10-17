@@ -178,8 +178,10 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   `courage1-p3.mp3` is left as generated (its trailing silence meets the 0.3 s limit).
 - **Release hold:** the listening review is complete (above); nothing is pushed or deployed until the owner says so.
 - **Intro video (optional, integrated):** `public/video/courage-intro.mp4`, set as `introVideo` in `courage.js`. Source: the owner's
-  `Nori And The Star Map.mp4` (the Hedra video per the owner; its embedded content credentials name **fal.ai**, AI-generated – both
-  are recorded, not reconciled); the original is untouched (md5 `4b01099f4b0aaf90d8447c5b0933bccf`, 14.8 MB, 1344 × 768, 15.08 s,
+  `Nori And The Star Map.mp4`. **Provenance (owner's statement): generated through Hedra's signed-in interface using MiniMax H3 Max.**
+  The file's embedded content credentials (C2PA) name **fal.ai** and mark it AI-generated. These describe different parts of the
+  production chain; they are not a contradiction, and neither establishes usage rights. The original is untouched (md5
+  `4b01099f4b0aaf90d8447c5b0933bccf`, 14.8 MB, 1344 × 768, 15.08 s,
   with audio) and a copy is kept locally in `design/source-video/courage/` (not committed). Final export with
   `scripts/encode-intro-video.swift`: **896 × 512 (exactly the original 7:4), 15.00 s, 24 fps, no audio track, H.264 Main level 3.1
   (8-bit 4:2:0 = yuv420p), moov atom before mdat (fast start), 2,721,049 bytes = 2.72 MB** (under 3 MB). Behaviour: shown only on the
@@ -190,7 +192,21 @@ Two plans remain *only* in that document, with no playable entry: „A félresik
   failure a note appears and the adventure starts normally. It is not part of any offline claim.
   **Tested in a desktop browser only** (phone-sized 375 px and desktop 1280 px windows: opens, plays, reaches the end without
   looping, skip returns to the cover, failure note on a blocked download). **Not tested on real iPhone/Android.**
-  **Usage rights are not verified** (no licence or terms evidence).
+  **Usage rights are not verified** (no licence or terms evidence for Hedra, MiniMax or fal.ai).
+
+- **Content review (2026-10-17), against the approved Hungarian package** (design/world-5-courage-proposal.md §7.2/§7.3 with the owner's
+  five corrections, the approved world description, choice note and interface strings): a script compared 61 text items directly and the six consequence
+  texts (stored sentence by sentence) through the 15 narration texts, with `courage.js` and `audio.js`: **no deviation** (every narration text equals the sentences/parts the app derives;
+  all 15 clip ids point to the right `courage1-*` file; every scored question has a source, hint, guided text and feedback; both
+  choices point to existing consequence sections). The owner approved the 15 recordings by listening. **Unresolved, not decided by me:**
+  (1) the adventure keeps `review.status: 'unreviewed'`: marking it „adult-reviewed” is the owner's decision, not made on their
+  behalf; (2) the shared system's wrong-answer wording („Nem ez”, „Nézd meg újra a szöveget, és próbáld újra.”, „Ez a helyes válasz.”
+  after a revealed solution) is unchanged: it is fine for scored questions in general, but in a world about mistakes the owner may want
+  warmer wording (a change to the shared system for every adventure); (3) the level label shows „Rövid szövegek” (level 1: 2–3
+  sentences) while two parts have 4 sentences – the same as the space adventure; (4) the three glossary definitions are my
+  wording inside the approved package and have had no separate adult check; (5) accessibility items still open: the pending „Most már
+  kérheted a megoldás megmutatását.” announcement, and `storyChoice` with a real screen reader. Offline: the recordings are covered by
+  the app's offline check, the video is **not** (online only, on tap); real-device playback of recordings and video is **untested**.
 
 ### Eszközeim: worked examples are locked until the story is completed
 
@@ -278,7 +294,7 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Daily pacing checked on real devices: the day change at midnight, the foreground recheck, the parent date controls; the device clock is the only clock used
 - [ ] „Utazás újrakezdése" tried by the owner on a real device
 - [ ] Needed from the owner (to author, nothing invented): worked examples and strategy explanations for the tools, from the six journey adventures – see the list in the report of the Eszközeim check
-- [ ] Bátorság bolygója, adventure 1: content review finished (until then „unreviewed”); the world description and button/interface wording not in the approved package (e.g. „Itt nincs rossz válasz…”, „Mi történt?”, intro-video note) approved
+- [ ] Bátorság bolygója, adventure 1: owner decides whether to mark it „adult-reviewed” (text, recordings and interface strings are approved; see the content-review list in the README for the five open points)
 - [ ] Adventure 1: usage rights of the generated artwork (and of the video-derived reference) verified; covers checked on real phones; the 15 recordings (`courage1-*.mp3`) listened to: exact wording, pronunciation of Léna/Csipp/pittyentett, pace, clipping (voice: Adam – Articulate Engineering Professor, Eleven v4); only then push/deploy
 - [ ] Adventure 1: `storyChoice` instructions clear to Lacika; keyboard/touch and screen-reader announcement of the consequence tested on real devices; listening mode with real recordings
 - [ ] Intro video: usage rights confirmed with evidence (generator terms/licence); plays on a real iPhone and Android; its look and length approved

@@ -21,7 +21,7 @@ export const COURAGE = {
   sources: [],
   review: {
     status: 'unreviewed',
-    note: 'A tartalmat a szülő hagyta jóvá (content package 06); felnőtt általi felülvizsgálat még nincs rögzítve.'
+    note: 'A szöveget, a felvételeket és a felületi szövegeket a szülő jóváhagyta (content package 06); az egyezést a kóddal ellenőriztük, de a „felnőtt ellenőrizte” jelölést a szülő még nem adta meg.'
   },
   format: 'story',
   status: 'available',
@@ -41,7 +41,7 @@ export const COURAGE = {
   coverAlt: 'Léna és Csipp, a kis robot a csillagtérkép asztalánál az űrállomáson',
   // OPTIONAL intro video (Léna and Csipp; prototype from the generated video, encoded with scripts/encode-intro-video.swift:
   // 896 × 512, 15.00 s, no audio, H.264 Main, fast start, 2.72 MB). Shown only on the introduction, started by the child,
-  // skippable, no autoplay, no loop; never inside an activity. Usage rights are NOT verified.
+  // skippable, no autoplay, no loop; never inside an activity. Made through Hedra (MiniMax H3 Max; embedded credentials name fal.ai); usage rights are NOT verified.
   introVideo: { src: 'video/courage-intro.mp4', width: 896, height: 512 },
   badge: 'elso-lepes',
   glossary: [
