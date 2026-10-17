@@ -162,6 +162,28 @@ the displayed text would break the narration rule. The owner needs to listen to 
   the room's bright orange/cream palette differs from Nova's dark teal/gold, so the station needs a deliberate look of its
   own (this is also what keeps it apart from the space world).
 
+### 3b. Locked character reference sheet (owner-supplied, 2026-10-17)
+
+`design/source-art/courage-reference/lena-csipp-character-sheet.png` (1659 × 948, the copy pasted into the session; the
+original full-resolution file stays with the owner). It is a **production reference, not an in-app illustration**, and the
+reference for all World 5 artwork. It is not committed (rights of the AI-generated sources are not established). What it fixes:
+
+- **Léna, three views** (front, three-quarter, side) and **three expressions** (worried; thinking, finger at the chin; calm
+  with a slight smile). Brown bob with a side-swept fringe, big brown eyes, freckles, rosy cheeks, a **teal headband with a
+  teal flower on her right**. Suit: **white with teal shoulders, collar and chest panel, orange stripes (chest, arms, legs),
+  teal knee pads, teal glove cuffs and boot soles, a silver neck ring, a small round chest badge (blue/orange emblem) and a
+  small teal device on one forearm**. Child proportions, a head about a quarter of the body height.
+- **Csipp, three views:** white rounded head with a **black glass faceplate and two round glowing blue eyes**, blue ear discs,
+  a thin antenna with a white ball, a small white body with blue rounded panels and short arms, **no legs: it floats on a soft
+  blue glow**.
+- Look: soft stylised 3D animation, warm cream background, rounded shapes. No NOVA gold star on Léna; none of Nóri's dark
+  teal/gold uniform, bun or realistic style.
+- The sheet matches the video except small details (the video's chest has an orange stripe and badge; the sheet adds teal
+  knee pads and glove cuffs): **where they differ, the sheet wins.**
+
+Rules for every later image: same face, hair, colours and proportions as this sheet; Csipp always floating; the cover shows
+Léna's face at ≥ ~15 % of the image height (world art may show her smaller); no text in pictures.
+
 **Verdict (the video as a file):** not a final asset. It is the character reference, not something to ship. Where it could sit if re-made: the **introduction screen
 only** (like the covers), started by the child, never inside an activity and never autoplaying with sound.
 
