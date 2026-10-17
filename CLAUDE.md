@@ -71,6 +71,9 @@ until the owner has tested on real devices:**
   memory is an implementation choice, not proof that it works in every browser;
 - the **spoken content** of the nine recordings: wording, pronunciation, pace, clipping, and that each clip says exactly
   its displayed text (only clip lengths versus text lengths were compared);
+- **adventure 2, keyboard**: select/place/move/cancel/submit/reset in the first sorting activity were tested with real key
+  presses, but full **Tab-only navigation through activities 1–4** is **pending** (some focus transitions were skipped in
+  the test); touch and mouse dragging are also untested;
 - behaviour with a real **Hungarian device voice**, and Lacika's experience of the instructions.
 
 Owner checklist (the owner ticks these, nobody else): see the end of README.md.

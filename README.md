@@ -140,3 +140,5 @@ machine). Installed copies update the next time they are opened online.
 - [ ] Pause/resume, replay and shorter parts tested on a real device with the recordings
 - [ ] Instructions are clear to Lacika without explanation
 - [ ] Dinosaur adventure content review finished (until then it stays „unreviewed")
+- [ ] Adventure 2 (Az összecserélt ládák): full Tab-only navigation through activities 1–4 tested and working (pending; the automated test skipped some focus transitions)
+- [ ] Adventure 2 content review finished (until then it stays „unreviewed")
