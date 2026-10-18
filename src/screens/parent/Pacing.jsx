@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useStore } from '../../app/store.jsx';
 import { Btn, Icon } from '../../app/ui.jsx';
 import { findAdventure } from '../../content/index.js';
-import { JOURNEY, access, isDay, journeyCurrent } from '../../content/journey.js';
+import { JOURNEY, RESET_IDS, access, isDay, journeyCurrent } from '../../content/journey.js';
 import { PACING_NOTE, fmtDay, whenText } from '../../app/access.js';
 
 // Napi ütemezés. Shown only inside the Szülői tér, which is behind the parent PIN (a PIN has to be set first).
@@ -37,9 +37,9 @@ export default function Pacing() {
   // Utazás újrakezdése: only the journey adventures are reset, and only after the PIN is entered again.
   const doReset = () => {
     if (pin !== state.pinCode) return setResetMsg('Ez a PIN nem egyezik.');
-    const badges = JOURNEY.map((id) => findAdventure(id, [])?.badge).filter(Boolean);
+    const badges = RESET_IDS.map((id) => findAdventure(id, [])?.badge).filter(Boolean);
     act.resetJourney(badges);
-    act.log('journey_reset', null, { by: 'parent', adventures: JOURNEY.length });
+    act.log('journey_reset', null, { by: 'parent', adventures: RESET_IDS.length });
     setReset(false);
     setPin('');
     setResetMsg('Az utazás újrakezdődött: az első kaland most elérhető.');

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
-import { JOURNEY, canOpen, dayOf, isDay, journeyCurrent, paceAfterCompletion } from '../content/journey.js';
+import { RESET_IDS, canOpen, dayOf, isDay, journeyCurrent, paceAfterCompletion } from '../content/journey.js';
 
 // All app state lives here and is persisted to localStorage. Screens read it with useStore() and change it only
 // through the actions returned there, so progress, events and completion rules stay in one place.
@@ -172,9 +172,9 @@ export function reducer(s, a) {
       return { ...s, events: events.length > MAX_EVENTS ? events.slice(-MAX_EVENTS) : events };
     }
     case 'resetJourney': {
-      // Parent: start the six journey adventures from zero. Only their completions, unfinished runs, pacing dates and
+      // Parent: start the journey adventures (and the newer world adventures) from zero. Only their completions, unfinished runs, pacing dates and
       // badges go; settings, PIN, notes, own texts, practice progress, favourites, observations and everything else stay.
-      const drop = (o) => Object.fromEntries(Object.entries(o).filter(([id]) => !JOURNEY.includes(id)));
+      const drop = (o) => Object.fromEntries(Object.entries(o).filter(([id]) => !RESET_IDS.includes(id)));
       return {
         ...s,
         progress: drop(s.progress),

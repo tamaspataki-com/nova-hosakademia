@@ -24,6 +24,11 @@ export const JOURNEY = [
   'courage-first-step-01' // the first adventure of Bátorság bolygója
 ];
 
+// Adventures of the newer worlds that are not part of the daily-paced journey but are still "the journey" for a parent
+// reset: their runs, completions and badges go too, so the main page does not keep offering to continue them.
+export const RESET_EXTRA = ['kapcsolatok-unspoken-no-01', 'csillaghid-bridge-01'];
+export const RESET_IDS = [...JOURNEY, ...RESET_EXTRA];
+
 export const inJourney = (id) => JOURNEY.includes(id);
 
 // ---- local calendar days ----
